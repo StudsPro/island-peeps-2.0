@@ -2,15 +2,15 @@
 
 $config = [
 
-	'base_url'=>'http://wixtape.com/',
+	'base_url'=>'http://islandpeeps.openex.info/',
 	
-	'public' => '/usr/share/nginx/html/',
+	'public' => '/usr/share/nginx4/html/',
 
     'db_args' => [
-        'user'=>'webserver',
-        'pass'=>'ppc2VzF8uexUESdn',
-        'host'=>'45.63.4.96',
-        'name'=>'wixtape'
+        'user'=>'islandpeeps',
+        'pass'=>'HfWsq5Hf4HWnHzcZ',
+        'host'=>'127.0.0.1',
+        'name'=>'islandpeeps'
     ],
 	
 	'wowload'=> false, //whether or not to display animations.
@@ -36,51 +36,31 @@ $config = [
     'session_args' => [
 		'name'=>'sk_id',//name of session
 		'type'=>'redis', //what type of session storage to use.
-		'host'=>'45.63.13.64', //when scaling to multi server install, this will be used to connect to redis or other session store
+		'host'=>'127.0.0.1', //when scaling to multi server install, this will be used to connect to redis or other session store
 		'port'=>6379  //same 
     ],
 
     'template_args' => [
-        'title'=>'Wixtape',
+        'title'=>'IslandPeeps',
         'meta_description'=>'',
         'keywords'=>'',
-        'sitename'=>'Wixtape',
+        'sitename'=>'IslandPeeps',
     ],
-
-	'ratelimit_args' => [
-		'enabled'=>false,
-		'limit'=>120,
-		'host'=>'45.63.13.64',
-		'port'=>6379
-	],
 	
 	'cache_args' => [
+		'enabled'=>false,
 		'servers'=>[
-			['104.238.135.29',11211]
+			['127.0.0.1',11211]
 		]
 	],
 	
-	'aws_args' =>[
-		'config'=>[
-			'version'=> 'latest',
-			'region'=> 'us-east-1',
-			'credentials' => [
-				'key'    => 'AKIAJ4EOB2G7CZX553ZA',
-				'secret' => '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'
-			],
-			'debug'=>false		
-		],
-		'mp3bucket'=>'audio1.mixtape',
-		'imgbucket'=>'img1.mixtape',
-		'zipbucket'=>'zip1.mixtape'
-	],
-	
 	'smtp_args' => [
+		'enabled'=>false,
         'host'=>'smtp.sendgrid.net',
         'port'=>587,
-        'user'=>'wixtape.com',
-        'pass'=>'45%nf0xdd,xor8te falls',
-        'send_from'=>'noreply@wixtape.com',
+        'user'=>'',
+        'pass'=>'',
+        'send_from'=>'',
         'admin'=>'',
 		'template_path'=>__DIR__ .'/StarterKit/Emails/',
     ],

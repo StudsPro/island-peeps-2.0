@@ -1,0 +1,83 @@
+/*!
+ * Product:        Social - Premium Responsive Admin Template
+ * Version:        2.1.3
+ * Copyright:      2015 cesarlab.com
+ * License:        http://themeforest.net/licenses
+ * Live Preview:   http://go.cesarlab.com/SocialAdminTemplate2
+ * Purchase:       http://go.cesarlab.com/PurchaseSocial2
+ */
+body {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  -webkit-box-shadow: 0px 0px 1px rgba(196, 197, 201, 0.75);
+          box-shadow: 0px 0px 1px rgba(196, 197, 201, 0.75);
+}
+form {
+  margin-bottom: 15px;
+}
+/*
+    Note: It is best to use a less version of this file ( see http://css2less.cc
+    For the media queries use @screen-sm-min instead of 768px.
+    For .span-or use @body-bg instead of white.
+*/
+@media (min-width: 768px) {
+  .row-sm-offset-3 div:first-child[class*="col-"] {
+    margin-left: 25%;
+  }
+}
+@media screen and (max-width: 767px) {
+  .signin {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+.signin {
+  background-color: #fff;
+  border: 1px solid #c4c5c9;
+}
+.signin .title {
+  text-align: center;
+  line-height: 300%;
+}
+.signin .social-buttons a {
+  color: white;
+}
+.signin .social-buttons a:hover {
+  color: white;
+  opacity: 1;
+}
+.signin .signin-or {
+  position: relative;
+  font-size: 1.5em;
+  color: #aaa;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}
+.signin .signin-or .hr-or {
+  background-color: #cdcdcd;
+  height: 1px;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+.signin .signin-or .span-or {
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: -0.6em;
+  margin-left: -1.5em;
+  background-color: white;
+  width: 3em;
+  text-align: center;
+}
+.signin .signin-form .input-group.i {
+  width: 2em;
+}
+.signin .signin-form .help-block {
+  color: red;
+}
+.signin .forgot-password {
+  padding: 10px 0;
+  float: right;
+}

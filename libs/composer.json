@@ -3,11 +3,7 @@
         "slim/slim": "~2.6",
         "twig/twig": "~1.18",
         "swiftmailer/swiftmailer": "~5.4",
-        "predis/predis": "~1.0",
         "redbean-fvm/redbean-fvm": "~1.0",
-        "davidpersson/beanstalk": "~2.0",
         "gabordemooij/redbean": "~4.2",
-        "mobiledetect/mobiledetectlib": "^2.8",
-        "aws/aws-sdk-php": "^3.2"
     }
 }

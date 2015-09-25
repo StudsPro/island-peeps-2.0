@@ -1,0 +1,15 @@
+/************* Green ********/
+.social-navbar .navbar-toggle {border-color: #62c462;color: #ffffff;}
+.top_bar {background-color: #62c462 !important; background-image: none; border-color: #51a351 #51a351 #40a940 !important;}
+.social-navbar .navbar-nav > li > .top_panel_name:hover, .social-navbar .navbar-nav :focus {background-color: #62c462;}
+.social-navbar .navbar-nav > li > a:hover,.social-navbar .navbar-nav > li > a:focus { color: #ffffff !important; background-color: #8dcc8d  !important;}
+.navbar-inner .brand:hover, .navbar-inner .nav > li > a:hover, .navbar-inner .brand:focus, .navbar-inner .nav > li > a:focus {color: #ffffff !important;}
+.navbar-inner .nav > li > a:focus, .navbar-inner .nav > li > a:hover {background-color: #8dcc8d  !important;color: #ffffff !important;} 
+.social-navbar .nav .open > a,.social-navbar .nav .open > a:hover,.social-navbar .nav .open > a:focus {background-color: #8dcc8d  !important;  border-color: #8dcc8d  !important;}
+.nav-setting .dropdown-menu li label:hover { background-color: #8dcc8d  !important;  background-image: none !important;  color: #ffffff !important;  text-decoration: none !important;}
+.social-navbar .navbar-toggle:hover, .social-navbar .navbar-toggle:focus {background-color: #8dcc8d  !important;}
+.social-navbar .navbar-toggle:hover, .social-navbar .navbar-toggle:focus {border-bottom: 1px solid #8dcc8d  !important;}
+.dropdown-menu  a:hover {color: #ffffff !important; background-color: #8dcc8d  !important;}
+.social-navbar .nav-indicators{background-color: #62c462 !important; }
+.social-navbar .nav-indicators .dropdown-toggle {  color: #fff !important;}
+/************* Green ********/ 

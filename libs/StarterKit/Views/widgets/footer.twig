@@ -1,27 +1,8 @@
-		<div id="FOOTER">
-			<div class="terms"><a href="{{base_url}}contact">contact</a>&#46; <a href="{{base_url}}terms_service">terms</a>&#46; <a href="{{base_url}}dmca_complaints">dmca</a>&#46; <a href="{{base_url}}staff">staff</a></div>
-			<ul>
-			<li class="facebook"><a href="#" target="_blank">facebook</a></li>
-			<li class="youtube"><a href="#" target="_blank">youtube</a></li>
-			<li class="twitter"><a href="https://twitter.com/wixtape" target="_blank">twitter</a></li>
-			</ul>
-			<div class="right" >2015  &copy; gbany, Inc&#46;</div>
-		</div>
-		{% include 'widgets/script.twig' %}
-		{% if user == false %}
-		<div class="remodal loginform" data-remodal-id="login" data-remodal-options="hashTracking: false">
-			<div class="title">
-				Login
-				<span><a href="{{base_url}}forgot_password">forgot password</a></span>
-			</div>
-			<div class="box">
-				<form method="post" action="{{base_url}}api/auth_user" data-callback="rdrUsr">
-					<input type="email" name="email" id="search_box2"  placeholder="email" value="" class="input"/>
-					<input type="password" name="password" id="search_box2"  placeholder="password" value="" class="input"/>
-					<button type="submit" class="submit">Submit</button> 
-				</form>
-			</div>
-		</div>
-		{% endif %}
-	</body>
+</div>
+<footer id="footer">
+	<div class="container-fluid">2014 © <i>ISLAND PEEPS</i> by <a href="http://studspro.com/" target="_blank">studspro.com</a></div>
+</footer>
+</div>
+{% include 'widgets/script.twig' %}
+</body>
 </html>

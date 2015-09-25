@@ -1,0 +1,154 @@
+/*!
+ * Product:        Social - Premium Responsive Admin Template
+ * Version:        2.1.3
+ * Copyright:      2015 cesarlab.com
+ * License:        http://themeforest.net/licenses
+ * Live Preview:   http://go.cesarlab.com/SocialAdminTemplate2
+ * Purchase:       http://go.cesarlab.com/PurchaseSocial2
+ */
+.timeline-1-col {
+  list-style: none;
+  padding: 20px 0 20px;
+  position: relative;
+}
+
+.timeline-1-col:before {
+  top: 0;
+  bottom: 0;
+  position: absolute;
+  content: " ";
+  width: 3px;
+  background-color: #fff;
+  right: 24px;
+  margin-right: -1.5px;
+}
+
+.timeline-1-col > li {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.timeline-1-col > li:before,
+.timeline-1-col > li:after {
+  content: " ";
+  display: table;
+}
+
+.timeline-1-col > li:after {
+  clear: both;
+}
+
+.timeline-1-col > li:before,
+.timeline-1-col > li:after {
+  content: " ";
+  display: table;
+}
+
+.timeline-1-col > li:after {
+  clear: both;
+}
+
+.timeline-1-col > li > .timeline-panel {
+  background-color: #fff;
+  margin-right: 70px;
+  border: 1px solid #d4d4d4;
+  -webkit-border-radius: 2px;
+          border-radius: 2px;
+  padding: 20px;
+  position: relative;
+  -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+          box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+}
+
+.timeline-1-col > li > .timeline-panel:before {
+  position: absolute;
+  top: 26px;
+  right: -15px;
+  display: inline-block;
+  border-top: 15px solid transparent;
+  border-left: 15px solid #ccc;
+  border-right: 0 solid #ccc;
+  border-bottom: 15px solid transparent;
+  content: " ";
+}
+
+.timeline-1-col > li > .timeline-panel:after {
+  position: absolute;
+  top: 27px;
+  right: -14px;
+  display: inline-block;
+  border-top: 14px solid transparent;
+  border-left: 14px solid #fff;
+  border-right: 0 solid #fff;
+  border-bottom: 14px solid transparent;
+  content: " ";
+}
+
+.timeline-1-col > li > .timeline-badge {
+  color: #fff;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  font-size: 1.4em;
+  text-align: center;
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  margin-right: -25px;
+  background-color: #999999;
+  z-index: 100;
+  -webkit-border-radius: 50%;
+          border-radius: 50%;
+}
+
+.timeline-1-col > li.timeline-inverted > .timeline-panel {
+  float: left;
+}
+
+.timeline-1-col > li.timeline-inverted > .timeline-panel:before {
+  border-right-width: 0;
+  border-left-width: 15px;
+  right: -15px;
+  left: auto;
+}
+
+.timeline-1-col > li.timeline-inverted > .timeline-panel:after {
+  border-right-width: 0;
+  border-left-width: 14px;
+  right: -14px;
+  left: auto;
+}
+
+.timeline-1-col .timeline-badge.primary {
+  background-color: #647aab !important;
+}
+
+.timeline-1-col .timeline-badge.success {
+  background-color: #62c462 !important;
+}
+
+.timeline-1-col .timeline-badge.warning {
+  background-color: #fbb450 !important;
+}
+
+.timeline-1-col .timeline-badge.danger {
+  background-color: #ee5f5b !important;
+}
+
+.timeline-1-col .timeline-badge.info {
+  background-color: #5bc0de !important;
+}
+
+.timeline-1-col .timeline-title {
+  margin-top: 0;
+  color: inherit;
+}
+
+.timeline-1-col .timeline-body > p,
+.timeline-1-col .timeline-body > ul {
+  margin-bottom: 0;
+}
+
+.timeline-1-col .timeline-body > p + p {
+  margin-top: 5px;
+}

@@ -1,12 +1,22 @@
-{% if minify %}
-<link rel="stylesheet" type="text/css" href="{{base_url}}static/style.min.css">
-{%else%}
-<link rel="stylesheet" type="text/css" href="{{base_url}}static/style.css">
-{%endif%}
-<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.3.0/animate.min.css" />
-<link rel="stylesheet" href="{{base_url}}static/plugin/remodal/remodal.css">
-<link rel="stylesheet" href="{{base_url}}static/plugin/remodal/remodal-default-theme.css">
-<link rel="stylesheet" href="{{base_url}}static/plugin/dropdown/dropdown.min.css">
+<link href="{{base_url}}static/adm/css/social1.core.css" rel="stylesheet">
+<link href="{{base_url}}static/adm/css/social1.admin.css" rel="stylesheet"> 
+<link href="{{base_url}}static/adm/css/glyphicons_free/glyphicons.css" rel="stylesheet">
+<link href="{{base_url}}static/adm/css/glyphicons_pro/glyphicons.css" rel="stylesheet">
+<link href="{{base_url}}static/adm/css/glyphicons_pro/glyphicons.halflings.css" rel="stylesheet">
+<link href="{{base_url}}static/adm/css/jquery-ui/social/jquery.ui.css" rel="stylesheet">
+<link id="current-theme" href="{{base_url}}static/adm/css/themes/admin/facebook.css" rel="stylesheet">
+<link href="{{base_url}}static/adm/js/plugins/jqvmap/jqvmap.css" rel="stylesheet">
+<link href="{{base_url}}static/adm/css/plugins/fullcalendar/fullcalendar.css" rel="stylesheet">
+<link href="{{base_url}}static/adm/js/plugins/pnotify/pnotify.custom.min.css" rel="stylesheet">
+<link href="{{base_url}}static/adm/css/demo.css" rel="stylesheet">
+<link href="{{base_url}}static/adm/js/plugins/jquery-simplecolorpicker/jquery.simplecolorpicker.css" rel="stylesheet">
+<link href="{{base_url}}static/adm/css/plugins/jquery.uipro/style.css" rel="stylesheet"/>
+<link href="{{base_url}}static/adm/css/font-awesome/font-awesome.css" rel="stylesheet">
+<link href="{{base_url}}static/adm/css/customstyle.css" rel="stylesheet"> -->
+<link href="{{base_url}}static/adm/css/datatable/dataTables.responsive.css" rel="stylesheet"/>	
+<link href="{{base_url}}static/adm/css/stylecustom.css" rel="stylesheet"/>
+<link id="theme" rel="stylesheet" href="{{base_url}}static/adm/css/themes/social.theme-blue.css">
+<link href="{{base_url}}static/adm/css/d.css" rel="stylesheet">
 {% if styles is iterable %}
 	{%for href in styles %}
 		<link rel="stylesheet" type="text/css" href="{{base_url}}static/{{href}}" />

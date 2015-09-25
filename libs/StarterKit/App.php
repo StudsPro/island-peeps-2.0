@@ -11,30 +11,20 @@ class App
 	public $post;
 	public $files;
 	public $get;
-	public $twig_config;
-	public $ratelimit_config;
+	public $args;
 	
-	public $aws_config;
+	public $twig_config;
 	public $smtp_config;
 
-	public $args;
+	
 	public $debug;
-	public $minify;
-	public $cache;
-	public $recaptcha;
 	public $remote_addr;
 	
-	public $slim;
-	public $db = null;
-
+	public $cache  = null;
+	public $slim   = null;
+	public $db     = null;
 	public $filter = null;
-	public $queue  = null;
-	public $detect;
-	
-	public $key_id = 'APKAJDZNXE3SUA55OPSQ';
-	public $key_file = '/usr/share/nginx/aws_key.pem';
-	public $key = '';
-	
+
 	protected function __construct($config)
 	{
 		if(!$config){
@@ -43,7 +33,7 @@ class App
 		if($config['strict']){
 			error_reporting( E_ALL | E_NOTICE | E_STRICT );
 		}
-		$this->minify = $config['minify'];
+
 		$this->debug = $config['debug'];
 		date_default_timezone_set($config['timezone']);
 		
@@ -59,7 +49,7 @@ class App
 			ini_set('session.save_handler', 'redis');
 			ini_set('session.timeout',18000);
 			// each client should remember their session id for EXACTLY 1 hour
-		session_set_cookie_params(18000);
+			session_set_cookie_params(18000);
 			ini_set('session.save_path', 'tcp://'. $config['session_args']['host'] .':'. $config['session_args']['port']);    
 		}
 		session_name($config['session_args']['name']);
@@ -72,11 +62,10 @@ class App
 		
 		//sometimes you might need to set additional args. you could allow middleware to add args here, or virtually anything else you want
 		$base_url = $config['scheme'].$_SERVER['SERVER_NAME'];
-		$this->detect =  new \Mobile_Detect;
+
 		$extra_template_args = [
 			'csrf'=>$this->csrf(),
 			'base_url'=>$base_url.'/',//root url
-			'static_url'=>$base_url.'static/', //path to static files (css,fonts,js,img,etc.)
 			'year'=>date('Y'), //its here because date timezone must be set first
 			'styles'=>'', //allow subtemplate to pass extra styles to header.twig
 			'scripts'=>'', //allow subtemplate to pass extra script to footer.twig
@@ -84,12 +73,8 @@ class App
 			'scripts_external'=>'',//remote scripts. same as above
 			'user'=>$this->is_user() ? $this->session['user'] : false,
 			'admin'=>$this->is_admin() ? $this->session['admin'] : false,
-			'detect'=>$this->detect,
 			'url'=>$this->getUrl($base_url),
 			'canonical'=>$base_url.$this->slim->request()->getResourceUri(),
-			'wowload'=>$config['wowload'],
-			'fb_app_id'=>'133764866692459',
-			'minify'=>$this->minify
 		]; 
 		
 		$this->args = array_merge($config['template_args'],$extra_template_args);
@@ -122,31 +107,18 @@ class App
 	
 	public function __before()
 	{		
-		//run rate limiter middleware
-		(\StarterKit\RateLimiter::getInstance())->run();
-		
-		
-		//if restore set we can continue program.
 		if(isset($_COOKIE['sk_restore'])){
-			
 			if(!$this->is_user()){
-			
 				if(\StarterKit\User::restore($_COOKIE['sk_restore']) === true){
 					if(!$this->is_user()){
 						$this->session['user'] = $this->args['user'] = $_SESSION['user'];
 					}
 				}
-				
 			}
-		
 		}
 		
 		if($this->is_user()){
-			
-			$this->session['user']->refresh(); 
-			// calls to refresh are cached queries; 
-			// so it will be fast on the front end, 
-			// and manually updated when changed by an admin (ex, banned, deleted, username changed)
+			$this->session['user']->refresh();
 		}
 	}
 	
@@ -212,16 +184,6 @@ class App
 		}else{
 			return false;
 		}
-	}
-	
-	public function is_mobile()
-	{
-		$m = $this->detect->isMobile();
-		$t = $this->detect->isTablet();
-		if($m || $t){
-			return true;
-		}
-		return false;
 	}
 	
 	public function get_request($url)

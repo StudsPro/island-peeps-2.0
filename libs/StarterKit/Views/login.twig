@@ -1,0 +1,28 @@
+{%spaceless%}
+{% include 'widgets/header.twig' %}
+    <div class="container">
+      <form role="form" class="form-signin form-horizontal" action="{{base_url}}admin/api/login" method="post">
+        <h2 class="form-heading text-center">Please sign in</h2>
+        <input type="text" placeholder="Username" required="" autofocus="" class="form-control" name="username">
+        <input type="password" placeholder="Password" required="" class="form-control" name="password" >
+        <div class="row">
+          <div class="col-xs-6">
+            <label class="checkbox">
+             
+            </label>
+          </div>
+          <div class="col-xs-6">
+						<input type="submit" class="btn btn-primary btn-block" value="Sign in">
+          </div>
+        </div>
+        <div class="forget-password">
+          <p class="text-center">Forgot password? <a href="{{base_url}}admin/home/forgotpassword';?>" id="link-forgot">Click here to reset</a></p>
+        </div>
+      </form>
+      <footer>{{year}} &copy; {{site_name}}</footer>
+    </div>
+    {% include 'widgets/script.twig' %}
+    <script src="{{base_url}}static/adm/layouts/login1.js"></script>
+  </body>
+</html>
+{%spaceless%}

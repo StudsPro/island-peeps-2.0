@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://ogp.me/ns/fb#" lang="en">
+<html lang="en">
 <head>
 {% include 'widgets/dns_prefetch.twig' %}
 <title>{{title}}</title>
@@ -8,4 +8,4 @@
 {% include 'widgets/style.twig' %}
 {% include 'widgets/favicon.twig' %}
 </head>
-<body>
+<body {%if admin.hide_sidebar == 1 %}class="reduced-sidebar"{%endif%}>
