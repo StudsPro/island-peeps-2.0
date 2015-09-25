@@ -1,0 +1,56 @@
+<!doctype html>
+	<html lang="en">
+	<head>
+	<title>Edit Mixtape</title>
+	<meta name="csrf" content="{{csrf}}" />
+	<link rel="stylesheet" href="{{base_url}}static/admin.css" />
+	<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.3.0/animate.min.css" />
+</head>
+
+<body>
+
+<div align="center">
+	<form method="post" action="{{base_url}}adminAPI/edit_mixtape" data-callback="editItem" class="contains-file">
+<input type="hidden" name="id" value="{{mixtape.id}}" />
+		<table border="1" cellpadding="14" cellspacing="14" id="logSignup">
+		  <tr>
+		    <td valign="top"><b>Title</b></td>
+		    <td  align="left"><input type="text" name="title" value="{{mixtape.title}}" class="inputBtn" /></td>
+	     </tr>
+			<tr>
+				<td valign="top"><b>Thumb</b></td>
+			  <td align="left">
+					<input type="file" name="uploaded_image" id="image" class="image-e" accept="image/*">
+          <img src="{{mixtape.medium|default(base_url ~ 'static/images/defultuser.png')}}" class="thumb">
+				</td>
+			</tr>
+			<tr>
+			  <td valign="top"><b>Artist</b></td>
+			  <td align="left"><input type="text" name="artist" value="{{mixtape.artist}}" class="inputBtn" /></td>
+		  </tr>
+			<tr>
+			  <td valign="top"><b>Description</b></td>
+			  <td  align="left"><textarea name="description" class="inputBtn" style="height: 100px;">{{mixtape.description}}</textarea></td>
+		  </tr>
+			<tr>
+			  <td valign="top"><b>Featured Artist (optional)</b></td>
+			  <td align="left"><input type="text" name="featuring" value="{{mixtape.featuring}}" class="inputBtn" /></td>
+		  </tr>
+			<tr>
+			  <td valign="top"><b>Youtube (optional)</b></td>
+			  <td align="left"><input type="text" name="youtube" value="{%if mixtape.youtube is not empty %}https://www.youtube.com/watch?v={{mixtape.youtube}}{%endif%}" class="inputBtn" /></td>
+		  </tr>
+			<tr>
+			  <td valign="top"><b>Buy Link (optional)</b></td>
+			  <td align="left"><input type="text" name="purchase" value="{{mixtape.purchase}}" class="inputBtn" /></td>
+		  </tr>
+			<tr>
+			  <td colspan="2" valign="top" align="left"><input type="checkbox" name="download" value="1" {% if mixtape.download == 1 %}checked{%endif%}> &nbsp; allow downloads &nbsp; <input type="checkbox" name="in_app" value="1" {%if mixtape.in_app== 1 %}checked{%endif%}> &nbsp;allow in our app </td>
+		  </tr>
+			<tr>
+				<td colspan="2" valign="top"><button type="submit" class="logSignupSubmit">Save</button></td>
+			</tr>
+		</table>
+  </form>
+</div>	
+{% include 'widgets/admin_footer.twig' %}

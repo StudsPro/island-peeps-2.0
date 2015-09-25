@@ -1,0 +1,10 @@
+{% for item in featured.mixtapes %}
+<div class="thumbs">
+	<a href="{{base_url}}m{{item.id}}/{{item.uri}}" title="stream {{item.title}}">
+		<img src="{{item.medium}}" class="thumbimage" alt="{{item.title}}">
+		<div class="titlett">
+			<h3 aria-hidden="true">{{item.artist}} &#8212; {{item.title}}</h3>
+		</div>
+	</a>
+</div>
+{% endfor %}

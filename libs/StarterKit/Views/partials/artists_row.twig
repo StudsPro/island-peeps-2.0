@@ -1,0 +1,11 @@
+{% for item in artists %}
+
+<div class="box">
+
+<div class="thumb"><a href="{{base_url}}artists/{{item.uri}}"><img src="{{item.large|default(base_url~'static/images/defultuser.png')}}" height="200" alt="Artist"></a></div>
+
+<h2><a href="{{base_url}}artists/{{item.uri}}">{{item.name}}</a></h2>
+
+</div>
+
+{% endfor %}

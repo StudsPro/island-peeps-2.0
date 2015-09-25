@@ -1,0 +1,50 @@
+<!doctype html>
+	<html lang="en">
+	<head>
+	<title>Edit Artist</title>
+	<meta name="csrf" content="{{csrf}}" />
+	<link rel="stylesheet" href="{{base_url}}static/admin.css" />
+	<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.3.0/animate.min.css" />
+</head>
+
+<body>
+
+<div align="center">
+	<form method="post" action="{{base_url}}adminAPI/edit_artist" data-callback="editItem" class="contains-file">
+		<input type="hidden" name="id" value="{{artist.id}}" />
+		<input type="hidden" name="pending" value="0" />
+		<table border="1" cellpadding="14" cellspacing="14" id="logSignup">
+		  <tr>
+		    <td valign="top"><b>Artist Name</b></td>
+		    <td  align="left"><input type="text" name="name" value="{{artist.name}}" class="inputBtn" /></td>
+	     </tr>
+			<tr>
+				<td valign="top"><b>Thumb</b></td>
+			  <td align="left">
+					<input type="file" name="uploaded_image" id="image" class="image-e" accept="image/*">
+          <img src="{{artist.small|default(base_url ~ 'static/images/defultuser.png')}}" class="thumb">
+				</td>
+			</tr>
+			<tr>
+			  <td valign="top"><b>Facebook</b></td>
+			  <td align="left"><input type="text" name="facebook" value="{{artist.facebook}}" class="inputBtn" /></td>
+		  </tr>
+			<tr>
+			  <td valign="top"><b>Twitter</b></td>
+			  <td align="left"><input type="text" name="twitter" value="{{artist.twitter}}" class="inputBtn" /></td>
+		  </tr>
+			<tr>
+			  <td valign="top"><b>Youtube</b></td>
+			  <td align="left"><input type="text" name="youtube" value="{{artist.youtube}}" class="inputBtn" /></td>
+		  </tr>
+			<tr>
+			  <td valign="top"><b>Description</b></td>
+			  <td  align="left"><textarea name="description" class="inputBtn" style="height: 100px;">{{artist.description}}</textarea></td>
+		  </tr>
+			<tr>
+				<td colspan="2" valign="top"><button type="submit" class="logSignupSubmit">Save</button></td>
+			</tr>
+		</table>
+  </form>
+</div>	
+{% include 'widgets/admin_footer.twig' %}

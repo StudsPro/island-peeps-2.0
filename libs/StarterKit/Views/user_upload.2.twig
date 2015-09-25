@@ -1,0 +1,69 @@
+{%spaceless%}
+{% include 'widgets/nav.twig' %}
+<div class="uploadPage">
+	<div class="shadow"></div>
+	<div class="min-container">
+		<div class="overlay">
+			<div class="wrapit">
+				<div class="sk-wave">
+					<div class="sk-rect sk-rect1"></div>
+					<div class="sk-rect sk-rect2"></div>
+					<div class="sk-rect sk-rect3"></div>
+					<div class="sk-rect sk-rect4"></div>
+					<div class="sk-rect sk-rect5"></div>
+				</div>
+				<div class="msg">Please wait while the tracks are loaded</div>
+			</div>
+		</div>
+		<div style="width:100%">
+			<div class="sel_type">
+				<label class="b">
+					<span>Upload to Wixtape</span>
+				</label>
+				<div class="c first">
+					<input type="radio" name="up_type" value="#single_up" id="sel_single" checked>
+					<label for="sel_single" >Single</label>
+				</div>
+				<div class="c last">
+					<input type="radio" name="up_type" value="#mixtape_up" id="sel_mixtape">
+					<label for="sel_mixtape">Mixtape</label>
+				</div>
+			</div>
+			<div class="top">
+				<form id="single_up" method="post" action="{{base_url}}api/create_single" class="contains-file" data-callback="createSingle">
+					<div class="uploadCover">Upload Track <input type="file" name="audio_file" accept=".mp3,audio/mpeg3" class="form-control input-file required" data-error="You must select a track" /></div>
+					<input type="text" name="artist" placeholder="artist*" value="" class="input inputartist required" data-error="You must provide an Artist name" />
+					<input type="text" name="title" placeholder="track*" value="" class="input inputtrack required" data-error="You must provide a track name" />
+					<input type="text" name="featuring" placeholder="feat. artist" value="" class="input inputfeat" />
+					<input type="text" name="released" placeholder="release date*" value="" class="input date inputrelease required" data-error="You must select a release date" />
+					<input type="hidden" name="timestamp" />
+					<textarea name="description" rows="4" placeholder="description" cols="80" class="input" style="background: url(https://cdn0.iconfinder.com/data/icons/layout-and-location/24/Untitled-2-18-20.png) #fff 14px 20px no-repeat;" /></textarea>
+					<div class="uploadCover img-preview">Album Cover <input type="file" name="image_file" accept="image/*" class="form-control input-file required" data-error="You must provide a cover art image"><img src="" style="display:none;" /></div>
+					<input type="text" name="youtube" placeholder="Youtube" value="" class="input inputyoutube" />
+					<input type="text" name="purchase"  placeholder="Buy Link" value="" class="input inputbuy" />
+					<div class="check"><input type="checkbox" name="download" value="1" checked />&nbsp;allow downloads&nbsp;<input type="checkbox" name="in_app" value="1" checked /> &nbsp;allow in our app&nbsp;</div>
+					<button type="submit" class="submit">Submit</button>
+				</form>
+				<form id="mixtape_up" action="{{base_url}}api/create_mixtape" style="display:none">
+					<input type="hidden" name="processed" value="0" />
+					<div class="uploadCover">Upload Tracks <input type="file" name="audio_file" accept=".mp3,audio/mpeg3" class="form-control input-file required" multiple data-error="You must select atleast 3 tracks" /></div>
+					<div class="ol-alert" style="display:none"><span>Tip: You can drag and drop to reorder your tracks.</span></div>
+					<ol class="tracklist" style="display:none"></ol>
+					<input type="text" name="artist" placeholder="artist*" value="" class="input inputartist required" data-error="You must select a track" />
+					<input type="text" name="title" placeholder="mixtape*" value="" class="input inputtrack required" data-error="You must provide an Artist name" />
+					<input type="text" name="featuring" placeholder="feat. artist" value="" class="input inputfeat" />
+					<input type="text" name="released" placeholder="release date*" value="" class="input date inputrelease required" data-error="You must select a release date" />
+					<input type="hidden" name="timestamp" />
+					<textarea name="description"  rows="4" placeholder="description" cols="80" class="input" style="background: url(https://cdn0.iconfinder.com/data/icons/layout-and-location/24/Untitled-2-18-20.png) #fff 14px 20px no-repeat;" /></textarea>
+					<div class="uploadCover img-preview">Album Cover <input type="file" name="image_file" accept="image/*" class="form-control input-file required" data-error="You must provide a cover art image"><img src="" style="display:none;" /></div>
+					<input type="text" name="youtube" placeholder="Youtube" value="" class="input inputyoutube" />
+					<input type="text" name="purchase"  placeholder="Buy Link" value="" class="input inputbuy" />
+					<div class="check"><input type="checkbox" name="download" value="1" checked />&nbsp;allow downloads&nbsp;<input type="checkbox" name="in_app" value="1" checked /> &nbsp;allow in our app&nbsp;</div>
+					<button type="submit" class="submit">Submit</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{% include 'widgets/footer.twig' %}
+{% endspaceless %}

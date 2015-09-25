@@ -1,0 +1,33 @@
+{% include 'mobile/widgets/header.twig' %}
+<div class="WIDE">
+	{% if results.artist is not empty %}
+	<div class="artistFound">artist found for  	&#8220;{{query}}&#8221;<br>
+		<a href="{{base_url}}artists/{{results.artist.name}}" title="{{results.artist.name}}">
+			<img src="{{results.artist.small|default(base_url~'static/images/defultuser.png')}}" class="thumb" />
+		</a>
+	</div>
+	{%else%}
+	no artists matching keyword: <span>&ldquo;{{query}}&rdquo;</span>
+	{%endif%}
+</div>
+{% set singles = results.singles %}
+<div id="search-singles-2" class="WIDE paginate-search-mobile {% if singles|length < 6 %}disabled{%endif%}" data-type="search-singles" data-page="1" data-min="6" data-query="{{query}}">
+	<div class="bigTitleingles">{{results.artist.name}} singles</div>
+	{% include 'mobile/partials/single_row.twig' %}
+	<a class="toggle viewall">view more</a>
+	<div class="load-container load8" data-paginater-loading>
+		<div class="loader">Loading...</div>
+	</div>	
+	<div class="trigger-load"></div>	
+</div>
+{% set mixtapes = results.mixtapes %}
+<div id="search-mixtapes-2" class="WIDE paginate-search-mobile {% if mixtapes|length < 6 %}disabled{%endif%}" data-type="search-singles" data-page="1" data-min="6" data-query="{{query}}">
+	<div class="bigTitleingles">{{results.artist.name}} mixtapes</div>
+	{% include 'mobile/partials/mixtape_row.twig' %}
+	<a class="toggle viewall">view more</a>
+	<div class="load-container load8" data-paginater-loading>
+		<div class="loader">Loading...</div>
+	</div>	
+	<div class="trigger-load"></div>	
+</div>
+{% include 'mobile/widgets/footer.twig' %}

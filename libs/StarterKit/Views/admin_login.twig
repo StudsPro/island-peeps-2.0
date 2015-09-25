@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>admin</title>
+		<meta name="charset" content="UTF-8" />
+		<meta name="csrf" content="{{csrf}}" />
+		<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.3.0/animate.min.css" />
+		<link rel="stylesheet" href="{{base_url}}static/admin.css" />
+	</head>
+	<body>
+		<div id="login">
+			<form method="post" action="{{base_url}}api/auth_admin" data-callback="rdrAdm">
+				<span class="logo">wixtape<i>admin</i></span>
+				<input name="email" type="email" placeholder="username" />
+				<input name="password" type="password" placeholder="password"/>
+				<button type="submit" class="submit">Submit</button>
+			</form>
+		</div>
+		<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+		<script src="{{base_url}}static/plugin/noty/noty.min.js"></script>
+		<script src="{{base_url}}static/script.js"></script>
+		<script>
+		function rdrAdm(data)
+		{
+			if(data.error == 0){
+				window.location = window.location.origin+'/admin';
+			}else{
+				sk.alert(data.message,'error');
+			}
+		}
+		</script>
+	</body>
+</html>

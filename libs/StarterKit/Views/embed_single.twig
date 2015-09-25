@@ -1,0 +1,44 @@
+{%spaceless%}
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="csrf" content="{{csrf}}" />
+		<meta name="robots" content="no index" />
+		<title>WixTape Embeddable Player</title>
+		<link rel="stylesheet" type="text/css" href="{{base_url}}static/style.css">
+		<link rel="stylesheet" type="text/css" href="{{base_url}}static/player/css/PlayerStyle.css">
+		<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+		<link rel="icon" href="{{base_url}}static/icons/favicon.ico" />
+	</head>
+	<body class="embed single">
+		<div class="embedtop">
+			<img src="{{single.small}}" class="thumb" style="height:34px;">
+			<div class="title"><a href="{{base_url}}single/{{single.uri}}/{{single.id}}">{{single.title}} - {{single.artist_name}}</a></div>
+			{% if single.download == 1 %}
+			<div class="download"><a href="{{base_url}}download?type=single&id={{single.id}}" rel="nofollow" target="_blank">&#9660; download</a></div>
+			{% endif %}
+		</div>
+		<div class="responsive-wrapper responsive-audio">
+			<audio class="progression-single progression-skin progression-fancy progression-audio-player" controls preload>
+				<source type="audio/mpeg" src="http://audio1.mixtape.s3-website-us-east-1.amazonaws.com/{{single.audio_file}}" />
+			</audio>
+		</div> 
+		<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+		<script src="{{base_url}}static/player/build/mediaelement-and-player.min.js"></script>
+		<script src="{{base_url}}static/player.js"></script>
+		<script type="text/javascript">
+			var sk = {
+				alert: function(){
+				},
+				csrf: function(){
+					return $('meta[name="csrf"]').attr('content');
+				}
+			};
+			var t_type= 'single';
+			var t_id  = '{{single.id}}';
+		</script>
+	</body>
+</html>
+{%endspaceless%}

@@ -1,0 +1,6 @@
+{% for item in comments %}
+<div class="box">
+	<img src="{{item.user_avatar|default(base_url ~ 'static/images/defultuser.png')}}" width="50" class="thumb"> 
+	<div class="text">{{item.comment}}</div>
+</div>
+{% endfor %}

@@ -1,0 +1,10 @@
+{% for item in featured.singles %}
+<div class="thumbs">
+	<a href="{{base_url}}s{{item.id}}/{{item.uri}}" title="stream {{item.title}}">
+		<img src="{{item.medium}}" class="thumbimage" alt="{{item.title}}">
+		<div class="titlett">
+			<h3 aria-hidden="true">{{item.artist}} &#8212; {{item.title}}{% if item.featuring is not empty %}ft. {{item.featuring}}{%endif%}</h3>
+		</div>
+	</a>
+</div>
+{% endfor %}

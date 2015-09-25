@@ -1,0 +1,29 @@
+{%spaceless%}
+{% if minify %}
+<link rel="stylesheet" type="text/css" href="{{base_url}}static/mobile.min.css">
+{% else %}
+<link rel="stylesheet" type="text/css" href="{{base_url}}static/mobile.css">
+{% endif %}
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.3.0/animate.min.css" />
+{% if styles is iterable %}
+	{%for href in styles %}
+		<link rel="stylesheet" type="text/css" href="{{base_url}}static/{{href}}" />
+	{% endfor %}
+{% else %}
+	{% if styles is empty %}
+		{{styles}}
+	{% else %}
+		<link rel="stylesheet" type="text/css" href="{{base_url}}static/{{styles}}" />
+	{% endif %}
+{% endif %}
+{% if styles_external is iterable %}
+	{%for href in styles_external %}
+		<link rel="stylesheet" type="text/css" href="{{href}}" />
+	{% endfor %}
+{% else %}
+	{% if styles_external is empty %}
+		{{styles_external}}
+	{% else %}
+		<link rel="stylesheet" type="text/css" href="{{styles_external}}" />
+	{% endif %}
+{% endif %}{%endspaceless%}

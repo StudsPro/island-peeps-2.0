@@ -1,0 +1,50 @@
+{% include 'widgets/header.twig' %}
+<div id="TOP">
+	<div class="left">
+		<div class="link">
+			<a href="{{base_url}}singles">singles</a>
+		</div>
+		<div class="link">
+			<a href="{{base_url}}mixtapes">mixtapes</a>
+		</div>
+		<div class="link">
+			<a href="{{base_url}}artists">artists</a>
+		</div>
+	</div>  	
+	<div class="right">
+		{% if user == false %}
+		<a class="signup" href="{{base_url}}create_account">signup</a>
+		<a class="login" data-remodal-target="login" href="#">login</a>
+		<div class="upload" style="margin-right:22px">
+			<a href="{{base_url}}user/upload">upload</a>
+		</div>
+		{% else %}
+		<div class="login">
+			<a href="#" data-jq-dropdown="#jq-dropdown-1" data-horizontal-offset="8">{{user.user_name}} &#9662;</a>
+		</div>
+		<div id="jq-dropdown-1" class="jq-dropdown jq-dropdown-tip jq-dropdown-anchor-right">
+			<ul class="jq-dropdown-menu">
+				<li><a href="{{base_url}}user/profile">Profile</a></li>
+				<li class="jq-dropdown-divider"></li>
+				<li><a href="{{base_url}}user/profile#favorite-singles">Favorite Singles</a></li>
+				<li class="jq-dropdown-divider"></li>
+				<li><a href="{{base_url}}user/profile#favorite-mixtapes">Favorite Mixtapes</a></li>
+				<li class="jq-dropdown-divider"></li>
+				<li><a href="{{base_url}}user/logout">Logout</a></li>
+			</ul>
+		</div>
+		<img src="{{user.small|default(base_url ~ 'static/images/defultuser.png')}}" class="avatar" alt="">
+		<div class="upload">
+			<a href="{{base_url}}user/upload">upload</a>
+		</div>
+		{%endif%}
+		<div class="search">
+			<input type="text" name="q" class="input" value="{{query|default('search')}}" style="float: left;" id="searchfo" />
+			<input type="image" class="submit" id="searchgo"/>
+		</div>
+	</div>  
+	<div class="logo">
+		<a href="{{base_url}}">wixtape</a>
+	</div>
+</div>
+<div class="bottom_line"></div>

@@ -1,0 +1,37 @@
+{%spaceless%}
+{% include 'widgets/nav.twig' %}
+<div class="topFeatured"><a href="{{banners.desktop_url}}"><img src="{{banners.desktop}}" alt="name"></a></div>
+<div id="featured-singles" class="FRONT paginate-featured disabled" data-min="16" data-type="featured-singles" data-page="1">
+	<div class="biggerTitle">
+		<div class="top"><span>featured</span> singles</div>
+	</div>
+	{% if featured.singles is not empty %}
+	{% include 'partials/featured_singles.twig' %}
+	{%else%}
+	<div class="nothing">
+		<a href="{{base_url}}user/upload?etab=single">Upload Single</a>
+	</div>
+	{%endif%}
+	<div class="biggerTitle">
+		<div class="viewall toggle">view all</div>
+	</div>
+	<div class="trigger-load"></div>
+</div>
+<div id="featured-mixtapes" class="FRONT secondmargin paginate-featured disabled" data-min="16" data-type="featured-mixtapes" data-page="1">
+	<div class="biggerTitle">
+		<div class="top"><span>featured</span> mixtapes</div>
+	</div>
+	{% if featured.mixtapes is not empty %}
+	{% include 'partials/featured_mixtapes.twig' %}
+	{%else%}
+	<div class="nothing">
+		<a href="{{base_url}}user/upload?etab=mixtape">Upload Mixtape</a>
+	</div>
+	{%endif%}
+	<div class="biggerTitle">
+		<div class="viewall toggle" >view all</div>
+	</div>	
+	<div class="trigger-load"></div>
+</div>
+{% include 'widgets/footer.twig' %}
+{%endspaceless%}

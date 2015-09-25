@@ -1,0 +1,32 @@
+{% include 'mobile/widgets/header.twig' %}
+<div class="userBox">
+
+<h1>{{user.user_name}}</h1>
+
+<div class="thumb"><img src="{{user.large|default(base_url ~ 'static/images/defultuser.png')}}" alt="{{user.user_name}}'s profile picture"></div>
+<div class="navigation">
+	<a href="{{base_url}}user/change_avatar">change avatar</a> <span>|</span> <a href="{{base_url}}user/change_password">password</a> 
+</div>
+</div>
+
+<div id="user-singles-2" class="WIDE paginate-user-mobile disabled" data-type="user-singles" data-page="1" data-min="12">
+	<div class="bigTitleingles">favorite singles</div>
+	{% include 'mobile/partials/single_row.twig' %}
+	<a class="toggle viewall">view more</a>
+	<div class="load-container load8" data-paginater-loading>
+		<div class="loader">Loading...</div>
+	</div>	
+	<div class="trigger-load"></div>	
+</div>
+
+<div id="user-mixtapes-2" class="WIDE paginate-user-mobile disabled" data-type="user-mixtapes" data-page="1" data-min="12">
+	<div class="bigTitleingles">favorite mixtapes</div>
+	{% include 'mobile/partials/mixtape_row.twig' %}
+	<a class="toggle viewall">view more</a>
+	<div class="load-container load8" data-paginater-loading>
+		<div class="loader">Loading...</div>
+	</div>	
+	<div class="trigger-load"></div>	
+</div>
+
+{% include 'mobile/widgets/footer.twig' %}

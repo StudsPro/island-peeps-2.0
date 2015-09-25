@@ -1,0 +1,71 @@
+{% spaceless %}
+{% include 'widgets/nav.twig' %}
+<div class="userBox">
+	<h1>{{user.user_name}}</h1>
+	<div class="thumb">
+		<img src="{{user.large|default(base_url ~ 'static/images/defultuser.png')}}" alt="{{user.user_name}}'s profile picture">
+	</div>
+	<div class="navigation">
+		<a href="{{base_url}}user/change_avatar">change avatar</a> <span>|</span> <a href="{{base_url}}user/change_password">password</a> 
+	</div>
+</div>
+<div id="favorite-singles" class="paginate-user disabled" data-type="user-singles" data-page="1" data-min="12">
+	<table border="1"  align="center">
+		<thead>
+			<tr>
+				<th class="Ttitle">title</th>
+				<th class="Tthumb">thumb</th>
+				<th class="Tfavorite">favorite</th>
+				<th class="Trate">rate</th>
+				<th class="Tdownload">download</th>
+			</tr>
+			<tr>
+				<th colspan="5" class="Tlower">favorite singles <a href="#" class="right toggle">view all</a></th>
+			</tr>	
+		</thead>
+		<tbody data-paginater-target>
+		{% if singles|length > 0 %}
+		{% include 'partials/single_row.twig' %}
+		{% else %}
+		<tr>
+			<td colspan="5"><div class="none">none was found</div></td>
+		</tr>
+		{% endif %}
+		</tbody>
+	</table>
+	<div class="load-container load8" data-paginater-loading>
+		<div class="loader">Loading...</div>
+	</div>	
+	<div class="trigger-load"></div>
+</div>
+<div id="favorite-mixtapes" class="paginate-user disabled" data-type="user-mixtapes" data-page="1" data-min="12" disabled>
+	<table border="1"  align="center">
+		<thead>
+			<tr>
+				<th class="Ttitle">title</th>
+				<th class="Tthumb">thumb</th>
+				<th class="Tfavorite">favorite</th>
+				<th class="Trate">rate</th>
+				<th class="Tdownload">download</th>
+			</tr>
+			<tr>
+				<th colspan="5" class="Tlower">favorite mixtapes <a href="#" class="right toggle">view all</a></th>
+			</tr>	
+		</thead>
+		<tbody data-paginater-target>
+		{% if mixtapes|length > 0 %}
+		{% include 'partials/mixtape_row.twig' %}
+		{% else %}
+		<tr>
+			<td colspan="5"><div class="none">none was found</div></td>
+		</tr>
+		{% endif %}
+		</tbody>
+	</table>
+	<div class="load-container load8" data-paginater-loading>
+		<div class="loader">Loading...</div>
+	</div>	
+	<div class="trigger-load"></div>
+</div>
+{% include 'widgets/footer.twig' %}
+{% endspaceless %}

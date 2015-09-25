@@ -1,0 +1,21 @@
+<div class="related">
+	{% for item in related %}
+	<div class="thumbs">
+		{% if item.is_single is defined %}
+		
+		{% set tempvar = 's' %}
+		
+		{% else %}
+		
+		{% set tempvar = 'm' %}
+		
+		{% endif %}
+		<a href="{{base_url}}{{tempvar}}{{item.id}}/{{item.uri}}">
+			<img src="{{item.medium}}" style="width:140px; height: 140px;">
+			<div class="title">
+			<h4 aria-hidden="true">{{item.title}}<br>{{item.artist}}</h4>
+			</div>
+		</a>
+	</div>
+	{% endfor %}
+</div>

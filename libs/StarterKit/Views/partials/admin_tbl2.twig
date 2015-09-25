@@ -1,0 +1,27 @@
+{% if artists|length > 0 %}
+{% for item in artists %}
+{% set random = random() %}
+<tr data-id="{{item.id}}">
+	<td>
+		<p class="checkbox radius td-check">
+			<input type="checkbox" id="item_{{random}}" value="1" data-id="{{item.id}}" data-type="artist" />
+			<label for="item_{{random}}"></label>
+		</p>
+	</td>
+	<td><a href="{{base_url}}artists/{{item.uri}}"><img src="{{item.small|default(base_url ~ 'static/images/defultuser.png')}}" class="thumb"></a></td>
+	<td><a href="{{base_url}}admin/edit_artist?id={{item.id}}" class="pop-edit">edit</a></td>
+	<td>{{item.name}}</td>
+	<td>
+		{% if item.deleted == 0 %}
+		<a class="trash-it" href="#" data-id="{{item.id}}" data-type="artist"><img src="{{base_url}}static/images/trash.png"></a>
+		{%else%}
+		<a class="delete-it" href="#" data-id="{{item.id}}" data-type="artist"><img src="{{base_url}}static/images/trash.png"></a>
+		{% endif %}
+	</td>
+</tr>
+{% endfor %}
+{% else %}
+<tr>
+	<td colspan="100%" style="padding: 1.5rem 0;"><em style="font-size: 1.5rem">Nothing to see here. (No Records Available)</em></td>
+</tr>
+{% endif %}

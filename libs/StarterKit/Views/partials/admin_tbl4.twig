@@ -1,0 +1,33 @@
+{% if users|length > 0 %}
+{% for item in users %}
+{% set random = random() %}
+<tr data-id="{{item.id}}">
+	<td>
+		<p class="checkbox radius td-check">
+			<input type="checkbox" id="item_{{random}}" value="1" data-id="{{item.id}}" data-type="user" />
+			<label for="item_{{random}}"></label>
+		</p>
+	</td>
+	<td><img src="{{item.large|default(base_url~'static/images/defultuser.png')}}" class="thumb"></td>
+	<td>{{item.user_name}}</td>
+	<td>
+		{% if item.banned==0 %}
+		<a href="#" class="ban-usr" data-id="{{item.id}}"><img src="{{base_url}}static/images/ban.png"></a>
+		{% else %}
+		<a href="#" class="unban-usr" data-id="{{item.id}}">unban</a>
+		{% endif %}
+	</td>
+	<td>
+		{% if item.deleted==0%}
+		<a class="trash-it" href="#" data-id="{{item.id}}" data-type="user"><img src="{{base_url}}static/images/trash.png"></a>
+		{% else %}
+		<a class="delete-it" href="#" data-id="{{item.id}}" data-type="user"><img src="{{base_url}}static/images/trash.png"></a>
+		{% endif %}
+	</td>
+</tr>
+{% endfor %}
+{% else %}
+<tr>
+	<td colspan="9" style="padding: 1.5rem 0;"><em style="font-size: 1.5rem">Nothing to see here. (No Records Available)</em></td>
+</tr>
+{% endif %}

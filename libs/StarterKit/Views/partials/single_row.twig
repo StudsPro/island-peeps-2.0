@@ -1,0 +1,45 @@
+{% for item in singles %}
+<tr>
+	<td class="song">
+		<a href="{{base_url}}s{{item.id}}/{{item.uri}}" class="link">{{item.title}} &#8212; {{item.artist_name}}{% if item.featuring is not empty%} Ft. {%for item2 in item.featuring%}{% if loop.index0 < 2 %} {{item2.name}} {%endif%}{%endfor%}{%endif%}{%if item.featuring|length > 2 %} and {{item.featuring|length - 2}} others{% endif %}</a>
+		<div class="info">
+			<span data-livestamp="{{item.added}}"></span>&nbsp;<span>{{item.likes|default('0')}} upvotes</span>&nbsp;<span>{{item.views|default('0')}} views</span>
+		</div>
+	</td>
+	<td>
+		<a href="{{base_url}}s{{item.id}}/{{item.uri}}">
+			<img src="{{item.medium}}" class="smallThumb" alt="">
+		</a>
+	</td>
+	{% if user == false %}
+	<td>
+		<a href="#" class="favorite"></a>
+	</td>
+	<td>
+		<a href="#" class="rating"></a>
+	</td>
+	{% else %}
+	<td>
+		{% if user.hasFave('single',(item.id)) %}
+		<a href="#" class="favorite favoriteActive" data-type="single" data-id="{{item.id}}"></a>
+		{% else %}
+		<a href="#" class="favorite" data-type="single" data-id="{{item.id}}"></a>
+		{% endif %}
+	</td>
+	<td>
+		{% if user.hasLike('single',(item.id)) %}
+		<a href="#" class="rating ratingActive" data-type="single" data-id="{{item.id}}"></a>
+		{% else %}
+		<a href="#" class="rating" data-type="single" data-id="{{item.id}}"></a>
+		{% endif %}
+	</td>
+	{% endif %}
+	<td>
+		{% if item.download == 0 %}
+		<a href="#" class="NOdownload"></a>
+		{% else %}
+		<a href="{{base_url}}download?type=single&id={{item.id}}" target="_blank" class="download"></a> 
+		{% endif %}
+	</td>
+</tr>
+{% endfor %}

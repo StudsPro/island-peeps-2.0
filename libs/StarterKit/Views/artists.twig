@@ -1,0 +1,25 @@
+{%spaceless%}
+{% include 'widgets/nav.twig' %}
+<div id="artistFRONT" class="paginate-artists {% if artists|length < 6 %}disabled{%endif%}" data-type="artists" data-page="1" data-min="6">
+
+<h1>Hip Hop Artists</h1>
+
+{% for item in artists %}
+
+<div class="box">
+
+<div class="thumb"><a href="{{base_url}}artists/{{item.uri}}"><img src="{{item.large|default(base_url~'static/images/defultuser.png')}}" height="200" alt="Artist"></a></div>
+
+<h2><a href="{{base_url}}artists/{{item.uri}}">{{item.name}}</a></h2>
+
+</div>
+
+{% endfor %}
+
+</div>
+<div class="load-container load8" data-paginater-loading>
+	<div class="loader">Loading...</div>
+</div>	
+<div class="trigger-load"></div>
+{% include 'widgets/footer.twig' %}
+{%endspaceless%}
