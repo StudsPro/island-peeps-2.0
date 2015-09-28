@@ -11,6 +11,7 @@ class ViewController
 		$this->app = \StarterKit\App::getInstance();
 		$template_path = ($template_path) ? $template_path : $this->app->twig_config['template_path'];
 		$this->twig = new \Twig_Environment( new \Twig_Loader_Filesystem( $template_path ) );
+		$this->twig->addExtension(new \Twig_Extension_StringLoader());
 	}
 	
 	public function __call($method,$args = null)
@@ -20,13 +21,11 @@ class ViewController
 	
 	public function render($template,$args)
 	{
-		$args = $this->precheck($args);
 		echo $this->twig->loadTemplate($template)->render($args);
 	}
 	
 	public function cachedRender($template,$args,$expiry=0)
 	{
-		$args = $this->precheck($args);
 		$cache = $this->app->cache;
 		$key = 'twig_'.md5($template);
 		$html = $cache->get($key);
@@ -45,53 +44,5 @@ class ViewController
 			return false;
 		}
 		return $html;
-	}
-	
-	private function precheck($args)
-	{
-		$app = $this->app;
-		if($app->minify){
-			if(!empty($args['scripts'])){
-				if(is_array($args['scripts'])){
-					foreach($args['scripts'] as &$script)
-					{
-						if(strpos($script,'/') !== true){
-							$x = explode('.',$script);
-							if(count($x) === 2){
-								$script = $x[0].'.min.'.$x[1];
-							}
-						}
-					}
-				}else{
-					if(strpos($args['scripts'],'/') !== true){
-						$x = explode('.',$args['scripts']);
-						if(count($x) === 2){
-							$args['scripts'] = $x[0].'.min.'.$x[1];	
-						}	
-					}
-				}
-			}
-			if(!empty($args['styles'])){
-				if(is_array($args['styles'])){
-					foreach($args['styles'] as &$script)
-					{
-						if(strpos($script,'/') !== true){
-							$x = explode('.',$script);
-							if(count($x) === 2){
-								$script = $x[0].'.min.'.$x[1];
-							}
-						}
-					}
-				}else{
-					if(strpos($args['styles'],'/') !== true){
-						$x = explode('.',$args['styles']);
-						if(count($x) === 2){
-							$args['styles'] = $x[0].'.min.'.$x[1];	
-						}	
-					}
-				}
-			}
-		}
-		return $args;
 	}
 }

@@ -38,7 +38,7 @@ class Admin extends ViewController
 		}
 	}
 	
-	public function index()
+	public function dashboard()
 	{
 		$app  = $this->app;
 		$args = $app->args;
@@ -62,15 +62,73 @@ class Admin extends ViewController
 		
 		$args['scripts_external'] = '//maps.google.com/maps/api/js?sensor=true';
 
-		parent::render('admin_index.twig',$args);
+		parent::render('dashboard.twig',$args);
 	}
 	
+	public function masterlist()
+	{
+		$app  = $this->app;
+		$args = $app->args;
+		$get  = $app->get;
+		$db   = $app->db;
+		
+		
+		$args['scripts'] = [
+			'tooltip/tooltip.js'
+		];
+		
+		$args['styles'] = [
+			'tooltip/tooltip.css'
+		];
+		
+		//$args['']
+
+		parent::render('masterlist.twig',$args);
+	}
+	
+	public function create()
+	{
+		$app  = $this->app;
+		$args = $app->args;
+		$get  = $app->get;
+		$db   = $app->db;
+		$t = isset($get['t']) ? $get['t'] : false;
+		switch($t){
+			case 'masterlist':
+				$template = 'crud_masterlist.twig';
+				$args['action'] = 'Create Profile';
+			break;
+			case false:
+			default:
+				$app->pass();
+			break;
+		}
+		parent::render($template,$args);
+	}
+	
+	public function countries()
+	{
+		
+	}
+	
+	public function categories()
+	{
+		
+	}
+	
+	public function affiliates()
+	{
+		
+	}
 	
 	public function login()
 	{
 		$app  = $this->app;
 		$args = $app->args;
-		parent::render('admin_login.twig',$args);
+		if($app->is_admin()){
+			$app->redirect('/admin/dashboard');
+		}
+		parent::render('login.twig',$args);
 	}
 	
 	public function logout()

@@ -12,6 +12,7 @@ class App
 	public $files;
 	public $get;
 	public $args;
+	public $public_html;
 	
 	public $twig_config;
 	public $smtp_config;
@@ -33,6 +34,8 @@ class App
 		if($config['strict']){
 			error_reporting( E_ALL | E_NOTICE | E_STRICT );
 		}
+		
+		$this->public_html = $config['public'];
 
 		$this->debug = $config['debug'];
 		date_default_timezone_set($config['timezone']);
@@ -56,9 +59,6 @@ class App
 		session_start();
 		$this->session = &$_SESSION;
 		$this->remote_addr = $this->slim->request->getIp();
-		$this->ratelimit_config = $config['ratelimit_args'];
-
-		
 		
 		//sometimes you might need to set additional args. you could allow middleware to add args here, or virtually anything else you want
 		$base_url = $config['scheme'].$_SERVER['SERVER_NAME'];

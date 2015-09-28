@@ -1,9 +1,22 @@
 {%spaceless%}
-{% include 'widgets/header.twig' %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>{{title}}</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="{{base_url}}static/adm/css/social.core.css" rel="stylesheet">
+		<link href="{{base_url}}static/adm/css/social.admin.css" rel="stylesheet">
+		<link href="{{base_url}}static/adm/css/font-awesome/font-awesome.css" rel="stylesheet">
+		<link id="current-theme" href="{{base_url}}static/adm/css/themes/admin/facebook.css" rel="stylesheet">
+		<link href="{{base_url}}static/adm/css/layouts/login1.css" rel="stylesheet">
+		<link href="{{base_url}}static/shared.css" rel="stylesheet">
+	</head>
+	<body>
     <div class="container">
-      <form role="form" class="form-signin form-horizontal" action="{{base_url}}admin/api/login" method="post">
+      <form role="form" class="form-signin form-horizontal" action="{{base_url}}admin/api/auth" method="post" data-callback="login">
         <h2 class="form-heading text-center">Please sign in</h2>
-        <input type="text" placeholder="Username" required="" autofocus="" class="form-control" name="username">
+        <input type="email" placeholder="Email Address" required="" autofocus="" class="form-control" name="email">
         <input type="password" placeholder="Password" required="" class="form-control" name="password" >
         <div class="row">
           <div class="col-xs-6">
@@ -12,17 +25,26 @@
             </label>
           </div>
           <div class="col-xs-6">
-						<input type="submit" class="btn btn-primary btn-block" value="Sign in">
+						<button type="submit" class="btn btn-primary btn-block">Sign In</button>
           </div>
         </div>
         <div class="forget-password">
-          <p class="text-center">Forgot password? <a href="{{base_url}}admin/home/forgotpassword';?>" id="link-forgot">Click here to reset</a></p>
+          <p class="text-center">Forgot password? <a href="{{base_url}}admin/home/forgotpassword" id="link-forgot">Click here to reset</a></p>
         </div>
       </form>
       <footer>{{year}} &copy; {{site_name}}</footer>
     </div>
+		<script>
+		function login(data)
+		{
+			if(data.error == 0){
+				window.location = window.location.origin + '/admin/dashboard';
+			}else{
+				sk.alert(data.message);
+			}
+		}
+		</script>
     {% include 'widgets/script.twig' %}
-    <script src="{{base_url}}static/adm/layouts/login1.js"></script>
   </body>
 </html>
-{%spaceless%}
+{%endspaceless%}

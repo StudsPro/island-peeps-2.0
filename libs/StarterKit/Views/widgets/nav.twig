@@ -4,19 +4,19 @@
 		<div class="social-sidebar-content">
 			<div class="scroll Sidebarheight">
 				<div class="user">
-					<img src="{{admin.avatar}}" width="50" height="46">
-					<span>{{admin.user_name}}</span>
+					<img src="{{admin.avatar|default(base_url ~ 'static/adm/img/def_usr.jpg')}}" style="height:46px !important;width:50px !Important;">
+					<span>{{admin.name}}</span>
 					<i class="trigger-user-settings fa fa-user" data-toggle="dropdown" aria-expanded="false"></i>
 					<div class="user-settings">
 						<h3 class="user-settings-title">Settings shortcuts</h3>
 						<div class="user-settings-content">
-							<a href="http://islandpeeps.com/new_admin_panel/admin/profile/myprofile">
+							<a href="{{base_url}}admin/profile/myprofile">
 							<div class="icon"><i class="fa fa-user"></i>
 							</div>
 							<div class="title">My Profile</div>
 							<div class="content">View your profile</div>
 							</a>
-							<a href="http://islandpeeps.com/new_admin_panel/admin/imailboxs">
+							<a href="{{base_url}}admin/imailboxs">
 								<div class="icon"><i class="fa fa-envelope-o"></i>
 								</div>
 								<div class="title">View Messages</div>
@@ -24,7 +24,7 @@
 								Click here to go in message board
 								</div>
 							</a>
-							<a href="http://islandpeeps.com/new_admin_panel/admin/dashboard/task">
+							<a href="{{base_url}}admin/dashboard/task">
 								<div class="icon"><i class="fa fa-tasks"></i>
 								</div>
 								<div class="title">View Tasks</div>
@@ -41,119 +41,7 @@
 				<div class="menu">
 					<div class="menu-content" id="sort_items">
 						<ul id="social-sidebar-menu sidebar">
-							<li id="dashboard" class="active">
-								<a href="http://islandpeeps.com/new_admin_panel/admin/dashboard">
-									<img alt="Dashboard" src="http://islandpeeps.com/new_admin_panel/images/icons/stuttgart-icon-pack/32x32/home.png">
-									<span>Dashboard</span>
-									<span class="badge"></span>
-								</a>
-							</li>
-							<li id="masterlist" class="">
-								<a href="http://islandpeeps.com/new_admin_panel/admin/masterlist">
-									<img alt="Master List" src="http://islandpeeps.com/new_admin_panel/images/icons/stuttgart-icon-pack/32x32/sitemap.png">
-									<span>Master List</span>
-									<span class="badge"></span>
-								</a>
-							</li>
-							<li id="catmasterlist" class="">
-								<a href="http://islandpeeps.com/new_admin_panel/admin/catmasterlist">
-									<img alt="Master List" src="http://islandpeeps.com/new_admin_panel/images/icons/stuttgart-icon-pack/32x32/sitemap.png">
-									<span>Master List Category</span>
-									<span class="badge"></span>
-								</a>
-							</li>
-							<li id="mliststats" class="">
-								<a href="http://islandpeeps.com/new_admin_panel/admin/mliststats">
-									<img alt="Master List stats" src="http://islandpeeps.com/new_admin_panel/images/icons/stuttgart-icon-pack/32x32/banner.png">
-									<span>Master List stats</span>
-									<span class="badge"></span>
-								</a>
-							</li>
-							<li id="polls" class="">
-								<a href="#">
-									<img alt="Manage Polls" src="http://islandpeeps.com/new_admin_panel/images/icons/stuttgart-icon-pack/32x32/polls.png">
-									<span>Manage Polls</span>
-									<span class="badge"></span>
-								</a>
-							</li>
-							<li id="suggestion" class="">
-								<a href="#suggestion-ui" data-toggle="collapse" data-parent="#social-sidebar-menu">
-										<img alt="Suggestions" src="http://islandpeeps.com/new_admin_panel/images/icons/stuttgart-icon-pack/32x32/archives.png">
-										<span>Suggestions</span><i class="fa arrow"></i></a><ul id="suggestion-ui" class="collapse">	<li id=""><a href="http://islandpeeps.com/new_admin_panel/admin/suggestion">Suggestion</a></li>	<li id=""><a href="http://islandpeeps.com/new_admin_panel/admin/suggestion/suggestemail">Email</a></li></ul></li><li id="about" class=""><a href="http://islandpeeps.com/new_admin_panel/admin/pages">
-										<img alt="about" src="http://islandpeeps.com/new_admin_panel/images/icons/stuttgart-icon-pack/32x32/about.png">
-										<span>About</span>
-										<span class="badge"></span>
-								</a>
-							</li>
-							<li id="banner" class="">
-								<a href="http://islandpeeps.com/new_admin_panel/admin/banner">
-									<img alt="Manage Banners" src="http://islandpeeps.com/new_admin_panel/images/icons/stuttgart-icon-pack/32x32/banner.png">
-									<span>Manage Banners</span>
-									<span class="badge"></span>
-								</a>
-							</li>
-							<li id="memlist" class="">
-								<a href="http://islandpeeps.com/new_admin_panel/admin/memelist">
-									<img alt="Me Me Page" src="http://islandpeeps.com/new_admin_panel/images/icons/stuttgart-icon-pack/32x32/premium.png">
-									<span>Me Me Page</span>
-									<span class="badge"></span>
-								</a>
-							</li>
-							<li id="affilate" class="">
-								<a href="#affiliate-ui" data-toggle="collapse" data-parent="#social-sidebar-menu">
-									<img alt="Affiliates" src="http://islandpeeps.com/new_admin_panel/images/icons/stuttgart-icon-pack/32x32/customers.png">
-									<span>Affiliates</span>
-									<span class="badge"></span>
-									<i class="fa arrow"></i>
-								</a>
-								<ul id="affiliate-ui" class="collapse">
-									<li id="">
-										<a href="http://islandpeeps.com/new_admin_panel/admin/affiliate">Affiliate</a>
-									</li>
-									<li id="">
-										<a href="http://islandpeeps.com/new_admin_panel/admin/affilateright">Permissions</a>
-									</li>
-								</ul>
-							</li>
-							<li id="regions" class="">
-								<a href="http://islandpeeps.com/new_admin_panel/admin/regions">
-									<img alt="Country Profiles" src="http://islandpeeps.com/new_admin_panel/images/icons/stuttgart-icon-pack/32x32/country.png">
-									<span>Country Profiles</span>
-									<span class="badge"></span>
-								</a>
-							</li>
-							<li id="peopleprofile" class="">
-								<a href="http://islandpeeps.com/new_admin_panel/admin/peopleprofile">
-									<img alt="People Profiles" src="http://islandpeeps.com/new_admin_panel/images/icons/stuttgart-icon-pack/32x32/people.png">
-									<span>People Profiles</span>
-									<span class="badge"></span>
-								</a>
-							</li>
-							<li id="ads" class="">
-								<a href="http://islandpeeps.com/new_admin_panel/admin/ads">
-									<img alt="Manage Ads" src="http://islandpeeps.com/new_admin_panel/images/icons/stuttgart-icon-pack/32x32/ads.png">
-									<span>Manage Ads</span>
-									<span class="badge"></span>
-								</a>
-							</li>
-							<li id="emailtemplate" class="">
-								<a href="http://islandpeeps.com/new_admin_panel/admin/emailtemplate">
-									<img alt="Mail Templates" src="http://islandpeeps.com/new_admin_panel/images/icons/stuttgart-icon-pack/32x32/sitemap.png">
-									<span>Mail Templates</span>
-								</a>
-							</li>
-							<li id="calendar" class="">
-								<a href="http://islandpeeps.com/new_admin_panel/admin/calendar">
-									<img alt="Calendar" src="http://islandpeeps.com/new_admin_panel/images/icons/stuttgart-icon-pack/32x32/calendar.png">
-									<span>Calendar</span><span class="badge">2</span>
-								</a>
-							</li>
-							<li id="stats" class="">
-								<a href="http://islandpeeps.com/new_admin_panel/admin/stats">
-									<img alt="Stats" src="http://islandpeeps.com/new_admin_panel/images/icons/stuttgart-icon-pack/32x32/statistics.png">
-									<span>Stats</span>
-								</a>
-							</li>      
+							{{ include(template_from_string(admin.getMenu()|raw))}}
 						</ul>
 					</div>
 				</div>
@@ -163,8 +51,12 @@
 	<header>
 		<nav role="navigation" class="navbar navbar-fixed-top navbar-super social-navbar top_bar">
 			<div class="navbar-header">
-				<a href="http://islandpeeps.com/new_admin_panel/admin/" title="Social" class="navbar-brand">
-					<img height="80" src="http://islandpeeps.com/new_admin_panel/admin_theem/img/islandlogo.png" alt="Island Peeps" class="light">
+				<a href="{{base_url}}admin/" title="Social" class="navbar-brand">
+					{% if admin.sidebar == 0 %}
+					<img height="80" id="logo" src="{{base_url}}static/adm/img/islandlogo.png" alt="Island Peeps" class="light">
+					{% else %}
+					<img height="80" id="logo" src="{{base_url}}static/adm/img/island_peeps_beach.png" alt="Island Peeps" class="light small-logo">
+					{% endif %}
 				</a> 
 			</div>
 			<div class="navbar-toggle">
@@ -179,7 +71,7 @@
 				<ul class="nav navbar-nav top_panel_second">
 				<li class="dropdown navbar-super-fw">
 					<a href="#" class="dropdown-toggle top_panel_username"> 
-						Welcome <strong{{admin.user_name}}</strong> !</a>
+						Welcome <strong>{{admin.name}}</strong> !</a>
 					</li>
 				</ul>
 				<ul class=" navbar-nav marquee top_panel_third hidden-xs hidden-sm ">
@@ -196,33 +88,33 @@
 					</a>
 					<ul class="dropdown-menu">
 					<li class="visible_moblie">
-						<a href="http://islandpeeps.com/new_admin_panel/admin/profile/myprofile">
-							Welcome <strong>{{admin.user_name}}</strong> !
+						<a href="{{base_url}}admin/profile/myprofile">
+							Welcome <strong>{{admin.name}}</strong> !
 						</a>
 					</li>
 					<li>
-						<a href="http://islandpeeps.com/new_admin_panel/admin/profile/myprofile">
+						<a href="{{base_url}}admin/profile/myprofile">
 							<i class="fa fa-user"></i>&nbsp;My Profile
 						</a>
 					</li>
 					<li>
-						<a href="http://islandpeeps.com/new_admin_panel/admin/profile/socialfeeds">
+						<a href="{{base_url}}admin/profile/socialfeeds">
 							<i class="fa fa-comment"></i>&nbsp;Social Feeds
 						</a>
 					</li>
 					<li>
-						<a href="http://islandpeeps.com/new_admin_panel/admin/profile/sitesettings">
+						<a href="{{base_url}}admin/profile/sitesettings">
 							<i class="fa fa-cogs"></i>&nbsp;Settings
 						</a>
 					</li>
 					<li>
-						<a href="http://islandpeeps.com/new_admin_panel/admin/home/logout">
+						<a href="{{base_url}}admin/home/logout">
 							<i class="fa fa-sign-out"></i>&nbsp;Log Out
 						</a>
 					</li>
 					<li class="divider"></li>
 					<li>
-						<a href="http://islandpeeps.com/new_admin_panel/admin/profile/sitehelp">
+						<a href="{{base_url}}admin/profile/sitehelp">
 							<i class="fa fa-info"></i>&nbsp;Help
 						</a>
 					</li>
@@ -238,7 +130,7 @@
 					<ul class="dropdown-menu">
 						<li class=" nav-notifications-header header">Sidebar</li>
 						<li class="nav-notifications-body">
-							<label class="checkbox setting_checkbox"><input type="checkbox" value="option1"  id="sidebar-autohide"/>Auto Hide</label>
+							<label class="checkbox setting_checkbox"><input type="checkbox" value="" name="sidebar" {%if admin.sidebar == 1 %}checked{%endif%}>Auto Hide</label>
 						</li>
 						<li class="nav-notifications-body">
 							<label class="checkbox setting_checkbox"><input type="checkbox" checked='checked' value="option2" id="sidebar-dividers"/>Dividers</label>
@@ -267,34 +159,38 @@
 							</select>
 							<span class="simplecolorpicker inline">
 								<span tabindex="0" role="button" data-color="#f2f2f2" style="cursor:pointer" class="white_theme_button themechange"  id="white" title="White" class="selected">
-								&nbsp;&nbsp;&nbsp;&nbsp;</span>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								</span>
 								<span tabindex="0" role="button" data-color="#3b5998" style="cursor:pointer" class="blue_theme_button themechange" title="Blue" id="blue">
-								&nbsp;&nbsp;&nbsp;&nbsp;</span>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								</span>
 								<span tabindex="0" role="button" data-color="#51a351" style="cursor:pointer" class="green_theme_button themechange" title="Green" id="green">
-								&nbsp;&nbsp;&nbsp;&nbsp;</span>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								</span>
 								<span tabindex="0" role="button" data-color="#f89406" style="cursor:pointer" class="orange_theme_button themechange" title="Orange" id="orange">
-								&nbsp;&nbsp;&nbsp;&nbsp;</span>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								</span>
 							</span>
 						</li>
 					</ul>
 				</li>
 				<li class="dropdown nav-notifications">
-					<a href="http://islandpeeps.com/new_admin_panel/admin/dashboard/cloud"   >
+					<a href="{{base_url}}admin/dashboard/cloud"   >
 						<span class="badge"></span><i class="fa fa-cloud"></i>
 					</a>
 				</li>
 				<li class="dropdown nav-notifications anotifilog profile">
-					<a href="http://islandpeeps.com/new_admin_panel/admin/setting/calendar" data-toggle="dropdown" data-hover="dropdown" data-delay="0" class="dropdown-toggle">
+					<a href="{{base_url}}admin/setting/calendar" data-toggle="dropdown" data-hover="dropdown" data-delay="0" class="dropdown-toggle">
 						<span class="badge">15</span><i class="fa fa-warning"></i>
 					</a>
 					<ul class="dropdown-menu">
 						<li class="nav-notifications-header">
-							<a tabindex="-1" href="http://islandpeeps.com/new_admin_panel/admin/setting/calendar">
+							<a tabindex="-1" href="{{base_url}}admin/setting/calendar">
 								You have <strong>1</strong> new notifications
 							</a>
 						</li>
 						<li class="nav-notification-body  text-info">
-							<a href="http://islandpeeps.com/new_admin_panel/admin/peopleprofile/edit/215">
+							<a href="{{base_url}}admin/peopleprofile/edit/215">
 								<i class="fa fa-user"></i>
 								Ace Hood profile Ready to Publish
 							</a>
@@ -313,7 +209,7 @@
 							</a>
 						</li>
 						<li class="nav-notification-body alert-success text-success">
-							<a href="http://islandpeeps.com/new_admin_panel/admin/dashboard/givetask">
+							<a href="{{base_url}}admin/dashboard/givetask">
 							<i class="fa fa-user"></i>
 							Task (Add Birthdays f...)  <small class="pull-right ">Completed</small>	
 							</a>

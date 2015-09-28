@@ -7,16 +7,16 @@ $app->get('/',function() use($app){
 //v1 of the api
 $app->group('/admin',function() use($app){
 	
-	$app->get('/:page',function($page){
-		(new \StarterKit\Routes\Admin)->{$page}();
+	$app->get('/',function() use($app){
+		$app->redirect('/admin/dashboard');
 	});
 	
-	$app->get('/edit/:thing/:id',function($thing,$id){
-		(new \StarterKit\Routes\Admin)->edit($thing,$id);
+	$app->get('/:fn',function($fn){
+		(new \StarterKit\Routes\Admin)->run($fn);
 	});
 	
 	$app->map('/api/:method',function($method){
-		(new \StarterKit\Routes\API)->__try($method);
+		(new \StarterKit\Routes\AdminAPI)->__try($method);
 	})->via('GET','POST');
 	
 });

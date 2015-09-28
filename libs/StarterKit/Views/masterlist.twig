@@ -1,0 +1,99 @@
+{% include 'widgets/nav.twig' %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<h3 class="page-title">Modify/Listing Profiles</h3>
+			<ul class="breadcrumb breadcrumb-arrows breadcrumb-default">
+				<li><a href="{{base_url}}admin"><i class="fa fa-home fa-lg"></i></a></li>
+				<li><a href="#">Masterlist</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<div class="col-lg-2" style="padding:0">
+						<div class="btn-group master-btn" style="width:25%; display: inline-block;box-sizing: border-box;margin:0">
+							<button data-toggle="dropdown" class="btn dropdown-toggle btn-primary" style="width: 100%;height: 34px;margin: 0px !important;" ><i class="fa fa-cog"></i></button>
+							<ul class="dropdown-menu pull-left">
+								<!--
+								<li><a href="javascript:void(0)">Print</a></li> 
+								-->
+								<li><a href="javascript:void(0);" onclick="downloadpdf();">Save as PDF</a></li>
+								<!--
+								<li class="divider"></li>
+								<li><a href="javascript:void(0)">Export to Excel</a></li>
+								-->
+							</ul>
+						</div>
+						<select name="sort" class="form-control input-md select-onload" data-selected="{{sort|default('invalid')}}" style="float: right;width:75%; display: inline-block;box-sizing: border-box;margin:0;">
+							<option value="invalid">Sort By</option>
+							<option value="ABC">ABC Order</option>
+							<option value="Available">Available</option>
+							<option value="Pending">Pending</option>
+							<option value="Ready">Ready</option>
+							<option value="Used">Used</option>
+						</select>				 
+					</div>
+					<div class="col-lg-2">
+						<a href="{{base_url}}admin/create?t=masterlist" class="btn btn-primary hidden-xs btn-block">
+							<span class="fa fa-pencil"></span>Add Profile
+						</a>
+					</div>
+					<div class="col-lg-2">
+						<a href="{{base_url}}admin/create?t=bulk" class="btn btn-info hidden-xs btn-block">
+							<span class="fa fa-pencil"></span>Bulk Add
+						</a>  
+					</div>
+					<div class="col-lg-2">
+						<a href="{{base_url}}admin/create?t=category" class="btn btn-success hidden-xs btn-block">
+							<span class="fa fa-pencil"></span>New Category
+						</a>
+					</div>
+					<div class="col-lg-4" style="padding:0">
+						<div class="btn-group pull-right">
+							<span class="btn btn-success">0 People Profile</span>
+							<span class="btn btn-danger">0 Meme</span>
+							<span class="btn btn-info">0 Fun Facts</span>
+						</div>
+					</div>  
+					<div class="clearfix"></div>
+				</div>
+				<div class="panel-body">
+					<table id="newtable"  class="table table-striped table-bordered dataTable no-footer dt-responsive" cellspacing="0" width="100%">
+						<thead>
+							<tr>						
+								<th width="10%" data-type="numeric" data-sort-initial="true">S.No</th>
+								<th width="15%">Profile Title</th>
+								<th width="10%">User Kind</th>
+								<th width="20%">Region</th>
+								<th width="10%">Affilate</th>
+								<th width="5%">Status</th>  
+								<th width="10%" data-hide="phone" data-sort-initial="false">Edit</th>
+								<th data-hide="phone" width="10%">
+									<input type="checkbox" onclick="$('input[name*=\'selected\']').attr('checked', this.checked);" />Select
+								</th>
+								<th width="5%">Preview</th>  
+							</tr>
+						</thead>
+						<tbody>
+							{% include 'partials/masterlist_row.twig' %}
+						</tbody>
+					</table>
+					<div class="clearfix">&nbsp;</div>   
+					<div class="panel-footer text-right">
+						<input type="submit"  class="btn btn-success" value="AVAILABLE" name="btn_avaible">
+						<input type="submit"  class="btn btn-warning" value="PENDING" name="btn_pending">
+						<input type="submit" class="btn btn-ready" value="READY" name="btn_ready">
+						<input type="submit" class="btn btn-danger" value="PUBLISH" name="btn_publish">	
+						<input type="submit"  value="Delete" id="deleteall" onclick="document.frmListing.status.value='-1';" class="btn btn-danger" name="btn_delete">			
+					</div>	
+				</div>
+			</div>		
+		</div>
+	</div>
+</div>
+{% include 'widgets/footer.twig' %}

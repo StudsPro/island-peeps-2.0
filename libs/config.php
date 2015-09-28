@@ -44,7 +44,7 @@ $config = [
         'title'=>'IslandPeeps',
         'meta_description'=>'',
         'keywords'=>'',
-        'sitename'=>'IslandPeeps',
+        'site_name'=>'IslandPeeps',
     ],
 	
 	'cache_args' => [

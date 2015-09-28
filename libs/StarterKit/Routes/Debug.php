@@ -58,22 +58,6 @@ class Debug extends ViewController
 		$this->dump($this->app->db->tableExists($table));
 	}
 	
-	public function user_likes()
-	{
-		$db = $this->app->db;
-		$this->pretty(
-			$db->getUserLikes($this->app->session['user']->id)
-		);
-	}
-	
-	public function user_haslike()
-	{
-		$db = $this->app->db;
-		$this->dump(
-			$this->app->session['user']->hasLike('single',2)
-		);
-	}
-	
 	public function session_metrics()
 	{
 		$sess = serialize($this->app->session['user']);

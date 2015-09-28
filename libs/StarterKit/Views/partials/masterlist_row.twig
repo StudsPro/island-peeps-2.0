@@ -1,0 +1,80 @@
+{% if masterlist|length > 0 %}
+{% for item in masterlist %}
+<!--
+$colrk = array('People profile'=>'success','Fun facts'=>'info','Me Me' => 'danger');
+$stas = array('1'=>'AVAILABLE','2'=>'PENDING','3' => 'READY','4'=> 'USED');
+-->
+<tr>
+	<td>
+		{{loop.index}}
+	</td>
+	<td>
+		<a  href="#demo{{loop.index}}_tip" onMouseOver="tooltip.pop(this, '#demo{{loop.index}}_tip')">
+			{{item.title}}
+		</a>
+		<div style="display:none;">
+			<div id="demo{{loop.index}}_tip">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+							<img src="{{item.image|default(base_url ~ 'static/adm/img/no-img.png')}}" width="100%">
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <h4>{{item.title}}</h4> </div>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b> Region :       </b>{{item.region}}</div>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b> Category :     </b>{{item.category}}</div>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b> Date of Birth : </b> {{item.dob}} </div> 
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b>You Tube : </b> </div>
+						<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9" >{{item.youtube}}</div>
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b>Profile Details : </b> </div>
+						<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9" >{{item.description|nl2br}}</div>
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b>Tags :</b> {{item.tags}}</div>
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b>Facebook :</b> {{item.fb_profile}}</div>
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b>Facebook fun page  :</b> {{item.fb_fanpage}}</div>
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b>Twitter  : </b> {{item.tw_profile}}></div> 
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b>Twitter fun page  : </b> {{item.tw_fanpage}}</div>
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b>Status  :</b> {{item.status_text}}</div>
+					</div>
+				</div>  
+			</div>
+		</div> 
+	</td>
+	<td>
+		<button class="label btn-mini btn-{{item.category_class}}" type="button">{{item.category}}</button>
+	</td>
+	<td>
+		{{item.region}}
+	</td>
+	<td>
+		{{item.affiliate}}
+	</td>
+	<td>
+		<button class="btn btn-mini btn-{{item.status_class}}" type="button">
+			{{item.status_text}}
+		</button>
+	</td>
+	<td>
+		<a href="{{base_url}}admin/edit/?t=masterlist&id={{item.id}}">
+			<img src="{{base_url}}static/adm/img/editicon.gif">
+		</a> 
+	</td>
+	<td>
+		<input type="checkbox" name="selected[]" value="{{item.id}}">  	
+	</td> 
+	<td>
+		<a class="btn btn-default btn-mini" href="{{base_url}}preview?t=masterlist&id={{item.id}}">
+		Preview 
+		</a> 
+	</td>
+</tr>
+{% endfor %}
+{% else %}
+<tr>
+	<td width="100%" colspan="100%">
+		<h3 style="text-align:center;">No Records Available.</h3>
+	</td>
+</tr>
+{% endif %}
