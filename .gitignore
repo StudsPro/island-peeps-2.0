@@ -1,3 +1,5 @@
 _old/*
 html/mysql/*
 libs/vendor/*
+libs/vendor
+html/mysql
