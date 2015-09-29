@@ -190,6 +190,17 @@ class DB
 	//end debug funcs
 
 	//application specific functions
+	public function catByName($name)
+	{
+		return \R::getCell('SELECT id FROM category WHERE name=:name',[':name'=>$name]);
+	}
+	
+	public function getMasterList()
+	{
+		$data = \R::getAll('SELECT a.*,b.name AS affiliate,c.name AS type FROM masterlist a INNER JOIN admin b ON a.admin_id=b.id JOIN type c ON a.type_id=c.id');
+		
+		return $data;
+	}
 
 	//end app specific funcs
 	

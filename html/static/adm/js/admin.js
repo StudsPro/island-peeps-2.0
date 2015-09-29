@@ -466,6 +466,8 @@ $(function(){
 	
 	if($('#sort_items ul > li > a[href="'+window.location.href+'"]').length > 0){
 		$('#sort_items ul > li > a[href="'+window.location.href+'"]').parent('li').addClass('active');
+	}else{
+		$('#sort_items ul > li > a[href*="'+location.pathname+'"]').parent('li').addClass('active');
 	}
 	
 
@@ -482,6 +484,27 @@ $(function(){
 		  height: ($(window).height() - 96),
 	});
 	
+	$(document).on('mouseover','.poptips',function(e){
+		tooltip.pop(this, $(this).attr('href'));
+	});
 	
+	$(window).load(function() {
+	  imgErrors();
+	});
 	
+	function imgErrors()
+	{
+		$('.img.catch-e').each(function() {
+			if (!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0) {
+			  // image was broken, replace with your new image
+			  this.src = window.location.origin+'/static/adm/img/no-img.png';
+			}
+			});
+			$('.flag.catch-e').each(function() {
+			if (!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0) {
+			  // image was broken, replace with your new image
+			  this.src = window.location.origin+'/static/adm/img/no-flag.gif';
+			}
+		});
+	}
 });

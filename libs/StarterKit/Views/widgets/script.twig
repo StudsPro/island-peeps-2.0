@@ -20,13 +20,13 @@
 {% endif %}
 {% if scripts is iterable %}
 	{%for src in scripts %}
-		<script type="text/javascript" src="{{base_url}}static/adm/js/{{src}}"></script>
+		<script type="text/javascript" src="{{base_url}}static/adm/{{src}}"></script>
 	{% endfor %}
 {% else %}
 	{% if scripts is empty %}
 		{{scripts}}
 	{% else %}
-		<script type="text/javascript" src="{{base_url}}static/adm/js/{{scripts}}"></script>
+		<script type="text/javascript" src="{{base_url}}static/adm/{{scripts}}"></script>
 	{% endif %}
 {% endif %}
 {% if scripts_inline is defined %}

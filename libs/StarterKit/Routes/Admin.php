@@ -23,7 +23,7 @@ class Admin extends ViewController
 			
 				if(\StarterKit\Admin::restore($_COOKIE['__restore']) === true){
 					if(!$this->app->is_admin()){
-						$this->session['admin'] = $this->args['admin'] = $_SESSION['admin'];
+						$this->app->session['admin'] = $this->app->args['admin'] = $_SESSION['admin'];
 					}
 				}
 				
@@ -74,19 +74,19 @@ class Admin extends ViewController
 		
 		
 		$args['scripts'] = [
-			'tooltip/tooltip.js',
-			'plugins/datatables/jquery.dataTables.min.js',
-			'masterlist.js'
+			'js/tooltip/tooltip.js',
+			'js/plugins/datatables/jquery.dataTables.min.js',
+			'js/masterlist.js'
 		];
 		
 		$args['styles'] = [
-			'adm/tooltip/tooltip.css',
-			'adm/plugins/datatables/css/jquery.dataTables.css'
+			'js/tooltip/tooltip.css',
+			'js/plugins/datatables/css/jquery.dataTables.css'
 		];
 		
 		$args['categories'] = $db->getAll('SELECT * FROM category');
 		
-		//$args['']
+		$args['masterlist'] = $db->getMasterList();
 
 		parent::render('masterlist.twig',$args);
 	}
@@ -103,6 +103,10 @@ class Admin extends ViewController
 				$template = 'crud_masterlist.twig';
 				$args['action'] = 'Create Profile';
 			break;
+			case 'country':
+				$template = 'crud_country.twig';
+				$args['action'] = 'Create Country';
+			break;
 			case false:
 			default:
 				$app->pass();
@@ -113,7 +117,26 @@ class Admin extends ViewController
 	
 	public function countries()
 	{
+		$app  = $this->app;
+		$args = $app->args;
+		$get  = $app->get;
+		$db   = $app->db;
 		
+		
+		$args['scripts'] = [
+			'js/tooltip/tooltip.js',
+			'js/plugins/datatables/jquery.dataTables.min.js',
+			'js/masterlist.js'
+		];
+		
+		$args['styles'] = [
+			'js/tooltip/tooltip.css',
+			'js/plugins/datatables/css/jquery.dataTables.css'
+		];
+		
+		$args['countries'] = $db->getAll('SELECT * FROM country WHERE 1');
+
+		parent::render('countries.twig',$args);
 	}
 	
 	public function categories()

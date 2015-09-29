@@ -4,12 +4,30 @@ require '../cron_db_connection.php';
 
 require '../vendor/autoload.php';
 
-$key_map = [
+$filter = \RedBeanFVM\RedBeanFVM::getInstance();
 
+$key_map = [
+	'region_id'=>'regions',
+	'title'=>'title',
+	'dob'=>'birthday',
+	'category'=>'category_id',
+	'description'=>'description',
+	'video'=>'youtube',
+	'image'=>'img',
+	'tags'=>'tags',
+	'facebook'=>'fb_profile',
+	'facebookfanpage'=>'fb_fanpage',
+	'twitter'=>'tw_profile',
+	'twitterfanpage'=>'tw_fanpage',
+	'twittershortdesc'=>'tw_description',
+	'status'=>'status',
+	'admin_id'=>'admin_id',
+	'shortdesc'=>'short_desc',
+	'slug'=>'uri'
 ];
 
 
-$tbl_profiles = array(
+$c = array(
   array(
 	'id' => '1',
 	'region_id' => '2',
@@ -1381,3 +1399,49 @@ Ariza is of Dominican and Turks & Caicos Islands descent through his grandfather
   array('id' => '1042','region_id' => '9','title' => 'Mash Mout 2','dob' => '0000-00-00','kind' => 'Me Me','category' => 'Actors','description' => '','video' => '','image' => 'peopleprofile-1042.jpg','tags' => 'humor','facebook' => '','twitter' => '','facebookfanpage' => '','twitterfanpage' => '','instagram' => '','status' => '4','admin_id' => '1','conform' => '0','modifydate' => '0000-00-00','createdate' => '2015-05-29 05:56:24','postdate' => '2015-05-29 05:56:24','rejectreason' => '','shortdesc' => '','twittershortdesc' => '','slug' => 'mash-mout-2'),
   array('id' => '1043','region_id' => '10','title' => 'Coretta Scott King','dob' => '1927-04-27','kind' => 'Fun facts','category' => 'Authors','description' => 'Coretta Scott Kingwas an American author, activist, and civil rights leader. Coretta Scott King helped lead the African-American Civil Rights Movement in the 1960s. King was an active advocate for African-American equality. King met Martin Luther King, Jr. while in college and their participation escalated until they became central to the movement. In her early life Coretta was an accomplished singer and often incorporated music into her civil rights work.','video' => '','image' => 'peopleprofile-1043.jpg','tags' => 'Author','facebook' => '','twitter' => '','facebookfanpage' => '','twitterfanpage' => '','instagram' => '','status' => '4','admin_id' => '1','conform' => '0','modifydate' => '0000-00-00','createdate' => '2015-05-30 05:49:18','postdate' => '2015-05-30 05:49:18','rejectreason' => '','shortdesc' => '','twittershortdesc' => '','slug' => 'coretta-scott-king')
 );
+
+$data = [];
+
+foreach($c as $row)
+{
+	$tmp = [];
+	foreach($key_map as $old => $new)
+	{
+		$tmp[$new] = $row[$old];
+	}
+	$data[] = $tmp;
+}
+
+//print_r($data);
+
+$tmp = array_keys($data[0]);
+$optional = [];
+foreach($tmp as $k)
+{
+	$optional[$k] = 'min';
+}
+
+$optional['status'] = 'cast_int';
+$optional['admin_id'] = 'cast_int';
+
+foreach($data as $row)
+{
+	$t = $db->model('masterlist');
+	$filter->generate_model($t,[],$optional,$row);
+	$t->created = time();
+	$t->admin_id = rand(1,2);
+	$t->uri = strtolower(url_safe($t->title));
+	$t->type_id = 1;
+	$t->category_id = $db->catByName($t->category_id);
+	$db->store($t);
+}
+
+function url_safe($title)
+{
+	$title = preg_replace('/[^A-Za-z 0-9]/','',$title);
+	$title = preg_replace('/[\t\n\r\0\x0B]/', '', $title);
+	$title = preg_replace('/([\s])\1+/', ' ', $title);
+	$title = trim($title);
+	$title = str_replace(' ','-',$title);
+	return $title;
+}

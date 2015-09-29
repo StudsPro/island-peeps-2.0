@@ -42,7 +42,6 @@ class App
 		
 		$this->slim  = new \Slim\Slim( $config['slim_args'] );
 		$this->twig_config = $config['twig_args'];
-		$this->aws_config  = $config['aws_args'];
 		$this->smtp_config      = $config['smtp_args'];
 		$this->files   = &$_FILES;
 		$this->get     = $this->slim->request()->get();

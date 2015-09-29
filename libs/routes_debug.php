@@ -2,8 +2,8 @@
 
 $app->group('/debug',function() use($app){
 	
-	$app->get('/:fn',function($fn){
+	$app->map('/:fn',function($fn){
 		(new \StarterKit\Routes\Debug)->{$fn}();
-	});
+	})->via('GET','POST');
 	
 });
