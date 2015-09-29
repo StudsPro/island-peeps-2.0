@@ -96,10 +96,10 @@ class AdminAPI
 						throw new \exception('formatting error');
 					}
 					$tmp = array_map('intval',explode(',',$v));
-					if(count($tmp) !== 16){
+					if(count($tmp) !== 15){
 						throw new \exception('number of elements does not match specification.');
 					}
-					$all = range(0,15);
+					$all = range(0,14);
 					if(sort($all) !== sort($tmp)){
 						throw new \exception(json_encode([$all,$tmp]));
 					}

@@ -96,7 +96,7 @@ class Admin
 		$db = (\StarterKit\App::getInstance())->db;
 		$t = $db->model('admin',$this->id);
 		$self = get_object_vars($this);
-		unset($self['id']);
+		unset($self['id'],$self['menu']);
 		foreach($self as $k=>$v){
 			$t->{$k} = $v;
 		}
@@ -140,16 +140,7 @@ class Admin
 			',
 			'
 			<li data-order="2" class="">
-				<a href="{{base_url}}admin/catmasterlist">
-					<img alt="Master List" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/sitemap.png">
-					<span>Master List Category</span>
-					<span class="badge"></span>
-				</a>
-			</li>
-			',
-			'
-			<li data-order="3" class="">
-				<a href="{{base_url}}admin/mliststats">
+				<a href="{{base_url}}admin/stats">
 					<img alt="Master List stats" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/banner.png">
 					<span>Master List stats</span>
 					<span class="badge"></span>
@@ -157,8 +148,8 @@ class Admin
 			</li>
 			',
 			'
-			<li data-order="4" class="">
-				<a href="#">
+			<li data-order="3" class="">
+				<a href="{{base_url}}admin/polls">
 					<img alt="Manage Polls" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/polls.png">
 					<span>Manage Polls</span>
 					<span class="badge"></span>
@@ -166,7 +157,7 @@ class Admin
 			</li>
 			',
 			'
-			<li data-order="5" class="">
+			<li data-order="4" class="">
 				<a href="#suggestion-ui" data-toggle="collapse" data-parent="#social-sidebar-menu">
 					<img alt="Suggestions" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/archives.png">
 					<span>Suggestions</span><i class="fa arrow"></i>
@@ -177,8 +168,8 @@ class Admin
 				</ul>
 			</li>
 			',
-			'<li data-order="6" class="">
-				<a href="{{base_url}}admin/pages">
+			'<li data-order="5" class="">
+				<a href="{{base_url}}admin/about">
 					<img alt="about" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/about.png">
 					<span>About</span>
 					<span class="badge"></span>
@@ -186,8 +177,8 @@ class Admin
 			</li>
 			',
 			'
-			<li data-order="7" class="">
-				<a href="{{base_url}}admin/banner">
+			<li data-order="6" class="">
+				<a href="{{base_url}}admin/banners">
 					<img alt="Manage Banners" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/banner.png">
 					<span>Manage Banners</span>
 					<span class="badge"></span>
@@ -195,8 +186,8 @@ class Admin
 			</li>
 			',
 			'
-			<li data-order="8" class="">
-				<a href="{{base_url}}admin/memelist">
+			<li data-order="7" class="">
+				<a href="{{base_url}}admin/masterlist?type_id=2">
 					<img alt="Me Me Page" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/premium.png">
 					<span>Me Me Page</span>
 					<span class="badge"></span>
@@ -204,7 +195,7 @@ class Admin
 			</li>
 			',
 			'
-			<li data-order="9" class="">
+			<li data-order="8" class="">
 				<a href="#affiliate-ui" data-toggle="collapse" data-parent="#social-sidebar-menu">
 					<img alt="Affiliates" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/customers.png">
 					<span>Affiliates</span>
@@ -213,17 +204,17 @@ class Admin
 				</a>
 				<ul id="affiliate-ui" class="collapse">
 					<li id="">
-						<a href="{{base_url}}admin/affiliate">Affiliate</a>
+						<a href="{{base_url}}admin/affiliates">Affiliate</a>
 					</li>
 					<li id="">
-						<a href="{{base_url}}admin/affilateright">Permissions</a>
+						<a href="{{base_url}}admin/permissions">Permissions</a>
 					</li>
 				</ul>
 			</li>
 			',
 			'
-			<li data-order="10" class="">
-				<a href="{{base_url}}admin/regions">
+			<li data-order="9" class="">
+				<a href="{{base_url}}admin/countries">
 					<img alt="Country Profiles" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/country.png">
 					<span>Country Profiles</span>
 					<span class="badge"></span>
@@ -231,8 +222,8 @@ class Admin
 			</li>
 			',
 			'
-			<li data-order="11" class="">
-				<a href="{{base_url}}admin/peopleprofile">
+			<li data-order="10" class="">
+				<a href="{{base_url}}admin/masterlist?type_id=1">
 					<img alt="People Profiles" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/people.png">
 					<span>People Profiles</span>
 					<span class="badge"></span>
@@ -240,7 +231,7 @@ class Admin
 			</li>
 			',
 			'
-			<li data-order="12" class="">
+			<li data-order="11" class="">
 				<a href="{{base_url}}admin/ads">
 					<img alt="Manage Ads" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/ads.png">
 					<span>Manage Ads</span>
@@ -249,15 +240,15 @@ class Admin
 			</li>
 			',
 			'
-			<li data-order="13" class="">
-				<a href="{{base_url}}admin/emailtemplate">
+			<li data-order="12" class="">
+				<a href="{{base_url}}admin/mail_templates">
 					<img alt="Mail Templates" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/sitemap.png">
 					<span>Mail Templates</span>
 				</a>
 			</li>
 			',
 			'
-			<li data-order="14" class="">
+			<li data-order="13" class="">
 				<a href="{{base_url}}admin/calendar">
 					<img alt="Calendar" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/calendar.png">
 					<span>Calendar</span><span class="badge">2</span>
@@ -265,7 +256,7 @@ class Admin
 			</li>
 			',
 			'
-			<li data-order="15" class="">
+			<li data-order="14" class="">
 				<a href="{{base_url}}admin/stats">
 					<img alt="Stats" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/statistics.png">
 					<span>Stats</span>

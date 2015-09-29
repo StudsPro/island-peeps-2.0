@@ -21,7 +21,7 @@ class Admin extends ViewController
 			
 			if(!$this->app->is_admin()){
 			
-				if(\StarterKit\User::restore($_COOKIE['__restore']) === true){
+				if(\StarterKit\Admin::restore($_COOKIE['__restore']) === true){
 					if(!$this->app->is_admin()){
 						$this->session['admin'] = $this->args['admin'] = $_SESSION['admin'];
 					}
@@ -74,12 +74,17 @@ class Admin extends ViewController
 		
 		
 		$args['scripts'] = [
-			'tooltip/tooltip.js'
+			'tooltip/tooltip.js',
+			'plugins/datatables/jquery.dataTables.min.js',
+			'masterlist.js'
 		];
 		
 		$args['styles'] = [
-			'tooltip/tooltip.css'
+			'adm/tooltip/tooltip.css',
+			'adm/plugins/datatables/css/jquery.dataTables.css'
 		];
+		
+		$args['categories'] = $db->getAll('SELECT * FROM category');
 		
 		//$args['']
 

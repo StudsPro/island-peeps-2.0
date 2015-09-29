@@ -19,7 +19,7 @@ class DB
 	public function __call($method,$args=[])
 	{
 		try{
-			call_user_func_array(['\R',$method],$args);
+			return call_user_func_array(['\R',$method],$args);
 		}
 		catch(\exception $e)
 		{

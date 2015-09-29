@@ -403,3 +403,13 @@ line-height: 1.4em;
  }  
    */
     
+.big-button-grp .btn-group.big-button button {
+  border-radius: 0;
+}
+.big-button-grp .btn-group.big-button:not(:first-child) > button {
+  border-left: none;
+}
+.big-button-grp .btn-group.big-button {
+  margin-left: -5px;
+  border-radius: 0;
+}

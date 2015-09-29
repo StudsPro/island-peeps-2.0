@@ -21,13 +21,13 @@
 <link href="{{base_url}}static/adm/css/admin.css" rel="stylesheet" type="text/css">
 {% if styles is iterable %}
 	{%for href in styles %}
-		<link rel="stylesheet" type="text/css" href="{{base_url}}static/{{href}}" />
+		<link rel="stylesheet" type="text/css" href="{{base_url}}static/adm/{{href}}" />
 	{% endfor %}
 {% else %}
 	{% if styles is empty %}
 		{{styles}}
 	{% else %}
-		<link rel="stylesheet" type="text/css" href="{{base_url}}static/{{styles}}" />
+		<link rel="stylesheet" type="text/css" href="{{base_url}}static/adm/{{styles}}" />
 	{% endif %}
 {% endif %}
 {% if styles_external is iterable %}

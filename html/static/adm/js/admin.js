@@ -479,7 +479,7 @@ $(function(){
 	});
 	
 	$(".Sidebarheight").slimScroll({
-		  height: ($(window).height() - 40),
+		  height: ($(window).height() - 96),
 	});
 	
 	

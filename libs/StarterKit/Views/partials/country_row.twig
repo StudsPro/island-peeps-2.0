@@ -1,0 +1,29 @@
+{% if countries|length > 0 %}
+{% for item in countries %}
+<tr>
+	<td>{{loop.index}}</td>
+	<td>{{item.name}}</td>
+	<td>
+		<img src="{{item.flag_img|default(base_url ~ 'static/adm/img/no-flag.gif')}}" class="flag catch-e" width="30">
+	</td>
+	<td>
+		{% if item.status == 1 %}
+		<img src="{{base_url}}static/adm/img/activepage.jpg">
+		{% else %}
+		<img src="{{base_url}}static/adm/img/inactivepage.gif">
+		{% endif %}
+	</td> 
+	<td>
+		<a href="{{base_url}}edit?t=country&id={{item.id}}">
+		 <img src="{{base_url}}static/adm/img/editicon.gif">
+		</a> 
+	</td>
+</tr>
+{% endfor %}
+{% else %}
+<tr>
+	<td width="100%" colspan="100%">
+		<h3 style="text-align:center;">No Records Available.</h3>
+	</td>
+</tr>
+{% endif %}

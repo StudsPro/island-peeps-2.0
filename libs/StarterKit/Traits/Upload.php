@@ -264,4 +264,15 @@ trait Upload
 			'type'=>$type
 		];
 	}
+	
+	private function url_safe($title)
+	{
+		$title = preg_replace('/[^A-Za-z 0-9]/','',$title);
+		$title = preg_replace('/[\t\n\r\0\x0B]/', '', $title);
+		$title = preg_replace('/([\s])\1+/', ' ', $title);
+		$title = trim($title);
+		$title = str_replace(' ','-',$title);
+		return $title;
+	}
+	
 }

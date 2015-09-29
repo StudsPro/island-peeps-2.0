@@ -15,43 +15,54 @@
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<div class="col-lg-2" style="padding:0">
-						<div class="btn-group master-btn" style="width:25%; display: inline-block;box-sizing: border-box;margin:0">
-							<button data-toggle="dropdown" class="btn dropdown-toggle btn-primary" style="width: 100%;height: 34px;margin: 0px !important;" ><i class="fa fa-cog"></i></button>
-							<ul class="dropdown-menu pull-left">
-								<!--
-								<li><a href="javascript:void(0)">Print</a></li> 
-								-->
-								<li><a href="javascript:void(0);" onclick="downloadpdf();">Save as PDF</a></li>
-								<!--
-								<li class="divider"></li>
-								<li><a href="javascript:void(0)">Export to Excel</a></li>
-								-->
-							</ul>
+					<div class="col-lg-5" style="padding:0">
+						<div class="big-button-grp" style="width:20%; display: inline-block;box-sizing: border-box;margin:0">
+							<div class="btn-group big-button" style="width:50%">
+								<button data-toggle="dropdown" class="btn dropdown-toggle btn-success" style="width: 100%;height: 34px;margin: 0 0 0 0 !important;box-sizing:border-box" >
+									<i class="fa fa-plus"></i>
+								</button>
+								<ul class="dropdown-menu pull-left">
+									<li>
+										<a href="{{base_url}}admin/create?t=masterlist">
+											<span class="fa fa-pencil"></span> New Item
+										</a>
+									</li>
+									<li>
+										<a href="{{base_url}}admin/create?t=bulk">
+											<span class="fa fa-pencil"></span> Bulk Add
+										</a> 
+									</li>
+									<li>
+										<a href="{{base_url}}admin/create?t=category">
+											<span class="fa fa-pencil"></span> New Category
+										</a>
+									</li>
+								</ul>
+							</div>
+							<div class="btn-group big-button" style="width:50%;float:right">
+								<button data-toggle="dropdown" class="btn dropdown-toggle btn-primary" style="width: 100%;height: 34px;margin: 0 0 0 0 !important;box-sizing:border-box" >
+									<i class="fa fa-cog"></i>
+								</button>
+								
+								<ul class="dropdown-menu pull-left">
+									<li><a href="javascript:void(0);" onclick="downloadpdf();">Save as PDF</a></li>
+								</ul>
+							</div>
 						</div>
-						<select name="sort" class="form-control input-md select-onload" data-selected="{{sort|default('invalid')}}" style="float: right;width:75%; display: inline-block;box-sizing: border-box;margin:0;">
-							<option value="invalid">Sort By</option>
+						<select name="sort" class="form-control input-md select-onload" data-selected="{{sort|default('invalid')}}" style="float: right;width:40%; display: inline-block;box-sizing: border-box;margin:0;">
+							<option value="invalid">Sort</option>
 							<option value="ABC">ABC Order</option>
 							<option value="Available">Available</option>
 							<option value="Pending">Pending</option>
 							<option value="Ready">Ready</option>
 							<option value="Used">Used</option>
 						</select>				 
-					</div>
-					<div class="col-lg-2">
-						<a href="{{base_url}}admin/create?t=masterlist" class="btn btn-primary hidden-xs btn-block">
-							<span class="fa fa-pencil"></span>Add Profile
-						</a>
-					</div>
-					<div class="col-lg-2">
-						<a href="{{base_url}}admin/create?t=bulk" class="btn btn-info hidden-xs btn-block">
-							<span class="fa fa-pencil"></span>Bulk Add
-						</a>  
-					</div>
-					<div class="col-lg-2">
-						<a href="{{base_url}}admin/create?t=category" class="btn btn-success hidden-xs btn-block">
-							<span class="fa fa-pencil"></span>New Category
-						</a>
+						<select name="category" class="form-control input-md select-onload" data-selected="{{category}}" style="float: right;width:40%; display: inline-block;box-sizing: border-box;margin:0;">
+							<option value="invalid">Category</option>
+							{% for item in categories %}
+							<option value="{{item.id}}">{{item.name}}</option>
+							{% endfor %}
+						</select>
 					</div>
 					<div class="col-lg-4" style="padding:0">
 						<div class="btn-group pull-right">
