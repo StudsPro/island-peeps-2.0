@@ -18,7 +18,7 @@
 				<div class="panel-heading">
 					<h3 class="panel-title">{{action}}</h3>
 				</div>
-				<form method="post" class="contains-file form-horizontal" action="{{base_url}}admin/api/masterlist{%if item is defined %}?id={{item.id}}{%endif%}" data-callback="masterListAddEdit">
+				<form method="post" class="contains-file form-horizontal" action="{{base_url}}admin/api/masterlist{%if item is defined %}?id={{item.id}}{%endif%}" data-callback="countryAddEdit">
 					<div class="panel-body">  
 						<div class="form-group">
 							<label for="name" class="col-md-2 control-label"> Country Name <span class="require">*</span></label>

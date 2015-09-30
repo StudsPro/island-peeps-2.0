@@ -65,6 +65,26 @@ class Admin extends ViewController
 		parent::render('dashboard.twig',$args);
 	}
 	
+	public function user_settings()
+	{
+		$app  = $this->app;
+		$args = $app->args;
+		$get  = $app->get;
+		$db   = $app->db;
+		parent::render('user_settings.twig',$args);
+	}
+	
+	public function social_settings()
+	{
+		$app  = $this->app;
+		$args = $app->args;
+		$get  = $app->get;
+		$db   = $app->db;
+		parent::render('social_settings.twig',$args);
+	}
+	
+	
+	
 	public function masterlist()
 	{
 		$app  = $this->app;
@@ -146,7 +166,22 @@ class Admin extends ViewController
 	
 	public function affiliates()
 	{
+		$app  = $this->app;
+		$args = $app->args;
+		$get  = $app->get;
+		$db   = $app->db;
+		$args['scripts'] = [
+			'js/tooltip/tooltip.js',
+			'js/plugins/datatables/jquery.dataTables.min.js',
+			'js/masterlist.js'
+		];
 		
+		$args['styles'] = [
+			'js/tooltip/tooltip.css',
+			'js/plugins/datatables/css/jquery.dataTables.css'
+		];
+		$args['affiliates'] = $db->getAll('SELECT * FROM admin WHERE 1');
+		parent::render('affiliates.twig',$args);
 	}
 	
 	public function login()

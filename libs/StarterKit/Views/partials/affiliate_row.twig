@@ -1,0 +1,23 @@
+{% if affiliates|length > 0 %}
+{% for item in affiliates %}
+<tr>
+	<td>{{loop.index}}</td>
+	<td>{{item.name}}</td>
+	<td>{{item.email}}</td>
+	<td>
+		<a href="{{base_url}}admin/edit?t=affiliate&id={{item.id}}">
+		<img src="{{base_url}}static/adm/img/editicon.gif">
+		</a> 
+	</td>
+	<td>
+		<input type="checkbox" name="selected[]" value="{{item.id}}"> 
+	</td>
+</tr>
+{% endfor %}
+{% else %}
+<tr>
+	<td width="100%" colspan="100%">
+		<h3 style="text-align:center;">No Records Available.</h3>
+	</td>
+</tr>
+{% endif %}

@@ -216,6 +216,15 @@ trait Upload
 		return $app->args['base_url'].'uploads/'.$name; //if we were successful in writing to the bucket, we return the full url to the resource.
 	}
 	
+	private function delFile($file)
+	{
+		if(strpos($file,'/') !== false){
+			$file = array_pop(explode('/',$file));
+		}
+		$app = \StarterKit\App::getInstance();
+		unlink($app->public_html . 'uploads/' .$file);
+	}
+	
 	//performs basic image security and returns data needed to process image.
 	private function img_factory($a)
 	{

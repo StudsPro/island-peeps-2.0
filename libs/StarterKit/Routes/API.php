@@ -279,4 +279,9 @@ class API
 		return ['error'=>0,'message'=>1];
 	}
 	
+	public function getframeskeleton()
+	{
+		//returns the api slug skeleton which our app needs
+		return ['error'=>0,'message'=>$this->app->db->slugs()];
+	}
 }

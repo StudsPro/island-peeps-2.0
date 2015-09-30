@@ -50,7 +50,6 @@ class AdminAPI
 			throw new \exception('You are already logged in');
 		}
 		$post = $app->post;
-		$ip = $app->remote_addr;
 		$required = [
 			'email',
 			'password'
@@ -109,6 +108,78 @@ class AdminAPI
 			break;
 		}
 
+		return ['error'=>0,'message'=>1];
+	}
+	
+	public function user_settings()
+	{
+		$app = $this->app;
+		$filter = $app->filter;
+		$post = $app->post; 
+		$db = $app->db;
+		$admin = $app->session['admin'];
+		$id = $admin->id;
+		
+		$filter->custom_filter('custom_name',function($input) use($filter,$db,$id){
+			$input = trim($input);
+			$min = 4;
+			$max = 55;
+			if( !preg_match( '/^[A-Za-z.\-_0-9 ]{'.$min.','.$max.'}$/', $input ) ){
+				throw new \exception('Username may only contain letters, numbers, periods, spaces, and underscores.');
+			}
+			if(!empty($db->getRow('SELECT id FROM admin WHERE id!=:id AND name=:name',[':id'=>$id,':name'=>$input]))){
+				throw new \exception('This username is already taken.');
+			}
+			return $input;
+		});
+		
+		$filter->custom_filter('custom_email',function($input) use($filter,$db,$id){
+			$input = $filter->email($input);
+			if(!empty($db->getRow('SELECT id FROM admin WHERE id!=:id AND email=:email',[':id'=>$id,':email'=>$input]))){
+				throw new \exception('That Email address is already in use');
+			}
+			return $input;
+		});
+		
+		$admin->name = $filter->custom_name($post['name']);
+		$admin->email = $filter->custom_email($post['email']);
+		
+		try
+		{
+			$img = $admin->avatar;
+			$upl = trim(implode('',$this->square_thumbs('avatar_img',$app->files,[120],120,120)));
+			
+			if(!empty($img) && $admin->avatar !== $img && $upl !== null){
+				$this->delFile($img);
+				$admin->avatar = $upl;
+			}
+		}
+		catch(\exception $e)
+		{
+			if(!empty($app->files) && isset($app->files['avatar_img']) && is_uploaded_file($app->files['avatar_img']['tmp_name'])){
+				throw $e;
+			}
+		}
+		
+		if(isset($post['currpw']) && !empty($post['currpw'])){
+			if(!$admin->verify($post['currpw'])){
+				throw new \exception('Invalid Existing password');
+			}
+			if(isset($post['newpass']) && isset($post['confirmpass'])){
+				if(!empty($post['newpass']) && !empty($post['confirmpass'])){
+					if($post['newpass'] !== $post['confirmpass']){
+						throw new \exception('Password Missmatch');
+					}else{
+						$admin->password = $filter->password_hash($post['newpass']);
+					}
+				}else{
+					throw new \exception('New Password and Confirm Password are required to change your password.');
+				}
+			}
+		}
+		
+		$admin->update();
+		
 		return ['error'=>0,'message'=>1];
 	}
 

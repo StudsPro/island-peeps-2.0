@@ -1,0 +1,95 @@
+{% include 'widgets/nav.twig' %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<h3 class="page-title">Modify Admin Account</h3>
+			<ul class="breadcrumb breadcrumb-arrows breadcrumb-default">
+				<li><a href="{{base_url}}admin"><i class="fa fa-home fa-lg"></i></a></li>
+				<li><a href="#">Admin User Settings</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			 <div class="panel panel-default">  
+					<div class="panel-heading">
+							<h3 class="panel-title">Admin User Settings</h3>
+					</div>
+					<form method="post" class="contains-file form-horizontal" action="{{base_url}}admin/api/user_settings" data-callback="userEdit">
+						<div class="panel-body">  
+							<div class="container">
+								<div class="control-group">
+									<div class="col-md-7">
+										<h4 style="text-align:center">Basic Info</h4>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="name" class="col-md-2 control-label">Username<span class="require">*</span></label>
+								<div class="col-md-5">
+									<input type="text" name="name" value="{{admin.name}}" class="form-control input-md" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="name" class="col-md-2 control-label">Email<span class="require">*</span></label>
+								<div class="col-md-5">
+									<input type="text" name="email" value="{{admin.email}}" class="form-control input-md" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="title" class="col-md-2 control-label">Avatar</label>
+								<div class="col-md-5">
+									<input type="file" name="avatar_img" class="form-control input-md" />
+								</div>
+							</div>
+							<div class="container">
+								<div class="control-group">
+									<div class="col-md-7">
+										<h4 style="text-align:center">Change Password</h4>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="name" class="col-md-2 control-label">Current Password</label>
+								<div class="col-md-5">
+									<input type="text" name="currpw" value="" class="form-control input-md" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="name" class="col-md-2 control-label">New Password</label>
+								<div class="col-md-5">
+									<input type="text" name="newpass" value="" class="form-control input-md" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="name" class="col-md-2 control-label">Confirm New Password</label>
+								<div class="col-md-5">
+									<input type="text" name="confirmpass" value="" class="form-control input-md" />
+								</div>
+							</div>
+					</div>  
+					<div class="panel-footer">
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-md-5">
+								<button type="submit" class="btn btn-primary btn-block">Save</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>	
+<script>
+function userEdit(data)
+{
+	if(data.error == 0){
+		sk.alert('Your changes were saved','success');
+	}else{
+		sk.alert(data.message,'error');
+	}
+}
+</script>	
+{% include 'widgets/footer.twig' %}

@@ -18,5 +18,5 @@ $app->error(function (exception $e){
 });
 
 $app->notFound(function(){ 
-	(new \StarterKit\Routes\Error)->run(404);
+	echo json_encode(['error'=>1,'message'=>'404 Not Found']);
 });
