@@ -463,12 +463,16 @@ $(function(){
 			}
 		}
 	});
-	
-	if($('#sort_items ul > li > a[href="'+window.location.href+'"]').length > 0){
-		$('#sort_items ul > li > a[href="'+window.location.href+'"]').parent('li').addClass('active');
+	if(location.pathname == '/admin/masterlist'){
+		$('a[href="#masterlist-ui"]').parent('li').addClass('active');
 	}else{
-		$('#sort_items ul > li > a[href*="'+location.pathname+'"]').parent('li').addClass('active');
+		if($('#sort_items ul > li > a[href="'+window.location.href+'"]').length > 0){
+			$('#sort_items ul > li > a[href="'+window.location.href+'"]').parent('li').addClass('active');
+		}else{
+			$('#sort_items ul > li > a[href*="'+location.pathname+'"]').parent('li').addClass('active');
+		}	
 	}
+	
 	
 
 	$(".social-sidebar").socialSidebar();
@@ -490,6 +494,8 @@ $(function(){
 	
 	$(window).load(function() {
 	  imgErrors();
+	  var theme = $('.simplecolorpicker').data('selected');
+	  $('#'+theme).addClass('selected');
 	});
 	
 	function imgErrors()
@@ -507,4 +513,53 @@ $(function(){
 			}
 		});
 	}
+	
+	$(document).on('click','.bulk-update',function(e){
+		var checked = $('table tbody').find(':input:checked');
+		if(checked.length > 0){
+			$('.bulk-update').prop('disabled',true);
+			var tbl = $(this).data('table');
+			var col = $(this).data('column');
+			var val = $(this).data('val');
+			var callback = $(this).data('callback');
+			var ids = '';
+			for(var i =0;i<checked.length;i++){
+				ids += checked.eq(i).val()+',';
+				if(i == checked.length - 1){
+					ids = ids.slice(0,-1);
+					$.getJSON(window.location.origin+'/admin/api/bulk_update?table='+tbl+'&column='+col+'&value='+val+'&ids='+ids,function(data){
+						window[callback].call(window,data,tbl,col,val,ids);
+					}).always(function(){
+						$('.bulk-update').prop('disabled',false);
+					});
+				}
+			}
+		}
+	});
+	
+	$(document).on('click','.themechange',function(e){
+		var v = this.id;
+		$('.themechange').removeClass('selected');
+		$(this).addClass('selected');
+		$('#theme').attr('href',window.location.origin+'/static/adm/css/themes/social.theme-'+v+'.css');
+		$.getJSON(window.location.origin + '/admin/api/update_setting?x=theme&v='+v,function(data){
+			if(data.error != 0 ){
+				sk.alert(data.message);
+			}else{
+				sk.alert('Theme changed','success');
+			}
+		});
+	});
+	
+	$(document).on('change','input[name="pageper"]',function(e){
+		var v = $('input[name="pageper"][type=radio]:checked').val();
+		$.getJSON(window.location.origin + '/admin/api/update_setting?x=perpage&v='+v,function(data){
+			if(data.error != 0 ){
+				sk.alert(data.message);
+			}else{
+				sk.alert('Your changes were saved. you may need to reload the page for them to take effect.','success');
+			}
+		});
+	});
+	
 });

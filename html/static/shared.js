@@ -141,4 +141,30 @@ $(function(){
 		});
 		return false;
 	});
+	
+	$('select.select-onload').each(function(index,value){
+		if(typeof $(this).attr('data-selected') !== 'undefined'){
+			if($(this).attr('data-selected') == ''){
+				return false;
+			}
+			$(this).val( $(this).attr('data-selected') );
+		}
+	});
+	$('select.multi-select-onload').each(function(index,value){
+		var t = $(this);
+		if(typeof t.attr('data-selected') !== 'undefined'){
+			if(t.attr('data-selected') == ''){
+				return false;
+			}
+			var selected = t.data('selected').toString(); 
+			if(selected.indexOf(',') !== -1){
+				var use = selected.split(',');
+			}else{
+				var use = [selected];
+			}
+			for(i=0;i<use.length;i++){
+				t.find('option[value="'+use[i]+'"]')[0].selected = true;
+			}
+		}
+	});
 });

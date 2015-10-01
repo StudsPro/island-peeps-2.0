@@ -23,8 +23,18 @@
 								</button>
 								<ul class="dropdown-menu pull-left">
 									<li>
-										<a href="{{base_url}}admin/create?t=masterlist">
-											<span class="fa fa-pencil"></span> New Item
+										<a href="{{base_url}}admin/create?t=profile">
+											<span class="fa fa-pencil"></span> New Profile
+										</a>
+									</li>
+									<li>
+										<a href="{{base_url}}admin/create?t=meme">
+											<span class="fa fa-pencil"></span> New Meme
+										</a>
+									</li>
+									<li>
+										<a href="{{base_url}}admin/create?t=funfact">
+											<span class="fa fa-pencil"></span> New Fun Fact
 										</a>
 									</li>
 									<li>
@@ -57,24 +67,27 @@
 							<option value="Ready">Ready</option>
 							<option value="Used">Used</option>
 						</select>				 
-						<select name="category" class="form-control input-md select-onload" data-selected="{{category}}" style="float: right;width:40%; display: inline-block;box-sizing: border-box;margin:0;">
+						<select name="cat_id" class="form-control input-md select-onload" data-selected="{{cat_id}}" style="float: right;width:40%; display: inline-block;box-sizing: border-box;margin:0;">
 							<option value="invalid">Category</option>
 							{% for item in categories %}
 							<option value="{{item.id}}">{{item.name}}</option>
 							{% endfor %}
 						</select>
 					</div>
-					<div class="col-lg-4" style="padding:0">
+					<div class="col-lg-7" style="padding:0">
 						<div class="btn-group pull-right">
-							<span class="btn btn-success">0 People Profile</span>
-							<span class="btn btn-danger">0 Meme</span>
-							<span class="btn btn-info">0 Fun Facts</span>
+							<a href="{{base_url}}admin/masterlist?type_id=1" class="btn btn-success">{{count.profile}} People Profile</a>
+							<a href="{{base_url}}admin/masterlist?type_id=2" class="btn btn-danger">{{count.meme}} Meme</a>
+							<a href="" class="btn btn-info">{{count.funfacts}} Fun Facts</a>
+							{% if cat is defined %}
+							<a href="{{base_url}}admin/masterlist?type_id=1&cat_id={{cat_id}}" class="btn btn-primary">{{cat_count}} {{cat}}</a>
+							{% endif %}
 						</div>
 					</div>  
 					<div class="clearfix"></div>
 				</div>
 				<div class="panel-body">
-					<table id="newtable"  class="table table-striped table-bordered dataTable no-footer dt-responsive" cellspacing="0" width="100%">
+					<table id="newtable"  class="table table-striped table-bordered dataTable no-footer dt-responsive" cellspacing="0" width="100%" data-type="{{type_id}}" data-perpage="{{admin.perpage}}">
 						<thead>
 							<tr>						
 								<th width="10%" data-type="numeric" data-sort-initial="true">S.No</th>
@@ -94,17 +107,61 @@
 							{% include 'partials/masterlist_row.twig' %}
 						</tbody>
 					</table>
-					<div class="clearfix">&nbsp;</div>   
-					<div class="panel-footer text-right">
-						<input type="submit"  class="btn btn-success" value="AVAILABLE" name="btn_avaible">
-						<input type="submit"  class="btn btn-warning" value="PENDING" name="btn_pending">
-						<input type="submit" class="btn btn-ready" value="READY" name="btn_ready">
-						<input type="submit" class="btn btn-danger" value="PUBLISH" name="btn_publish">	
-						<input type="submit"  value="Delete" id="deleteall" onclick="document.frmListing.status.value='-1';" class="btn btn-danger" name="btn_delete">			
-					</div>	
 				</div>
+				<div class="clearfix">&nbsp;</div>   
+				<div class="panel-footer text-right">
+					<button type="button" class="btn btn-success bulk-update" data-callback="msStatus" data-table="masterlist" data-column="status" data-val="1">Available</button>
+					<button type="button" class="btn btn-warning bulk-update" data-callback="msStatus" data-table="masterlist" data-column="status" data-val="2">Pending</button>
+					<button type="button" class="btn btn-ready bulk-update" data-callback="msStatus" data-table="masterlist" data-column="status" data-val="3">Ready</button>
+					<button type="button" class="btn btn-danger bulk-update" data-callback="msStatus" data-table="masterlist" data-column="status" data-val="4">Publish</button>
+					<!--
+					<button type="button" class="btn btn-danger bulk-delete">Delete</button>
+					-->
+				</div>	
 			</div>		
 		</div>
 	</div>
 </div>
+<div class="modal fade" id="mlist-preview" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">Preview Item</h4>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+				
+				</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+	function msStatus(data,tbl,col,val,ids)
+	{
+		switch(val){
+			case 1:
+				var html = '<button class="btn btn-mini btn-success" type="button">Available</button>';
+			break;
+			case 2:
+				var html = '<button class="btn btn-mini btn-warning" type="button">Pending</button>';
+			break;
+			case 3:
+				var html = '<button class="btn btn-mini btn-ready" type="button">Ready</button>';
+			break;
+			case 4:
+				var html = '<button class="btn btn-mini btn-danger" type="button">Published</button>';
+			break;
+		}
+		var tids = ids.split(',');
+		for(var i=0;i<tids.length;i++){
+			$('table').find('tr[data-id="'+tids[i]+'"]').find('.status > button').replaceWith(html);
+		}
+		sk.alert('The items were updated successfully','success');
+	}
+</script>
 {% include 'widgets/footer.twig' %}

@@ -5,9 +5,9 @@
     color: #ffffff;
 }
 .top_bar {
-    background-color: #fbb450;
+    background-color: #fbb450 !important;
     background-image: none;
-    border-color: #fbb450 #fbb450 #fbb450;
+    border-color: #fbb450 #fbb450 #fbb450 !important;
 }
 .social-navbar .navbar-nav > li > .top_panel_name:hover, .social-navbar .navbar-nav :focus {
     background-color: #fbb450;

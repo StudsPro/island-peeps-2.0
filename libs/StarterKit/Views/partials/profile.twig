@@ -1,0 +1,93 @@
+<style>
+.heading, .main_head {  color: #00ccff;  display: inline-block;  font-family: Cubano,Helvetica,sans-serif;  font-size: 2.4em;  font-weight: bold;  line-height: 0.9em;
+  text-transform: uppercase;
+}
+.fp_head {  color: #999999;  font-family: Nunito,Arial,Helvetica,sans-serif;  font-size: 2.6em;  line-height: 1em;  margin: 4% 0 0;  padding: 0;}
+
+ #menu-wrap {  margin-bottom: 0 !important;}
+ #menu-wrap {  float: left;  height: auto;  line-height: 13px;  margin: 0 0 50px;  padding: 0;  text-align: left;  width: 170px;}
+
+ #menu-wrap .menu-item {  border-radius: 3px;  display: inline-block;  height: 55px;  overflow: hidden;  position: relative;  width: 38px;}
+ #menu-wrap .menu-item .text {  background-color: #fff;  bottom: -27px;  display: block;  font-family: Arial,Helvetica,sans-serif;  font-size: 0;
+  font-weight: normal;  padding: 0 0 17px;  position: absolute;  text-align: center;  text-decoration: none;  transition: all 0.3s ease-in-out 0s;  width: 100%;
+}
+ #menu-wrap .menu-item a {  color: #445878;}
+ #menu-wrap .menu-item .icon {
+  font-size: 25px;  height: 32px;  padding: 13px 9px 5px 4px;  text-align: center;  width: 32px;
+}
+ #menu-wrap .menu-item span {  background: none repeat scroll 0 0 #fff;  border-radius: 50%;  color: #445878;  display: block;
+  left: 0;  position: absolute;  top: 10px;  transition: all 0.3s ease-in-out 0s;}
+ #menu-wrap .menu-item i {  border-radius: 3px;  padding: 7px 0 5px;  width: 100%;}
+ #menu-wrap .menu-item i.fa-facebook {  background: none repeat scroll 0 0 #3b5998;  color: #fff;}
+ #menu-wrap .menu-item i.fa-twitter {  background: none repeat scroll 0 0 #44ccf6;  color: #fff;}
+ #menu-wrap .menu-item i.fa-pinterest-square {  background: none repeat scroll 0 0 #cb2027;  color: #fff;}
+#menu-wrap .menu-item i.fa-tumblr {  background: none repeat scroll 0 0 #274152;  color: #fff;}
+#description{  color: #525252;margin-top: 3%;text-align: justify;     font-size: 1em;    padding-right:4%;   font-family: Nunito,Helvetica,sans-serif;letter-spacing: -0.01em;
+line-height: 1.4em;
+}
+ #menu-wrap .menu-item:hover > .text {bottom: 0;font-size:25px;padding:0;-webkit-transition: all 0.5s ease-in-out;-moz-transition: all 0.5s ease-in-out;-ms-transition: all 0.5s ease-in-out;-o-transition: all 0.5s ease-in-out;transition: all 0.5s ease-in-out;text-align:center;}
+.disqus-btn {  cursor: pointer;  float: right;  padding-top: 24px;  width: 100px;}
+.disqus-btn button {
+  background: url("<?php echo SITE_IMAGEURL;?>disqus-btn.png") no-repeat scroll left top rgba(0, 0, 0, 0);
+  border: medium none !important;  height: 36px;  width: 103px;}
+.funfacts {
+  color: rgb(223, 69, 47);
+  font-size: 2em !important;
+  font-weight: normal !important;
+}  
+</style>
+<div class="col-md-12">
+	<div class="col-md-7">
+		<img src="{{item.image|default(base_url ~ 'static/adm/img/no-img.png')}}" class="img catch-e" width="100%">
+	</div>
+	<div class="col-md-5">
+		<div class="col-md-12">
+			<div class="row">
+				<h2 class="heading">
+				{% for item in profile.region_list %}
+				{{item.name}}{%if loop.last == false %},{%endif%}
+				{% endfor %}
+				</h2>
+			</div>
+			{% if profile.type_id == 3 %}
+			<div class="row">                 
+				<h4 class="heading funfacts" >-Fun Facts-</h4>
+			</div> 
+			{% endif %}               
+			<div class="row">                 
+				<h3 class="fp_head">{{profile.title}}</h3>
+			</div>
+			<div class="clearfix">&nbsp;</div>
+			<div class="row" id="description">
+			{{profile.description}}
+			</div> 
+		</div> 
+		<div class="col-md-12 paddress-left0">
+			<div class="col-md-8 paddress-left0">
+				<div id="menu-wrap" class="row">
+					<div class="menu-item">
+						<span id="active" class="icon fa fa-facebook"></span>
+						<a style="outline: medium none;" hidefocus="true" id="hover" class="text share_fb"  href="javascript:void(0);"><i class="fa fa-facebook"></i></a>
+					</div>
+					<div class="menu-item">
+						<span id="active" class="icon fa fa-twitter"></span>
+						<a style="outline: medium none;" hidefocus="true" id="hover" target="_blank" href="http://twitter.com/share?text={{description}}&url={{url}}&hashtags=<{{profile.tags}}" class="text share_t"><i class="fa fa-twitter"></i></a>
+					</div>
+					<div class="menu-item">
+						<span id="active" class="icon fa fa-pinterest-square"></span>
+						<a href="http://www.pinterest.com/pin/create/button/?url={{url}}&media={{profile.image}}&description={{profile.description}}" target="_blank" class="text share_pinte" id="hover"><i class="fa fa-pinterest-square"></i></a>
+					</div> 
+					<div class="menu-item">
+						<span id="active" class="icon fa fa-tumblr"></span>
+						<a style="outline: medium none;" hidefocus="true" href="http://www.tumblr.com/share/photo?source={{profile.image}}&caption={{profile.description}}&click_thru={{url}}" id="hover" class="text share_tumblr" target="_blank"><i class="fa fa-tumblr"></i></a>
+					</div> 
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="disqus-btn">
+					<button ></button>
+				</div>
+			</div>
+		</div> 
+	</div>
+</div>

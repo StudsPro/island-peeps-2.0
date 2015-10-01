@@ -14,6 +14,9 @@ class Admin
 	public $sidebar;
 	public $order = '';
 	public $menu = '';
+	public $permissions = [];
+	public $theme = '';
+	public $perpage = 100;
 	
 	function __construct($email,$pass,$remember=false)
 	{
@@ -96,7 +99,7 @@ class Admin
 		$db = (\StarterKit\App::getInstance())->db;
 		$t = $db->model('admin',$this->id);
 		$self = get_object_vars($this);
-		unset($self['id'],$self['menu']);
+		unset($self['id'],$self['menu'],$self['permissions']);
 		foreach($self as $k=>$v){
 			$t->{$k} = $v;
 		}
@@ -107,6 +110,11 @@ class Admin
 	public function keepalive($token)
 	{
 		session_regenerate_id(true);
+	}
+	
+	public function can($table,$action)
+	{
+		return $this->permissions[$table][$action] === 1;
 	}
 	
 	public function getMenu()
@@ -131,11 +139,17 @@ class Admin
 			',
 			'
 			<li data-order="1" class="">
-				<a href="{{base_url}}admin/masterlist">
+				<a href="#masterlist-ui" data-toggle="collapse" data-parent="#social-sidebar-menu">
 					<img alt="Master List" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/sitemap.png">
 					<span>Master List</span>
-					<span class="badge"></span>
+					<i class="fa arrow"></i>
 				</a>
+				<ul id="masterlist-ui" class="collapse">
+					<li id=""><a href="{{base_url}}admin/masterlist">All</a></li>
+					<li id=""><a href="{{base_url}}admin/masterlist?type_id=1">People</a></li>
+					<li id=""><a href="{{base_url}}admin/masterlist?type_id=2">Memes</a></li>
+					<li id=""><a href="{{base_url}}admin/masterlist?type_id=3">Fun Facts</a></li>
+				</ul>
 			</li>
 			',
 			'
@@ -187,15 +201,6 @@ class Admin
 			',
 			'
 			<li data-order="7" class="">
-				<a href="{{base_url}}admin/masterlist?type_id=2">
-					<img alt="Me Me Page" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/premium.png">
-					<span>Me Me Page</span>
-					<span class="badge"></span>
-				</a>
-			</li>
-			',
-			'
-			<li data-order="8" class="">
 				<a href="#affiliate-ui" data-toggle="collapse" data-parent="#social-sidebar-menu">
 					<img alt="Affiliates" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/customers.png">
 					<span>Affiliates</span>
@@ -213,7 +218,7 @@ class Admin
 			</li>
 			',
 			'
-			<li data-order="9" class="">
+			<li data-order="8" class="">
 				<a href="{{base_url}}admin/countries">
 					<img alt="Country Profiles" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/country.png">
 					<span>Country Profiles</span>
@@ -222,16 +227,7 @@ class Admin
 			</li>
 			',
 			'
-			<li data-order="10" class="">
-				<a href="{{base_url}}admin/masterlist?type_id=1">
-					<img alt="People Profiles" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/people.png">
-					<span>People Profiles</span>
-					<span class="badge"></span>
-				</a>
-			</li>
-			',
-			'
-			<li data-order="11" class="">
+			<li data-order="9" class="">
 				<a href="{{base_url}}admin/ads">
 					<img alt="Manage Ads" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/ads.png">
 					<span>Manage Ads</span>
@@ -240,7 +236,7 @@ class Admin
 			</li>
 			',
 			'
-			<li data-order="12" class="">
+			<li data-order="10" class="">
 				<a href="{{base_url}}admin/mail_templates">
 					<img alt="Mail Templates" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/sitemap.png">
 					<span>Mail Templates</span>
@@ -248,7 +244,7 @@ class Admin
 			</li>
 			',
 			'
-			<li data-order="13" class="">
+			<li data-order="11" class="">
 				<a href="{{base_url}}admin/calendar">
 					<img alt="Calendar" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/calendar.png">
 					<span>Calendar</span><span class="badge">2</span>
@@ -256,10 +252,10 @@ class Admin
 			</li>
 			',
 			'
-			<li data-order="14" class="">
+			<li data-order="12" class="">
 				<a href="{{base_url}}admin/stats">
 					<img alt="Stats" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/statistics.png">
-					<span>Stats</span>
+					<span>Analytics/Stats</span>
 				</a>
 			</li>  
 			'

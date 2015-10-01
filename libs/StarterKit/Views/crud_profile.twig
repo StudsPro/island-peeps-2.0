@@ -18,7 +18,7 @@
 					<div class="panel-heading">
 							<h3 class="panel-title">{{action}}</h3>
 					</div>
-					<form method="post" class="contains-file form-horizontal" action="{{base_url}}admin/api/masterlist{%if item is defined %}?id={{item.id}}{%endif%}" data-callback="masterListAddEdit">
+					<form method="post" class="contains-file form-horizontal" action="{{base_url}}admin/api/profile{%if item is defined %}?id={{item.id}}{%endif%}" data-callback="masterListAddEdit">
 						<div class="panel-body">  
 							<div class="form-group">
 								<label for="title" class="col-md-2 control-label"> Select Region <span class="require">*</span></label>
@@ -34,17 +34,6 @@
 								<label for="title" class="col-md-2 control-label">Name <span class="require">*</span></label>
 								<div class="col-md-5">
 									<input type="text" name="title" value="{{item.title}}" class="form-control input-md" />
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="title" class="col-md-2 control-label"> Type <span class="require">*</span></label>
-								<div class="col-md-5">
-									<select class="form-control input-md select-onload" name="type_id" data-selected="{{item.type_id}}">
-										<option value="invalid">--SELECT--</option>
-										{% for item2 in types %}
-										<option value="{{item2.id}}">{{item2.name}}</option>
-										{% endfor %}
-									</select>    
 								</div>
 							</div>
 							<div class="form-group">
@@ -72,7 +61,7 @@
 							<div class="form-group">
 								<label for="title" class="col-md-2 control-label">You Tube </label>
 								<div class="col-md-5">
-									<input type="text" name="youtube" value="{{item.youtube}}" class="form-control input-md" />
+									<input type="text" name="youtube" value="{%if item.youtube is not empty %}https://www.youtube.com/watch?v={{item.youtube}}{%endif%}" class="form-control input-md" />
 									</br>
 									<span>EX: http://www.youtube.com/watch?v=yFHjS6vuFI0</span>
 								</div>

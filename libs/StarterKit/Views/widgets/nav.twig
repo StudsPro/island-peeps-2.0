@@ -85,7 +85,7 @@
 						<a href="#" data-toggle="dropdown" data-hover="dropdown" data-delay="0" class="dropdown-toggle">
 							<i class="fa fa-caret-down fa-lg"></i>
 						</a>
-						<ul class="dropdown-menu">
+						<ul class="dropdown-menu usr-s">
 						<li class="visible_moblie">
 							<a href="#">
 								Welcome <strong>{{admin.name}}</strong> !
@@ -124,29 +124,16 @@
 							<label class="checkbox setting_checkbox"><input type="checkbox" checked='checked' value="option2" id="sidebar-dividers"/>Dividers</label>
 						</li>
 						<li class="header">Page per record</li>
+						{% for i in [10,25,50,100] %}
 						<li class="nav-notifications-body">
-							<label class="radio setting_checkbox"><input type="radio" name="pageper" value="10"  class="pageper"/>10</label>
+							<label class="radio setting_checkbox"><input type="radio" name="pageper" value="{{i}}" class="pageper" {% if admin.perpage == i %}checked{%endif%}/>{{i}}</label>
 						</li>
-						<li class="nav-notifications-body">
-							<label class="radio setting_checkbox"><input type="radio" name="pageper" value="25"   class="pageper"/>25</label>
-						</li>
-						<li class="nav-notifications-body">
-							<label class="radio setting_checkbox"><input type="radio" name="pageper"value="50"   class="pageper"/>50</label>
-						</li>
-						<li class="nav-notifications-body">
-							<label class="radio setting_checkbox"><input type="radio" name="pageper" value="100" checked='checked'  class="pageper"/>100</label>
-						</li>
+						{% endfor %}
 						<li class="divider"></li>
 						<li class="header">Theme</li>
 						<li class="colorpickers">
-							<select name="colorpicker" style="display: none;">
-								<option value="#f2f2f2">Light</option>
-								<option data-class="blue" value="#3b5998">Blue</option>
-								<option data-class="green" value="#51a351">Green</option>
-								<option data-class="orange" value="#f89406">Orange</option>
-							</select>
-							<span class="simplecolorpicker inline">
-								<span tabindex="0" role="button" data-color="#f2f2f2" style="cursor:pointer" class="white_theme_button themechange"  id="white" title="White" class="selected">
+							<span class="simplecolorpicker inline" data-selected="{{admin.theme}}">
+								<span tabindex="0" role="button" data-color="#f2f2f2" style="cursor:pointer" class="white_theme_button themechange" title="White" id="white">
 								&nbsp;&nbsp;&nbsp;&nbsp;
 								</span>
 								<span tabindex="0" role="button" data-color="#3b5998" style="cursor:pointer" class="blue_theme_button themechange" title="Blue" id="blue">

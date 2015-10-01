@@ -4,7 +4,7 @@
 $colrk = array('People profile'=>'success','Fun facts'=>'info','Me Me' => 'danger');
 $stas = array('1'=>'AVAILABLE','2'=>'PENDING','3' => 'READY','4'=> 'USED');
 -->
-<tr>
+<tr data-id="{{item.id}}">
 	<td>
 		{{loop.index}}
 	</td>
@@ -60,8 +60,7 @@ $stas = array('1'=>'AVAILABLE','2'=>'PENDING','3' => 'READY','4'=> 'USED');
 	<td>
 		{{item.affiliate}}
 	</td>
-	<td>
-		<!-- $colr = array('1'=>'success','2'=>'warning','3' => 'ready','4'=> 'danger'); -->
+	<td class="status">
 		{% if item.status == 1 %}
 		<button class="btn btn-mini btn-success" type="button">Available</button>
 		{% endif %}
@@ -76,7 +75,12 @@ $stas = array('1'=>'AVAILABLE','2'=>'PENDING','3' => 'READY','4'=> 'USED');
 		{% endif %}
 	</td>
 	<td>
-		<a href="{{base_url}}admin/edit?t=masterlist&id={{item.id}}">
+		{% set ttype %}
+		{% if item.type_id == 1%}profile{%endif%}
+		{% if item.type_id == 2%}meme{%endif%}
+		{% if item.type_id == 3%}funfact{%endif%}
+		{% endset %}
+		<a href="{{base_url}}admin/edit?t={{ttype}}&id={{item.id}}">
 			<img src="{{base_url}}static/adm/img/editicon.gif">
 		</a> 
 	</td>
@@ -84,7 +88,7 @@ $stas = array('1'=>'AVAILABLE','2'=>'PENDING','3' => 'READY','4'=> 'USED');
 		<input type="checkbox" name="selected[]" value="{{item.id}}">  	
 	</td> 
 	<td>
-		<a class="btn btn-default btn-mini" href="{{base_url}}preview?t=masterlist&id={{item.id}}">
+		<a class="btn btn-default btn-mini" data-toggle="modal" data-target="#mlist-preview" data-href="{{base_url}}admin/preview?type_id={{item.type_id}}&id={{item.id}}">
 		Preview 
 		</a> 
 	</td>

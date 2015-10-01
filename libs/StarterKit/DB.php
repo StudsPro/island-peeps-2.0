@@ -109,6 +109,11 @@ class DB
 		$this->store($model);
 	}
 	
+	public function updateColumnMulti($model,$key,$value,$ids)
+	{
+		\R::exec('UPDATE '.$model.' SET '.$key.'='.$value.' WHERE id IN ('.implode(',',$ids).')');
+	}
+	
 	public function delete($model,$key,$value)
 	{
 		\R::exec('DELETE FROM '.$model.' WHERE '.$key.'=:value',[':value'=>$value]);
@@ -194,10 +199,75 @@ class DB
 	{
 		return \R::getCell('SELECT id FROM category WHERE name=:name',[':name'=>$name]);
 	}
-	
-	public function getMasterList()
+	public function catById($id)
 	{
-		$data = \R::getAll('SELECT a.*,b.name AS affiliate,c.name AS type FROM masterlist a INNER JOIN admin b ON a.admin_id=b.id JOIN type c ON a.type_id=c.id');
+		return \R::getCell('SELECT name FROM category WHERE id=:id',[':id'=>$id]);
+	}
+	
+	public function getMasterList($type_id,$cat_id,$sort)
+	{
+		$sql = 'SELECT a.*,b.name AS affiliate,c.name AS type FROM masterlist a INNER JOIN admin b ON a.admin_id=b.id JOIN type c ON a.type_id=c.id';
+		$params = [];
+		if($type_id){
+			$sql .= ' WHERE a.type_id=:tid';
+			$params = array_merge($params,[':tid'=>$type_id]);
+		}
+		if($cat_id){
+			if($type_id){
+				$sql .= ' AND ';
+			}else{
+				$sql .= ' WHERE ';
+			}
+			$sql .= ' a.category_id=:cid';
+			$params = array_merge($params,[':cid'=>$cat_id]);
+		}
+		if($sort){
+			switch($sort){
+				case 'ABC':
+					$sql .= ' ORDER BY a.title ASC';
+				break;
+				case 'Available':
+					if($cat_id || $type_id){
+						$sql .= ' AND a.status="1"';
+					}else{
+						$sql .= ' WHERE a.status="1"';
+					}
+				break;
+				case 'Pending':
+					if($cat_id || $type_id){
+						$sql .= ' AND a.status="2"';
+					}else{
+						$sql .= ' WHERE a.status="2"';
+					}
+				break;
+				case 'Ready':
+					if($cat_id || $type_id){
+						$sql .= ' AND a.status="3"';
+					}else{
+						$sql .= ' WHERE a.status="3"';
+					}
+				break;
+				case 'Used':
+					if($cat_id || $type_id){
+						$sql .= ' AND a.status="4"';
+					}else{
+						$sql .= ' WHERE a.status="4"';
+					}
+				break;
+			}
+		}
+		if(!empty($params)){
+			$data = \R::getAll($sql,$params);
+		}else{
+			$data = \R::getAll($sql);	
+		}
+		return $data;
+	}
+	
+	public function getPeopleProfile($id)
+	{
+		$data = \R::getRow('SELECT * FROM masterlist WHERE id=:id',[':id'=>$id]);
+		$data['regions_list'] = \R::getAll('SELECT * FROM country WHERE id IN ('.$data['regions'].')');
 		return $data;
 	}
 	
