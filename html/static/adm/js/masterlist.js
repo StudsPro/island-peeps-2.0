@@ -11,7 +11,7 @@ $(function(){
 		}
 		var table = tbl.DataTable({
 			"sDom": "<'row' <'col-xs-3'l><'col-xs-6'f>r>t<'row'<'col-xs-4'i><'col-xs-7'p> >",
-			"aaSorting": [[2, "desc"]],
+			"aaSorting": [[0, "asc"]],
 			"iDisplayLength": per,
 			"responsive": true,
 			"language": {

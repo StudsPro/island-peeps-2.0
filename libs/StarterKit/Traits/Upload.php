@@ -7,9 +7,9 @@ trait Upload
 	
 	private function square_thumbs($img_name,$files,$sizes = [60,220,800],$min_width=120,$min_height=120)
 	{
-		$this->precheck($img_name);
+		$this->precheck($img_name,$files);
 		
-		$image_temp = $files[$image_name]['tmp_name'];
+		$image_temp = $files[$img_name]['tmp_name'];
 		@$image_info = getimagesize($image_temp);
 		$exif = [IMAGETYPE_GIF,IMAGETYPE_JPEG,IMAGETYPE_PNG];
 		$finfo  = ['image/gif','image/png','image/jpeg','image/pjpeg'];
@@ -108,7 +108,7 @@ trait Upload
 	//private methods
 	private function img_upload($img_name,$files,$min_width = 120, $min_height = 120)
 	{
-		$this->precheck($img_name); //performs basic file upload prechecks
+		$this->precheck($img_name,$files); //performs basic file upload prechecks
 		
 		$image_temp = $files[$img_name]['tmp_name'];
 		@$image_info = getimagesize($image_temp);
@@ -170,7 +170,7 @@ trait Upload
 		return $this->putFile($image_temp,'.'.$type2);
 	}
 	
-	private function precheck($a)
+	private function precheck($a,$files)
 	{
 		if( empty($files) || !isset($files[$a]) ){
 			throw new \exception('You must select an image!');

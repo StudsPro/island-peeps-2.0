@@ -2,7 +2,6 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
-			<h3 class="page-title">Modify/Listing Countries</h3>
 			<ul class="breadcrumb breadcrumb-arrows breadcrumb-default">
 				<li><a href="{{base_url}}admin"><i class="fa fa-home fa-lg"></i></a></li>
 				<li><a href="{{base_url}}admin/countries">Countries</a></li>
@@ -18,7 +17,7 @@
 				<div class="panel-heading">
 					<h3 class="panel-title">{{action}}</h3>
 				</div>
-				<form method="post" class="contains-file form-horizontal" action="{{base_url}}admin/api/masterlist{%if item is defined %}?id={{item.id}}{%endif%}" data-callback="countryAddEdit">
+				<form method="post" class="contains-file form-horizontal" action="{{base_url}}admin/api/country{%if item is defined %}?id={{item.id}}{%endif%}" data-callback="countryAE">
 					<div class="panel-body">  
 						<div class="form-group">
 							<label for="name" class="col-md-2 control-label"> Country Name <span class="require">*</span></label>
@@ -29,7 +28,7 @@
 						<div class="form-group">
 							<label for="title" class="col-md-2 control-label">Description</label>
 							<div class="col-md-5">
-								<textarea name="description" rows="8" cols="10" class="form-control input-md">{{item.description}}</textarea>   
+								<textarea name="description" rows="8" cols="10" class="form-control input-md">{{item.description|raw}}</textarea>   
 							</div>
 						</div>
 						<div class="form-group">
@@ -108,19 +107,19 @@
 						<div class="form-group">
 							<label for="name" class="col-md-2 control-label"> Motto <span class="require">*</span></label>
 							<div class="col-md-5">
-								<input type="text" name="motto" value="{{item.motto}}" class="form-control input-md" />
+								<input type="text" name="motto" value="{{item.motto|raw}}" class="form-control input-md" />
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="name" class="col-md-2 control-label"> Anthem <span class="require">*</span></label>
 							<div class="col-md-5">
-								<input type="text" name="anthem" value="{{item.anthem}}" class="form-control input-md" />
+								<input type="text" name="anthem" value="{{item.anthem|raw}}" class="form-control input-md" />
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="name" class="col-md-2 control-label"> National Dish <span class="require">*</span></label>
 							<div class="col-md-5">
-								<input type="text" name="national_dish" value="{{item.national_dish}}" class="form-control input-md" />
+								<input type="text" name="national_dish" value="{{item.national_dish|raw}}" class="form-control input-md" />
 							</div>
 						</div>
 						<div class="container">
@@ -187,4 +186,14 @@
 		</div>
 	</div>
 </div>
+<script>
+function countryAE(data)
+{
+	if(data.error == 0){
+		sk.alert('The operation completed successfully.','success');
+	}else{
+		sk.alert(data.message,'error');
+	}
+}
+</script>
 {% include 'widgets/footer.twig' %}

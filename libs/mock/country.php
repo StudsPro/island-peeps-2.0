@@ -106,8 +106,8 @@ foreach($data as &$row)
 {
 	foreach($expand as $z){
 		$x = json_decode($row[$z],true);
-		$row = array_merge($row,$x);
 		unset($row[$z]);
+		$row = array_merge($row,$x);
 		$row['ethnic_data'] = $row['flag_shortdesc'];
 		unset($row['flag_shortdesc']);
 	}
@@ -122,7 +122,18 @@ foreach($tmp as $k)
 
 foreach($data as $row)
 {
-	$t = $db->model('country');
+	$t = $db->findOne('country',' name = ? ',[$row['name']]);
 	$filter->generate_model($t,[],$optional,$row);
+	$t->uri = strtolower(url_safe($t->name));
 	$db->store($t);
+}
+
+function url_safe($title)
+{
+	$title = preg_replace('/[^A-Za-z 0-9]/','',$title);
+	$title = preg_replace('/[\t\n\r\0\x0B]/', '', $title);
+	$title = preg_replace('/([\s])\1+/', ' ', $title);
+	$title = trim($title);
+	$title = str_replace(' ','-',$title);
+	return $title;
 }

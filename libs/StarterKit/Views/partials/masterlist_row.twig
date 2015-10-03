@@ -15,18 +15,20 @@ $stas = array('1'=>'AVAILABLE','2'=>'PENDING','3' => 'READY','4'=> 'USED');
 		<div style="display:none;">
 			<div id="demo{{loop.index}}_tip">
 				<div class="row">
-					<div class="col-md-12">
+					{% if item.type_id == 1 %}
+					<div class="col-md-11">
 						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
-							<img src="{{item.image|default(base_url ~ 'static/adm/img/no-img.png')}}" class="img catch-e" width="100%">
+							<img src="{{item.img|default(base_url ~ 'static/adm/img/no-img.png')}}" class="img catch-e" width="100%">
 						</div>
 						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+							<span class="label label-success pull-right">People Profile</span>
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <h4>{{item.title}}</h4> </div>
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b> Region :       </b>{{item.region}}</div>
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b> Category :     </b>{{item.category}}</div>
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b> Date of Birth : </b> {{item.dob}} </div> 
 						</div>
 					</div>
-					<div class="col-md-12">
+					<div class="col-md-11">
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b>You Tube : </b> </div>
 						<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9" >{{item.youtube}}</div>
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b>Profile Details : </b> </div>
@@ -36,8 +38,80 @@ $stas = array('1'=>'AVAILABLE','2'=>'PENDING','3' => 'READY','4'=> 'USED');
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b>Facebook fun page  :</b> {{item.fb_fanpage}}</div>
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b>Twitter  : </b> {{item.tw_profile}}</div> 
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b>Twitter fun page  : </b> {{item.tw_fanpage}}</div>
-						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b>Status  :</b> {{item.status_text}}</div>
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b>Status  :</b>
+							{% if item.status == 1 %}
+							<button class="btn btn-mini btn-success" type="button">Available</button>
+							{% endif %}
+							{% if item.status == 2 %}
+							<button class="btn btn-mini btn-warning" type="button">Pending</button>
+							{% endif %}
+							{% if item.status == 3 %}
+							<button class="btn btn-mini btn-ready" type="button">Ready</button>
+							{% endif %}
+							{% if item.status == 4 %}
+							<button class="btn btn-mini btn-danger" type="button">Published</button>
+							{% endif %}
+						</div>
 					</div>
+					{% endif %}
+					{% if item.type_id == 2 %}
+					<div class="col-md-10">
+						<div class="col-md-12">
+							<h4><b>{{item.title}}</b><span class="label label-danger pull-right">Meme</span></h4>
+							<img src="{{item.img|default(base_url ~ 'static/adm/img/no-img.png')}}" class="img catch-e" width="100%">
+						</div>
+					</div>
+					<div class="col-md-10">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b>Status  :</b>
+							{% if item.status == 1 %}
+							<button class="btn btn-mini btn-success" type="button">Available</button>
+							{% endif %}
+							{% if item.status == 2 %}
+							<button class="btn btn-mini btn-warning" type="button">Pending</button>
+							{% endif %}
+							{% if item.status == 3 %}
+							<button class="btn btn-mini btn-ready" type="button">Ready</button>
+							{% endif %}
+							{% if item.status == 4 %}
+							<button class="btn btn-mini btn-danger" type="button">Published</button>
+							{% endif %}
+						</div>
+					</div>
+					{% endif %}
+					{% if item.type_id == 3 %}
+					<div class="col-md-11">
+						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+							<img src="{{item.img|default(base_url ~ 'static/adm/img/no-img.png')}}" class="img catch-e" width="100%">
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+							<span class="label label-info pull-right">Fun Fact</span>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <h4>{{item.title}}</h4> </div>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b> Region :       </b>{{item.region}}</div>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b> Category :     </b>{{item.category}}</div>
+						</div>
+					</div>
+					<div class="col-md-11">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b>You Tube : </b> </div>
+						<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9" >{{item.youtube}}</div>
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b>Details : </b> </div>
+						<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9" >{{item.description|nl2br}}</div>
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b>Tags :</b> {{item.tags}}</div>
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> <b>Status  :</b>
+							{% if item.status == 1 %}
+							<button class="btn btn-mini btn-success" type="button">Available</button>
+							{% endif %}
+							{% if item.status == 2 %}
+							<button class="btn btn-mini btn-warning" type="button">Pending</button>
+							{% endif %}
+							{% if item.status == 3 %}
+							<button class="btn btn-mini btn-ready" type="button">Ready</button>
+							{% endif %}
+							{% if item.status == 4 %}
+							<button class="btn btn-mini btn-danger" type="button">Published</button>
+							{% endif %}
+						</div>
+					</div>
+					{% endif %}
 				</div>  
 			</div>
 		</div> 

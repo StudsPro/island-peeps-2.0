@@ -169,10 +169,9 @@ class AdminAPI
 		{
 			$img = $admin->avatar;
 			$upl = trim(implode('',$this->square_thumbs('avatar_img',$app->files,[120],120,120)));
-			
+			$admin->avatar = $upl;
 			if(!empty($img) && $admin->avatar !== $img && $upl !== null){
 				$this->delFile($img);
-				$admin->avatar = $upl;
 			}
 		}
 		catch(\exception $e)
@@ -246,6 +245,7 @@ class AdminAPI
 	{
 		$app = $this->app;
 		$filter = $app->filter;
+		$get = $app->get;
 		$post = $app->post; 
 		$db = $app->db;
 		$admin = $app->session['admin'];
@@ -257,7 +257,7 @@ class AdminAPI
 		$post['regions'] = isset($_POST['regions']) ? $_POST['regions'] : [];
 		
 		$required = [
-			'name'=>['min','rmnl'],
+			'title'=>['min','rmnl'],
 			'category_id'=>'cat_id',
 			'tags'=>'tag_fm',
 			'status'=>'status_fm',
@@ -265,9 +265,9 @@ class AdminAPI
 		];
 		
 		$optional = [
-			'month'=>,
-			'day'=>,
-			'year'=>,
+			'month'=>'min',
+			'day'=>'min',
+			'year'=>'min',
 			'description'=>'min',
 			'youtube'=>'c_youtube',
 			'fb_profile'=>'min',
@@ -290,7 +290,7 @@ class AdminAPI
 			$input = explode(',',$input);
 			$input = array_map('trim',$input);
 			if(count($input) > 1){
-				$input = implode(',',$input)
+				$input = implode(',',$input);
 			}else{
 				$input = $input[0];
 			}
@@ -305,15 +305,15 @@ class AdminAPI
 			return $input;
 		});
 		
-		$filter->custom_function('region_fm',function($input) use($filter,$db){
+		$filter->custom_filter('region_fm',function($input) use($filter,$db){
 			if(!is_array($input)){
 				throw new \exception('Invalid input format:: Regions');
 			}
 			$input = array_map([$filter,'cast_int'],$input);
 			$x = count($input);
-			$y = $db->getCell('SELECT COUNT(id) FROM country WHERE id IN('.implode(',',$input).')');
+			$y = (int) $db->getCell('SELECT COUNT(id) FROM country WHERE id IN('.implode(',',$input).')');
 			if($x !== $y){
-				throw new \exception('1 or more regions is invalid');
+				throw new \exception('1 or more regions is invalid X: '.$x.' Y: '.$y);
 			}
 			return implode(',',$input);
 		});
@@ -346,7 +346,7 @@ class AdminAPI
 			return $input;
 		});
 		
-		$filter->custom_function('c_twitter',function($input) use($filter){
+		$filter->custom_filter('c_twitter',function($input) use($filter){
 			$input = $filter->min($input);
 			if(strlen($input) > 120){
 				throw new \exception('Twitter Description may only contain a maximum of 120 charachters.');
@@ -358,11 +358,12 @@ class AdminAPI
 		
 		if($id){
 			$t = $db->model('masterlist',$id);
-			if($t->id !== $id){
-				throw new \exception('');
+			
+			if( (int) $t->id !== $id){
+				throw new \exception('a 1 ');
 			}
-			if($t->type_id !== 1){
-				throw new \exception('');
+			if( (int) $t->type_id !== 1){
+				throw new \exception('a 2');
 			}
 		}else{
 			$t = $db->model('masterlist');
@@ -371,6 +372,7 @@ class AdminAPI
 		$filter->generate_model($t,$required,$optional,$post);
 		
 		try{
+			
 			$t->img = $this->img_upload('uploaded_image',$app->files);
 		}
 		catch(\exception $e){
@@ -378,7 +380,281 @@ class AdminAPI
 		}
 		
 		$t->type_id = 1;
+		if(!isset($t->admin_id)){
+			$t->admin_id = $admin->id;
+		}
+		$db->store($t);
 		
+		return ['error'=>0,'message'=>1];
+	}
+	
+	public function country()
+	{
+		$app = $this->app;
+		$filter = $app->filter;
+		$get = $app->get;
+		$post = $app->post; 
+		$db = $app->db;
+		$admin = $app->session['admin'];
+		
+		$required = [
+			'name'=>'min',
+			'title_banner'=>'min',
+			'title'=>'min',
+			'longitude'=>'min',
+			'latitude'=>'min',
+			'motto'=>'min',
+			'anthem'=>'min',
+			'national_dish'=>'min',
+			'capital'=>'min',
+			'language'=>'min',
+			'population'=>'min',
+			'status'=>'status_fm'
+		];
+		
+		$optional = [
+			'month'=>'min',
+			'day'=>'min',
+			'year'=>'min',
+			'description'=>'min'
+		];
+		
+		$filter->custom_filter('status_fm',function($input) use($filter){
+			$input = $filter->cast_int($input);
+			if(!in_array($input,[1,2,3,4])){
+				throw new \exception('Invalid status');
+			}
+			return $input;
+		});
+		
+		$id = isset($get['id']) ? $filter->cast_int($get['id']) : false;
+		
+		if($id){
+			$t = $db->model('country',$id);
+			
+			if( (int) $t->id !== $id){
+				throw new \exception('a 1 ');
+			}
+
+		}else{
+			$t = $db->model('country');
+		}
+		
+		$filter->generate_model($t,$required,$optional,$post);
+		
+		
+		$images = [
+			'img_file'=>'img',
+			'map_file'=>'map_img',
+			'flag_file'=>'flag_img',
+			'cover_file'=>'cover_img'
+		];
+		
+		
+		foreach($images as $k=>$v){
+			try{
+				$img = $t->{$v};
+				$upl = $this->img_upload($k,$app->files,1,1);
+				$t->{$v} = $upl;
+				if(!empty($img) && $t->{$v} !== $img && $upl !== null){
+					$this->delFile($img);
+				}	
+			}
+			catch(\exception $e){}
+		}
+		if(!isset($t->admin_id)){
+			$t->admin_id = $admin->id;
+		}
+		$db->store($t);
+		return ['error'=>0,'message'=>1];
+	}
+	
+	public function meme()
+	{
+		$app = $this->app;
+		$filter = $app->filter;
+		$get = $app->get;
+		$post = $app->post; 
+		$db = $app->db;
+		$admin = $app->session['admin'];
+		
+		$required = [
+			'title'=>'min',
+		];
+		
+		$optional = [
+		];
+		
+		$id = isset($get['id']) ? $filter->cast_int($get['id']) : false;
+		
+		if($id){
+			$t = $db->model('masterlist',$id);
+			
+			if( (int) $t->id !== $id){
+				throw new \exception('a 1 ');
+			}
+			
+			if( (int) $t->type_id !== 2){
+				throw new \exception('a 2');
+			}
+
+		}else{
+			$t = $db->model('country');
+		}
+		
+		$filter->generate_model($t,$required,$optional,$post);
+		
+		
+		$images = [
+			'uploaded_image'=>'img',
+		];
+		
+		
+		foreach($images as $k=>$v){
+			try{
+				$img = $t->{$v};
+				$upl = $this->img_upload($k,$app->files,1,1);
+				$t->{$v} = $upl;
+				if(!empty($img) && $t->{$v} !== $img && $upl !== null){
+					$this->delFile($img);
+				}	
+			}
+			catch(\exception $e){}
+		}
+		if(!isset($t->admin_id)){
+			$t->admin_id = $admin->id;
+		}
+		$t->type_id = 2;
+		$db->store($t);
+		return ['error'=>0,'message'=>1];
+	}
+	
+	public function funfact()
+	{
+		$app = $this->app;
+		$filter = $app->filter;
+		$get = $app->get;
+		$post = $app->post; 
+		$db = $app->db;
+		$admin = $app->session['admin'];
+		
+		//unset regions[] and replace with regions
+		if(isset($post['regions[]'])){
+			unset($post['regions[]']);
+		}
+		$post['regions'] = isset($_POST['regions']) ? $_POST['regions'] : [];
+		
+		$required = [
+			'title'=>['min','rmnl'],
+			'tags'=>'tag_fm',
+			'status'=>'status_fm',
+			'regions'=>'region_fm',
+		];
+		
+		$optional = [
+			'description'=>'min',
+			'youtube'=>'c_youtube',
+			'tw_description'=>'c_twitter',
+		];
+		
+		$filter->custom_filter('tag_fm',function($input) use($filter){
+			$input = $filter->min($input);
+			$input = explode(',',$input);
+			$input = array_map('trim',$input);
+			if(count($input) > 1){
+				$input = implode(',',$input);
+			}else{
+				$input = $input[0];
+			}
+			return $input;
+		});
+		
+		$filter->custom_filter('status_fm',function($input) use($filter){
+			$input = $filter->cast_int($input);
+			if(!in_array($input,[1,2,3,4])){
+				throw new \exception('Invalid status');
+			}
+			return $input;
+		});
+		
+		$filter->custom_filter('region_fm',function($input) use($filter,$db){
+			if(!is_array($input)){
+				throw new \exception('Invalid input format:: Regions');
+			}
+			$input = array_map([$filter,'cast_int'],$input);
+			$x = count($input);
+			$y = (int) $db->getCell('SELECT COUNT(id) FROM country WHERE id IN('.implode(',',$input).')');
+			if($x !== $y){
+				throw new \exception('1 or more regions is invalid X: '.$x.' Y: '.$y);
+			}
+			return implode(',',$input);
+		});
+		
+		$filter->custom_filter('c_youtube',function($input){
+			$input = preg_replace('~
+				https?://         # Required scheme. Either http or https.
+				(?:[0-9A-Z-]+\.)? # Optional subdomain.
+				(?:               # Group host alternatives.
+				  youtu\.be/      # Either youtu.be,
+				| youtube         # or youtube.com or
+				  (?:-nocookie)?  # youtube-nocookie.com
+				  \.com           # followed by
+				  \S*             # Allow anything up to VIDEO_ID,
+				  [^\w\s-]       # but char before ID is non-ID char.
+				)                 # End host alternatives.
+				([\w-]{11})      # $1: VIDEO_ID is exactly 11 chars.
+				(?=[^\w-]|$)     # Assert next char is non-ID or EOS.
+				(?!               # Assert URL is not pre-linked.
+				  [?=&+%\w.-]*    # Allow URL (query) remainder.
+				  (?:             # Group pre-linked alternatives.
+					[\'"][^<>]*>  # Either inside a start tag,
+				  | </a>          # or inside <a> element text contents.
+				  )               # End recognized pre-linked alts.
+				)                 # End negative lookahead assertion.
+				[?=&+%\w.-]*        # Consume any URL (query) remainder.
+				~ix', 
+				'$1',
+			$input);
+			return $input;
+		});
+		
+		$filter->custom_filter('c_twitter',function($input) use($filter){
+			$input = $filter->min($input);
+			if(strlen($input) > 120){
+				throw new \exception('Twitter Description may only contain a maximum of 120 charachters.');
+			}
+			return $input;
+		});
+		
+		$id = isset($get['id']) ? $filter->cast_int($get['id']) : false;
+		
+		if($id){
+			$t = $db->model('masterlist',$id);
+			
+			if( (int) $t->id !== $id){
+				throw new \exception('a 1 ');
+			}
+			if( (int) $t->type_id !== 3){
+				throw new \exception('a 2');
+			}
+		}else{
+			$t = $db->model('masterlist');
+		}
+		
+		$filter->generate_model($t,$required,$optional,$post);
+		
+		try{
+			
+			$t->img = $this->img_upload('uploaded_image',$app->files);
+		}
+		catch(\exception $e){
+			
+		}
+		
+		$t->type_id = 3;
+		if(!isset($t->admin_id)){
+			$t->admin_id = $admin->id;
+		}
 		$db->store($t);
 		
 		return ['error'=>0,'message'=>1];

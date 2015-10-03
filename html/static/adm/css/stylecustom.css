@@ -1,5 +1,5 @@
  .wrapper .main {
-        margin-top: 40px;
+        margin-top: 60px;
       }
       @media screen and (max-width: 480px) {
         .wrapper .main {
@@ -260,7 +260,7 @@
 
 .red{font-size:12px;color: red;}
 .require{font-size:14px;color: red;}
-.wrapper .main { margin-top: 40px;  }
+.wrapper .main { margin-top: 60px;  }
  /* Header css*/
 .top_bar{background-color: #3b5998; background-image: none; border-color: #324e78 #324e78 #003781; }
 .maxheight{min-height:458px !important;}

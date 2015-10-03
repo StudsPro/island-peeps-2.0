@@ -17,7 +17,7 @@
 					<div class="panel-heading">
 							<h3 class="panel-title">{{action}}</h3>
 					</div>
-					<form method="post" class="contains-file form-horizontal" action="{{base_url}}admin/api/profile{%if item is defined %}?id={{item.id}}{%endif%}" data-callback="profileAE">
+					<form method="post" class="contains-file form-horizontal" action="{{base_url}}admin/api/funfact{%if item is defined %}?id={{item.id}}{%endif%}" data-callback="funfactAE">
 						<div class="panel-body">  
 							<div class="form-group">
 								<label for="title" class="col-md-2 control-label"> Select Region <span class="require">*</span></label>
@@ -30,26 +30,11 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="title" class="col-md-2 control-label">Name <span class="require">*</span></label>
+								<label for="title" class="col-md-2 control-label">Title <span class="require">*</span></label>
 								<div class="col-md-5">
 									<input type="text" name="title" value="{{item.title}}" class="form-control input-md" />
 								</div>
-							</div>
-							<div class="form-group">
-								<label for="title" class="col-md-2 control-label"> Category <span class="require">*</span></label>
-								<div class="col-md-5">
-									<select class="form-control input-md select-onload" name="category_id" data-selected="{{item.category_id}}">
-										<option value="invalid">--SELECT--</option>
-										{% for item2 in categories %}
-										<option value="{{item2.id}}">{{item2.name}}</option>
-										{% endfor %}
-									</select>    
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="title" class="col-md-2 control-label">Date of Birth</label>
-								{% include 'widgets/yearinput.twig' %}
-							</div>    	
+							</div>   	
 							<div class="form-group">
 								<label for="title" class="col-md-2 control-label"> Image</label>
 								<div class="col-md-5">
@@ -66,7 +51,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="title" class="col-md-2 control-label"> Profile Details</label>
+								<label for="title" class="col-md-2 control-label"> Fun Fact Details</label>
 								<div class="col-md-5">
 									<textarea name="description" rows="8" cols="10" class="form-control input-md">{{item.description}}</textarea>   
 								</div>
@@ -84,35 +69,11 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="title" class="col-md-2 control-label">Facebook Profile</label>
-								<div class="col-md-5">
-									<input type="text" name="fb_profile" value="{{item.fb_profile}}" class="form-control input-md"/>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="title" class="col-md-2 control-label">Facebook Fan Page</label>
-								<div class="col-md-5">
-									<input type="text" name="fb_fanpage" value="{{item.fb_fanpage}}" class="form-control input-md"/>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="title" class="col-md-2 control-label">Twitter Profile</label>
-								<div class="col-md-5">
-									<input type="text" name="tw_profile" value="{{item.tw_profile}}" class="form-control input-md"/>
-								</div>
-							</div>
-							<div class="form-group">
 								<label for="title" class="col-md-2 control-label">Twitter Description</label>
 								<div class="col-md-5">
 									<input type="text" name="tw_description" value="{{item.tw_description}}" maxlength="120" class="form-control input-md"/>
 									<br/>
 									<span style="color:#009100">120 characters limit.</span>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="title" class="col-md-2 control-label">Twitter Fan Page</label>
-								<div class="col-md-5">
-									<input type="text" name="tw_fanpage" value="{{item.tw_fanpage}}" class="form-control input-md"/>
 								</div>
 							</div>
 							<div class="form-group" id="rejectblock">
@@ -140,7 +101,7 @@
 	</div>
 </div>		
 <script>
-function profileAE(data)
+function funfactAE(data)
 {
 	if(data.error == 0){
 		sk.alert('The operation completed successfully.','success');

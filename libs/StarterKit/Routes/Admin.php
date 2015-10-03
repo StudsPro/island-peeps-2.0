@@ -22,9 +22,7 @@ class Admin extends ViewController
 			if(!$this->app->is_admin()){
 			
 				if(\StarterKit\Admin::restore($_COOKIE['__restore']) === true){
-					if(!$this->app->is_admin()){
-						$this->app->session['admin'] = $this->app->args['admin'] = $_SESSION['admin'];
-					}
+					$this->app->session['admin'] = $this->app->args['admin'] = $_SESSION['admin'];
 				}
 			}
 		}
@@ -102,6 +100,8 @@ class Admin extends ViewController
 		}
 		if(isset($get['sort'])){
 			$args['sort'] = $sort = $get['sort'];
+		}else{
+			$args['sort'] = $sort = 'ABC';
 		}
 		
 		$args['scripts'] = [
@@ -144,10 +144,14 @@ class Admin extends ViewController
 				$args['regions'] = $db->getAll('SELECT * FROM country');
 			break;
 			case 'meme':
-			
+				$template = 'crud_meme.twig';
+				$args['action'] = 'Create Meme';
 			break;
 			case 'funfact':
-			
+				$template = 'crud_funfact.twig';
+				$args['action'] = 'Create Fun Fact';
+				$args['categories'] = $db->getAll('SELECT * FROM category');
+				$args['regions'] = $db->getAll('SELECT * FROM country');
 			break;
 			case 'country':
 				$template = 'crud_country.twig';
@@ -175,20 +179,27 @@ class Admin extends ViewController
 		switch($t){
 			case 'profile':
 				$template = 'crud_profile.twig';
-				$args['action'] = 'Create People Profile';
+				$args['action'] = 'Edit People Profile';
 				$args['categories'] = $db->getAll('SELECT * FROM category');
 				$args['regions'] = $db->getAll('SELECT * FROM country');
 				$args['item'] = $db->getPeopleProfile($id);
 			break;
 			case 'meme':
-			
+				$template = 'crud_meme.twig';
+				$args['action'] = 'Edit Meme';
+				$args['item'] = $db->getRow('SELECT * FROM masterlist WHERE type_id="2" AND id=:id',[':id'=>$id]);
 			break;
 			case 'funfact':
-			
+				$template = 'crud_funfact.twig';
+				$args['action'] = 'Edit Fun Fact';
+				$args['categories'] = $db->getAll('SELECT * FROM category');
+				$args['regions'] = $db->getAll('SELECT * FROM country');
+				$args['item'] = $db->getPeopleProfile($id);
 			break;
 			case 'country':
 				$template = 'crud_country.twig';
-				$args['action'] = 'Create Country';
+				$args['action'] = 'Edit Country';
+				$args['item'] = $db->getRow('SELECT * FROM country WHERE id=:id',[':id'=>$id]);
 			break;
 			case false:
 			default:
@@ -235,6 +246,16 @@ class Admin extends ViewController
 		
 		switch($type_id){
 			case 1:
+				$args['profile'] = $db->getPeopleProfile($id);
+				parent::render('partials/profile.twig',$args);
+			break;
+			
+			case 2:
+			
+			
+			break;
+			
+			case 3:
 				$args['profile'] = $db->getPeopleProfile($id);
 				parent::render('partials/profile.twig',$args);
 			break;
