@@ -281,3 +281,242 @@ Dashboard = (function($) {
     init: init
   };
 })(jQuery);
+
+$(function(){
+	var sampledata = null; 
+	var userTypeChart = '<?= $userType ? 'yes' : ''?>';
+	var pieDataUserType1 = [<?= rtrim($userType,',')?>];
+
+	var deviceChart = '<?= $device ? 'yes' : ''?>';
+	var pieDataDevice = [<?=rtrim($device,',')?>];
+
+	var mobdivChart = '<?= $mobdiv ? 'yes' : ''?>';
+	var pieDataMobileDevice = [<?=rtrim($mobdiv,',')?>];
+
+	var sourceChart = '<?= $sourcemedium ? 'yes' : ''?>';
+	var pieDataSource = [<?=rtrim($sourcemedium,',')?>];
+
+	var keywordChart = '<?= $gkeyword ? 'yes' : ''?>';
+	var pieDataKeyword = [<?=rtrim($gkeyword,',')?>];
+
+	var socialChart = '<?= $socialtr ? 'yes' : ''?>';
+	var pieDataSocial = [<?=rtrim($socialtr,',')?>];
+
+	var countryChart = '<?= $countries ? 'yes' : ''?>';
+
+	//var pieDataCountry = [<?=rtrim($countries,',')?>];
+	var pieDataCountry = [<?=rtrim($countries,',')?>];
+
+
+	//	var cityChart = '</?= $cities ? 'yes' : ''?>';
+	//	var pieDataCity = [</?=$cities?>];
+
+	var browsersChart = '<?= $browsers ? 'yes' : ''?>';
+	var pieDataBrowsers = [<?=rtrim($browsers,',')?>];
+
+	var osChart = '<?= $os ? 'yes' : ''?>';
+	var pieDataOS = [<?=rtrim($os,',')?>];
+
+	var networkLocationsChart = '<?= $networkLocations ? 'yes' : ''?>';
+	var pieDataNetworkLocations = [<?=rtrim($networkLocations,',')?>];
+
+	var screenResolutionsChart = '<?= $screenResolutions ? 'yes' : ''?>';
+	var pieDataScreenResolutions = [<?=rtrim($screenResolutions,',')?>];
+
+	var socialChart = '<?= $socialtr ? 'yes' : ''?>';
+	var pieDataSocial = [<?=rtrim($socialtr,',')?>];
+
+	var pageTrackChart = '<?= $pagetrackingviews ? 'yes' : ''?>';
+	var chartDataPageTrack = [<?=rtrim($pagetrackingviews,',')?>];
+
+	var propercChart = '<?= $visitspercountry ? 'yes' : ''?>';
+	var pieDataproperc = [<?=rtrim($visitspercountry,',')?>];
+
+	var profilepercChart = '<?= $profilepercountry ? 'yes' : ''?>';
+	var pieDataprofileperc = [<?=rtrim($profilepercountry,',')?>];
+
+	var pageTrackChart = '<?= $month_pagetrackingviews ? 'yes' : ''?>';
+	var chartDataPageTrack = [<?=rtrim($month_pagetrackingviews,',')?>];
+
+	if(profilepercChart){
+
+	json = pieDataprofileperc;
+	//			AmCharts.ready(function() {
+	// SERIAL CHART
+	chart = new AmCharts.AmSerialChart();
+	chart.dataProvider = json;chart.categoryField = "country";chart.marginRight = 0;chart.marginTop = 0; 
+	//chart.autoMarginOffset = 0;
+	// the following two lines makes chart 3D
+	chart.depth3D = 20;chart.angle = 30;
+	// AXES // category
+	var categoryAxis = chart.categoryAxis;categoryAxis.labelRotation = 90;categoryAxis.gridPosition = "start";
+	categoryAxis.inside = true;categoryAxis.gridCount = json.length;categoryAxis.autoGridCount = false;
+	// value
+	var valueAxis = new AmCharts.ValueAxis();valueAxis.title = "Result";chart.addValueAxis(valueAxis);
+	// GRAPH            
+	var graph = new AmCharts.AmGraph();graph.valueField = "visits";
+	graph.colorField = "color";
+	graph.balloonText = "[[category]]: [[value]]";graph.type = "column";graph.lineAlpha = 0;graph.fillAlphas = 1;
+	chart.addGraph(graph);
+	// WRITE
+	chart.write("pie-profileperc");    
+
+	}
+
+	if(propercChart){
+
+	json = pieDataproperc;
+		//			AmCharts.ready(function() {
+		// SERIAL CHART
+		chart = new AmCharts.AmSerialChart();
+		chart.dataProvider = json;chart.categoryField = "country";chart.marginRight = 0;chart.marginTop = 0; 
+		//chart.autoMarginOffset = 0;
+		// the following two lines makes chart 3D
+		chart.depth3D = 20;chart.angle = 30;
+		// AXES // category
+		var categoryAxis = chart.categoryAxis;categoryAxis.labelRotation = 90;categoryAxis.gridPosition = "start";
+		categoryAxis.inside = true;categoryAxis.gridCount = json.length;categoryAxis.autoGridCount = false;
+		// value
+		var valueAxis = new AmCharts.ValueAxis();valueAxis.title = "Visit";chart.addValueAxis(valueAxis);
+		// GRAPH            
+		var graph = new AmCharts.AmGraph();graph.valueField = "visits";
+		graph.colorField = "color";
+		graph.balloonText = "[[category]]: [[value]]";graph.type = "column";graph.lineAlpha = 0;graph.fillAlphas = 1;
+		chart.addGraph(graph);
+		// WRITE
+		chart.write("pie-visitsperc");    
+	}
+		
+		
+	var date = new Date();
+	var d = date.getDate();
+	var m = date.getMonth();
+	var y = date.getFullYear();
+
+	var calendar = $('#calendar1').fullCalendar({
+		editable: true,
+		header: {
+			left: 'prev,next today',
+			center: 'title',
+			right: "month,agendaWeek,agendaDay",
+		},
+		events: "<?php echo $eventsurl;?>",
+		// Convert the allDay from string to boolean
+		eventRender: function(event, element, view) {
+			if (event.type =='nd'){
+
+				element.draggable = false;
+			}
+			if (event.allDay === 'true') {
+				event.allDay = true;
+			} else {
+				event.allDay = false;
+			}
+		},
+		selectable: true,
+		selectHelper: true,
+		select: function(start, end, allDay) {
+			var title = prompt('Event Title:');
+
+			if (title) {
+				var start = $.fullCalendar.formatDate(start, "yyyy-MM-dd HH:mm:ss");
+				var end = $.fullCalendar.formatDate(end, "yyyy-MM-dd HH:mm:ss");
+
+				$.ajax({
+					url:"<?=SITE_ADMIN_URL;?>calendar/add_events",
+					data: 'title='+ title+'&start='+ start +'&end='+ end  ,
+					type: "POST",
+					success: function(json) {
+					// alert(json);
+					}
+				});
+				calendar.fullCalendar('renderEvent',
+					{
+					title: title,
+					start: start,
+					end: end,
+					allDay: allDay
+					},
+					true // make the event "stick"
+				);
+			}
+			calendar.fullCalendar('unselect');
+		},
+		editable: true,
+		eventDrop: function(event, delta) {
+			var start = $.fullCalendar.formatDate(event.start, "yyyy-MM-dd HH:mm:ss");
+			var end = $.fullCalendar.formatDate(event.end, "yyyy-MM-dd HH:mm:ss");
+			$.ajax({
+				url: "<?=SITE_ADMIN_URL;?>calendar/update_events",
+				data: 'title='+ event.title+'&start='+ start +'&end='+ end +'&id='+ event.id ,
+				type: "POST",
+				success: function(json) {
+				// alert(json);
+				}
+			});
+		},
+		eventClick: function(event) {
+			var decision = confirm("Do you really want to Delete?"); 
+			if (decision) {
+			$.ajax({
+			type: "POST",
+			url: "<?=SITE_ADMIN_URL;?>calendar/delete_events",
+
+			data: "&id=" + event.id,
+			type: "POST",
+			success: function(json) {
+			//alert("Updated Successfully");
+			}
+			});
+			$('#calendar1').fullCalendar('removeEvents', event.id);
+
+			} else {
+			}
+		},
+		eventResize: function(event) {
+			var start = $.fullCalendar.formatDate(event.start, "yyyy-MM-dd HH:mm:ss");
+			var end = $.fullCalendar.formatDate(event.end, "yyyy-MM-dd HH:mm:ss");
+			$.ajax({
+				url: "<?=SITE_ADMIN_URL;?>calendar/update_events",
+				data: 'title='+ event.title+'&start='+ start +'&end='+ end +'&id='+ event.id ,
+				type: "POST",
+				success: function(json) {
+				//alert("Updated Successfully");
+				}
+			});
+		}
+	});
+	
+	$(".grid").sortable({
+		tolerance: 'pointer',
+		revert: 'invalid',
+		placeholder: 'span2 well placeholder tile',
+		forceHelperSize: true,
+		update: function() {
+			var dashmenuname =  Array(); 
+			var dashmenuorder =  Array(); 
+			var dashgetids="";
+			var dli=0;
+			$('.span2').each( function(e) {
+				if($(this).attr('id')!= '') {
+					dashgetids=$(this).attr('id');
+					dashmenuname[dli] = dashgetids;  
+					dashmenuorder[dli]= $(this).index() + 1;
+					dli++;
+				}
+			});
+			$.ajax({
+				type: 'POST',
+				cache: false,
+				url:  '<?php echo base_url();?>admin/dashboard/dragdashboradmenu',
+				data : {
+				leftmenunames : dashmenuname,
+				leftmenureorders : dashmenuorder
+				},
+				success: function(data){
+					return false;
+				}
+			});  	
+		}					
+	});
+})

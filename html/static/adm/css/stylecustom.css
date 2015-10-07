@@ -511,6 +511,7 @@ body.reduced-sidebar .social-sidebar:not(:hover) .user{
  @media (min-width: 1059px) and (max-width: 1135px) {
     ul.marquee{width: 26% !important;
     } 
+ }
 
 	.master-btn .btn {
   -moz-border-bottom-colors: none;
@@ -622,4 +623,72 @@ line-height: 1.4em;
 .big-button-grp .btn-group.big-button {
   margin-left: -5px;
   border-radius: 0;
+}
+
+
+/* chat */
+.chat, .chat.minimized{
+	transition: all 0.5s ease-in-out;
+	-webkit-transition: all 0.5s ease-in-out;
+	-moz-transition: all 0.5s ease-in-out;
+	-o-transition: all 0.5s ease-in-out;
+	-ms-transition: all 0.5s ease-in-out;
+}
+
+.chat.no-trans{
+	-moz-transition-property: none;
+	-webkit-transition-property: none;
+	-o-transition-property: none;
+	transition-property: none;
+}
+
+.chat .panel-footer{
+	padding:0;
+}
+
+.chat-widget{
+	position: fixed;
+	bottom: 0px;
+	right: 15px;
+	z-index:99999999;
+}
+.chat-widget .panel{
+	margin-bottom: 0;
+}
+.chat-widget .panel-heading{
+	cursor: pointer;
+}
+
+.chat-widget .chat {
+	width: 320px;
+}
+.chat-widget .chat.minimized {
+    width: 48px;
+    position: relative;
+    bottom: -12px;
+}
+.chat .input-group {
+	padding-top: 4px;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+.chat .panel-title {
+	line-height: 1.4;
+}
+.chat button[type="submit"] {
+	margin: 0px;
+	top: -2px;
+	height: 34px;
+	position: relative;
+}
+.chat input[type="text"] {
+	width: 257px;
+}
+.chat.minimized .hideit, .chat.minimized .panel-body, .chat.minimized .panel-footer{
+	display: none;
+	opacity:0;
+}
+
+.chat.minimized .panel-title{
+	line-height: 1;
 }

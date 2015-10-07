@@ -1,0 +1,29 @@
+{% if about|length > 0 %}
+{% for item in about %}
+<tr>
+	<td>{{loop.index}}</td>
+	<td>{{item.title}}</td>
+	<td>
+		{% if item.status == 1 %}
+		<img src="{{base_url}}static/adm/img/activepage.jpg">
+		{% else %}
+		<img src="{{base_url}}static/adm/img/inactivepage.gif">
+		{% endif %}
+	</td> 
+	<td>
+		<a href="{{base_url}}admin/edit?t=about-page&id={{item.id}}">
+		<img src="{{base_url}}static/adm/img/editicon.gif">
+		</a> 
+	</td>
+	<td>
+		<input type="checkbox" name="selected[]" value="{{item.id}}"> 
+	</td>
+</tr>
+{% endfor %}
+{% else %}
+<tr>
+	<td width="100%" colspan="100%">
+		<h3 style="text-align:center;">No Records Available.</h3>
+	</td>
+</tr>
+{% endif %}

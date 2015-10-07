@@ -2,6 +2,29 @@
 <footer id="footer">
 	<div class="container-fluid">2014 © <i>ISLAND PEEPS</i> by <a href="http://studspro.com/" target="_blank">studspro.com</a></div>
 </footer>
+
+</div>
+<div class="chat-widget">
+	<div class="chat minimized" id="rchat">
+		<div class="panel panel-default panel-chat">
+			<div class="panel-heading">
+				<div class="panel-title"><i class="fa fa-comments"></i> <span class="hideit">Chat</span>
+				</div>
+			</div>
+			<div class="panel-body">
+				<ul class="scroll maxheight_chat" data-chatlog>
+				</ul>
+			</div>
+			<div class="panel-footer">
+				<div class="input-group col-lg-10 col-md-10 col-xs-10 col-sm-11">
+					<input id="chat-input" name="md_message" autocomplete="off" type="text" placeholder="Type your message here..." class="form-control">
+					<span class="input-group-btn">
+						<button id="chat-button"  type="submit" class="btn btn-success btn-sm">Send</button>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 {% include 'widgets/script.twig' %}
 </body>

@@ -35,16 +35,15 @@ var sk = {
 		});
 	},
 
-	confirm: function(_text,confirmCB,args){
-		/*
+	confirm: function(_text,callback,args){
 		noty({
 			text: _text,
 			layout: 'center',
 			theme: 'relax',
 			buttons: [
-				{addClass: 'btn btn-sucess', text: 'Continue', onClick: function($noty) {
+				{addClass: 'btn btn-primary', text: 'Continue', onClick: function($noty) {
 						$noty.close();
-						window[confirmCB].call(window,args);
+						callback.apply(window,args);
 					}
 				},
 				{addClass: 'btn btn-danger', text: 'Cancel', onClick: function($noty) {
@@ -54,7 +53,6 @@ var sk = {
 				}
 			]
 		});
-		*/
 	}
 	
 };

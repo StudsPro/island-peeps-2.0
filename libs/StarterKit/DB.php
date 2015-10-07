@@ -264,6 +264,21 @@ class DB
 		return $data;
 	}
 	
+	public function chatLog()
+	{
+		return array_reverse(
+			\R::getAll('SELECT a.*,b.name as username,b.avatar as avatar FROM chat a JOIN admin b ON a.admin_id=b.id ORDER BY a.id DESC LIMIT 0,100')
+		);
+	}
+	
+	public function chatUpdate($id)
+	{
+		$id = (int) $id;
+		return array_reverse(
+			\R::getAll('SELECT a.*,b.name as username,b.avatar as avatar FROM chat a JOIN admin b ON a.admin_id=b.id WHERE a.id>:id ORDER BY a.id DESC',[':id'=>$id])
+		);
+	}
+	
 	public function getPeopleProfile($id)
 	{
 		$data = \R::getRow('SELECT * FROM masterlist WHERE id=:id',[':id'=>$id]);

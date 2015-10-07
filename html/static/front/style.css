@@ -1,0 +1,16 @@
+/*slider*/
+
+.slider {
+	height: 100vh;
+}
+
+.slider, .slider .header, .slider .owl-carousel, .slider .nav{
+	width: 100%;
+}
+
+.smoky-black {
+	background: rgba(0, 0, 0, 0.5);
+}
+.smoky-black.dimmer:hover {
+	background: rgba(4, 4, 4, 0.55);
+}

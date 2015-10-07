@@ -43,20 +43,35 @@ class Admin extends ViewController
 		
 		
 		$args['scripts'] = [
-			'plugins/flot/jquery.flot.js',
-			'plugins/flot/jquery.flot.selection.js',
-			'plugins/jqvmap/jquery.vmap.js',
-			'plugins/jqvmap/maps/jquery.vmap.world.js',
-			'plugins/jqvmap/data/jquery.vmap.sampledata.js',
-			'plugins/easy-pie-chart/jquery.easypiechart.min.js',
-			'plugins/jquery.sparkline/jquery.sparkline.min.js',
-			'plugins/fullcalendar/fullcalendar.min.js',
-			'plugins/justgage/lib/raphael.2.1.0.min.js',
+			'js/amcharts/raphael.js',
+			'js/amcharts/amcharts.js',
+			//'plugins/flot/jquery.flot.js',
+			//'plugins/flot/jquery.flot.selection.js',
+			'js/plugins/jqvmap/jquery.vmap.js',
+			'js/plugins/jqvmap/maps/jquery.vmap.world.js',
+			//'plugins/jqvmap/data/jquery.vmap.sampledata.js',
+			//'plugins/easy-pie-chart/jquery.easypiechart.min.js',
+			//'plugins/jquery.sparkline/jquery.sparkline.min.js',
+			'js/plugins/fullcalendar/fullcalendar.min.js',
+			//'plugins/justgage/lib/raphael.2.1.0.min.js',
 			'plugins/justgage/justgage.js',
-			'plugins/gmaps/gmaps.js'
+			'plugins/gmaps/gmaps.js',
+			'js/dashboard.js'
 		];
 		
-		$args['scripts_external'] = '//maps.google.com/maps/api/js?sensor=true';
+		$args['scripts_external'] = [
+			'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js',
+			'https://cdnjs.cloudflare.com/ajax/libs/livestamp/1.1.2/livestamp.min.js',
+			'//maps.google.com/maps/api/js?sensor=true'
+		];
+		
+		$args['styles'] = [
+			'js/plugins/jqvmap/jqvmap.css',
+			'css/plugins/fullcalendar/fullcalendar.css'
+		];
+		
+		$args['recent_profiles'] = $db->getAll('SELECT a.*,b.name as username FROM masterlist a JOIN admin b ON a.admin_id=b.id WHERE a.type_id="1" ORDER BY a.id DESC LIMIT 0,20');
+		$args['affiliate_log'] = $db->getAll('SELECT a.*, b.name as username FROM affiliatelog a JOIN admin b ON a.admin_id=b.id ORDER BY a.id DESC LIMIT 0,50');
 
 		parent::render('dashboard.twig',$args);
 	}
@@ -157,6 +172,20 @@ class Admin extends ViewController
 				$template = 'crud_country.twig';
 				$args['action'] = 'Create Country';
 			break;
+			case 'about-page':
+				$template = 'crud_about.twig';
+				$args['action'] = 'Create Page';
+				$args['scripts'] = [
+					'js/plugins/wysihtml5/wysihtml5-0.3.0.min.js',
+					'js/plugins/bootstrap3-wysihtml5/bootstrap3-wysihtml5.all.min.js',
+					'js/plugins/ckeditor/ckeditor.js',
+					'js/plugins/marked/marked.js',
+					'js/plugins/to-markdown/to-markdown.js',
+					'js/plugins/bootstrap-markdown/bootstrap-markdown.js',
+					'js/demo/ui-elements.js',
+					'js/about.js'
+				];
+			break;
 			case false:
 			default:
 				$app->pass();
@@ -201,6 +230,21 @@ class Admin extends ViewController
 				$args['action'] = 'Edit Country';
 				$args['item'] = $db->getRow('SELECT * FROM country WHERE id=:id',[':id'=>$id]);
 			break;
+			case 'about-page':
+				$template = 'crud_about.twig';
+				$args['action'] = 'Edit Page';
+				$args['item'] = $db->getRow('SELECT * FROM about WHERE id=:id',[':id'=>$id]);
+				$args['scripts'] = [
+					'js/plugins/wysihtml5/wysihtml5-0.3.0.min.js',
+					'js/plugins/bootstrap3-wysihtml5/bootstrap3-wysihtml5.all.min.js',
+					'js/plugins/ckeditor/ckeditor.js',
+					'js/plugins/marked/marked.js',
+					'js/plugins/to-markdown/to-markdown.js',
+					'js/plugins/bootstrap-markdown/bootstrap-markdown.js',
+					'js/demo/ui-elements.js',
+					'js/about.js'
+				];
+			break;
 			case false:
 			default:
 				$app->pass();
@@ -232,6 +276,31 @@ class Admin extends ViewController
 		$args['countries'] = $db->getAll('SELECT * FROM country WHERE 1');
 
 		parent::render('countries.twig',$args);
+	}
+	
+	public function about()
+	{
+		$app  = $this->app;
+		$args = $app->args;
+		$get  = $app->get;
+		$db   = $app->db;
+		
+		
+		$args['scripts'] = [
+			'js/tooltip/tooltip.js',
+			'js/plugins/datatables/jquery.dataTables.min.js',
+			'js/demo/dataTables.bootstrap.js',
+			'js/demo/tables.js',
+			'js/masterlist.js'
+		];
+		
+		$args['styles'] = [
+			'js/tooltip/tooltip.css'
+		];
+		
+		$args['about'] = $db->getAll('SELECT * FROM about WHERE 1');
+
+		parent::render('about.twig',$args);
 	}
 	
 	public function preview()

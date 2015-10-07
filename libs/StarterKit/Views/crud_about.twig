@@ -1,0 +1,70 @@
+{% include 'widgets/nav.twig' %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<ul class="breadcrumb breadcrumb-arrows breadcrumb-default">
+				<li><a href="{{base_url}}admin"><i class="fa fa-home fa-lg"></i></a></li>
+				<li><a href="{{base_url}}admin/about">About Pages</a></li>
+				<li><a href="#">{{action}}</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">  
+				<div class="panel-heading">
+					<h3 class="panel-title">{{action}}</h3>
+				</div>
+				<form method="post" class="contains-file form-horizontal" action="{{base_url}}admin/api/about{%if item is defined %}?id={{item.id}}{%endif%}" data-callback="aboutAE">
+					<div class="panel-body">  
+						<div class="form-group">
+							<label for="name" class="col-md-2 control-label"> Page Title <span class="require">*</span></label>
+							<div class="col-md-5">
+								<input type="text" name="title" value="{{item.title}}" class="form-control input-md" />
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label for="title" class="col-md-2 control-label">Content</label>
+							<div class="col-md-10">
+								<textarea  id="ckeditor" name="content" class="form-control input-md">
+								{{item.content|raw}}
+								</textarea>
+							</div>
+						</div> 
+						
+						<div class="form-group" id="rejectblock">
+							<label for="title" class="col-md-2 control-label">Status<span class="require">*</span></label>        
+							<div class="col-md-5">
+								<select name="status" id="status"  tabindex="1" class="form-control input-md" data-selected="{{item.status}}">
+								<option value="1">Publish</option>
+								<option value="0">Unpublish</option>
+								</select>
+							</div>
+						</div> 							 
+					</div>  
+					<div class="panel-footer">
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-md-5">
+								<button type="submit" class="btn btn-primary btn-block">Save</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+function aboutAE(data)
+{
+	if(data.error == 0){
+		sk.alert('The operation completed successfully.','success');
+	}else{
+		sk.alert(data.message,'error');
+	}
+}
+</script>
+{% include 'widgets/footer.twig' %}

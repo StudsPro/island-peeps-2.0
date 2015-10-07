@@ -7,6 +7,7 @@
 <script src="{{base_url}}static/noty.min.js"></script>
 <script src="{{base_url}}static/shared.js"></script>
 <script src="{{base_url}}static/adm/js/admin.js"></script>
+<script src="{{base_url}}static/adm/js/chat.js"></script>
 {% if scripts_external is iterable %}
 	{%for src in scripts_external %}
 		<script type="text/javascript" src="{{src}}"></script>
@@ -32,3 +33,19 @@
 {% if scripts_inline is defined %}
 {{scripts_inline|raw}}
 {%endif%}
+<script deferred>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-68535823-1', 'auto');
+  
+	$(function(){
+		ga('send', 'pageview',{
+			'page': window.location.pathname + window.location.search,
+			'title': $('title').html()
+		});
+	});
+
+</script>

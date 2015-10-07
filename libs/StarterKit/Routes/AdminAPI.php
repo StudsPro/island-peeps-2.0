@@ -659,5 +659,98 @@ class AdminAPI
 		
 		return ['error'=>0,'message'=>1];
 	}
+	
+	public function chat_log()
+	{
+		$app = $this->app;
+		$db = $app->db;
+		return ['error'=>0,'message'=>$db->chatLog()];
+	}
+	
+	public function chat_latest()
+	{
+		$app = $this->app;
+		$db = $app->db;
+		$get = $app->get;
+		$last_id = isset($get['last_id']) ? $get['last_id'] : false;
+		if(!$last_id){
+			return ['error'=>1,'message'=>'invalid request'];
+		}
+		return ['error'=>0,'message'=>$db->chatUpdate($last_id)];
+	}
+	
+	public function chat_post()
+	{
+		$app = $this->app;
+		$db = $app->db;
+		$get = $app->get;
+		$msg = isset($get['msg']) ? $get['msg'] : false;
+		if(!empty($msg)){
+			$filter = $app->filter;
+			$t = $db->model('chat');
+			$t->admin_id = $app->session['admin']->id;
+			$t->timestamp = time();
+			$t->message = $filter->min($msg);	
+			$id = $db->store($t);
+		}
+		return ['error'=>0,'message'=>$id];
+	}
+	
+	public function chat_delete()
+	{
+		$app = $this->app;
+		$db = $app->db;
+		$get = $app->get;
+		$id = isset($get['id']) ? $get['id'] : false;
+		if(!$id){
+			throw new \exception('missing chat id');
+		}
+		$db->delete('chat','id',$id);	
+		return ['error'=>0,'message'=>1];
+	}
+	
+	public function about()
+	{
+		$app = $this->app;
+		$filter = $app->filter;
+		$get = $app->get;
+		$post = $app->post; 
+		$db = $app->db;
+		$admin = $app->session['admin'];
+		
+		$id = isset($get['id']) ? $filter->cast_int($get['id']) : false;
+		
+		if($id){
+			$t = $db->model('about',$id);
+			
+			if( (int) $t->id !== $id){
+				throw new \exception('a 1 ');
+			}
+		}else{
+			$t = $db->model('about');
+		}
+		
+		$required = [
+			'title'=>['min','rmnl'],
+			'content'=>'c_unsafe',
+			'status'=>'c_status'
+		];
+		
+		$filter->custom_filter('c_unsafe',function($input){return $input;});
+		
+		$filter->custom_filter('c_status',function($input) use($filter){
+			$input = $filter->cast_int($input);
+			if(!in_array($input,[0,1])){
+				throw new \exception('invalid status');
+			}
+			return $input;
+		});
+		
+		$filter->generate_model($t,$required,[],$post);
+		
+		$db->store($t);
+		
+		return ['error'=>0,'message'=>1];
+	}
 
 } 
