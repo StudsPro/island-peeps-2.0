@@ -60,8 +60,6 @@ class Admin extends ViewController
 		];
 		
 		$args['scripts_external'] = [
-			'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js',
-			'https://cdnjs.cloudflare.com/ajax/libs/livestamp/1.1.2/livestamp.min.js',
 			'//maps.google.com/maps/api/js?sensor=true'
 		];
 		

@@ -2,13 +2,16 @@
 
 namespace StarterKit\Routes;
 
-class API
+class API extends ViewController
 {
 	use \StarterKit\Traits\Upload;
 	public $app; //app is available so you can call any method/property on app from within here.
+	public $twig;
 	function __construct()
 	{
 		$this->app = $app = \StarterKit\App::getInstance();
+		$this->twig = new \Twig_Environment( new \Twig_Loader_Filesystem( $this->app->twig_config['template_path'] ) );
+		$this->twig->addExtension(new \Twig_Extension_StringLoader());
 		if(!$app->debug){
 			if($app->slim->request->getPath() !== '/api/init'){
 				if($app->slim->request->isPost()){
@@ -283,5 +286,17 @@ class API
 	{
 		//returns the api slug skeleton which our app needs
 		return ['error'=>0,'message'=>$this->app->db->slugs()];
+	}
+	
+	public function get_slider()
+	{
+		$args = $this->app->args;
+		$html= $this->twig->loadTemplate('frontend/slider.twig')->render($args);
+		return ['error'=>0,'message'=>$html];
+	}
+	
+	public function get_recent(){
+		$args['recent'] = $db->cachedCall('getRecent',[],60 * 5); //cache data for 5 minutes.
+		$html= $this->twig->loadTemplate('frontend/recent.twig')->render($args);
 	}
 }

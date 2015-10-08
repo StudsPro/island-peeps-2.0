@@ -24,6 +24,23 @@
 			  <div class="sk-cube sk-cube9"></div>
 			</div>
 		</div>
+		<div class="clearfix">
+			<div class="row" data-slider data-slug="/">
+			</div>
+		</div>
+		<div class="clearfix">
+			<div class="row" data-slug="/profiles/recently-added">
+			
+			</div>
+		</div>
+		<div class="clearfix">
+			<div class="row" data-countries>
+			</div>
+		</div>
+		<div class="clearfix">
+			<div class="row" data-slug="/memes">
+			</div>
+		</div>
 		<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 		<script src="http://islandpeeps.openex.info/static/front/foundation.min.js"></script>
 		<script src="http://islandpeeps.openex.info/static/front/router.js"></script>

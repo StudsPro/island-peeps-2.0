@@ -1,0 +1,17 @@
+<div class="recent-heading columns">
+	<h1>Recently Added</h1>
+</div>
+<ul class="recent small-block-grid-4">
+{% for item in recent %}
+<li>
+	{% if item.regions|length == 1 %}
+	{% set t = item.regions[0] %}
+	<a data-href="/explore/{{t.uri}}/"
+	{% endif %}
+	<img src="{{item.img}}" />
+	<div class="overlay">
+	
+	</div>
+</li>
+{% endfor %}
+</ul>

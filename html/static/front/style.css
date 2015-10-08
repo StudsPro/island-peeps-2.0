@@ -1,16 +1,214 @@
-/*slider*/
+@font-face{ 
+	font-family:"Open_Sans_B";
+	src: url('font/OpenSans-Bold-webfont.eot'),
+		 url('font/OpenSans-Bold-webfont.eot?#iefix') format('embedded-opentype'), 
+		 url('font/OpenSans-Bold-webfont.woff') format('woff'), 
+		 url('font/OpenSans-Bold-webfont.ttf') format('truetype'), 
+		 url('font/OpenSans-Bold-webfont.svg#webfont') format('svg'); 
+}
 
-.slider {
+@font-face{ 
+	font-family:"Open_Sans_R";
+	src: url('font/OpenSans-Regular-webfont.eot'),
+		 url('font/OpenSans-Regular-webfont.eot?#iefix') format('embedded-opentype'), 
+		 url('font/OpenSans-Regular-webfont.woff') format('woff'), 
+		 url('font/OpenSans-Regular-webfont.ttf') format('truetype'), 
+		 url('font/OpenSans-Regular-webfont.svg#webfont') format('svg'); 
+}
+
+@font-face{ 
+	font-family:"Open_Sans_L";
+	src: url('font/OpenSans-Light-webfont.eot'),
+		 url('font/OpenSans-Light-webfont.eot?#iefix') format('embedded-opentype'), 
+		 url('font/OpenSans-Light-webfont.woff') format('woff'), 
+		 url('font/OpenSans-Light-webfont.ttf') format('truetype'), 
+		 url('font/OpenSans-Light-webfont.svg#webfont') format('svg'); 
+}
+
+@font-face {
+    font-family: 'remachine_scriptregular';
+    src: url('font/remachinescript-webfont.eot'), url('remachinescript-webfont.eot?#iefix') format('embedded-opentype'),
+         url('font/remachinescript-webfont.woff2') format('woff2'),
+         url('font/remachinescript-webfont.woff') format('woff'),
+         url('font/remachinescript-webfont.ttf') format('truetype'),
+         url('font/remachinescript-webfont.svg#remachine_scriptregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+img:-moz-loading {
+    visibility: hidden;
+}
+
+.row{
+	max-width: 100%;
+}
+
+.c{
+	width: 100%;
+	position: relative;
+	float: left;
+	max-width: 100%;
+}
+.c:after{
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0px;
+}
+
+/*slider*/
+.slider > .columns{
+	padding:0;
+}
+
+.slider, .slider .owl-carousel, .slider .owl-carousel .item{
+	max-height: 100vh;
 	height: 100vh;
+	padding:0;
+}
+slider .owl-carousel {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1;
+}
+.slider .owl-carousel .item{
+	width: 100%;
+	overflow: hidden;
+}
+
+.slider .owl-carousel .item img{
+	position: relative;
+	top: -61px;
+	height: calc(100vh + 122px);
+	width: 100%;
+}
+
+
+.slider span[data-language] {
+	color: #FFF;
+	font-family: remachine_scriptregular;
+	text-transform: uppercase;
+	font-size: 15px;
+	cursor: pointer;
+	padding: 0px 25px;
+	float: right;
+	line-height: 61px;
+}
+
+.slider span[data-language]:hover{
+	color: #069B3F;
+}
+
+.slider .logo,.slider .header, .slider .nav, .slider .bar{
+	position: absolute;
+}
+
+.slider .logo {
+	z-index: 4;
+	padding: 4px;
+	top: 0px;
+	left: 3.55%;
+	width: 18.777%;
+	height: auto;
+	cursor: pointer;
+}
+
+.slider .bar{
+	z-index: 3;
+	height: 61px;
+	width: 100%;
 }
 
 .slider, .slider .header, .slider .owl-carousel, .slider .nav{
 	width: 100%;
 }
 
+.slider .nav{
+	list-style: none;
+	margin: 0;
+	bottom: 0;
+	z-index: 3;
+}
+.slider .nav > li{
+	display: block;
+	width: 11.1111111111111%;
+	height: 198px;
+	position: relative;
+	padding: 0 5px;
+}
+.slider .nav > li a{
+	line-height: 198px;
+	text-align: center;
+	position: relative;
+	display: block;
+}
+.slider .nav > li a img{
+	
+}
+.slider .nav > li a span{
+	text-indent: initial;
+	color: #FFF;
+	bottom: 50px;
+	font-family: remachine_scriptregular;
+	position: absolute;
+	display: block;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: 14px;
+	line-height: 14px;
+	z-index: 999;
+	width: 100%;
+}
+.slider .nav-btns {
+	position: absolute;
+	bottom: 148px;
+	margin: 0px;
+	padding: 0px;
+	z-index: 7;
+	left: 8px;
+	border-bottom: 1px solid #000;
+}
+.slider .nav-btns > div{
+	cursor: pointer;
+	height: 40px;
+	width: 41px;
+	z-index: 1;
+	background: transparent url("img/slider/next_prev_btn.png") no-repeat scroll 0% 0%;
+	float: left;
+}
+.slider .nav-btns .next{
+	background-position: right center;
+	border-left: 1px solid rgb(0, 0, 0);
+}
+.slider .nav-btns .prev{
+	border-right: 1px solid rgb(0, 0, 0);
+}
+
 .smoky-black {
 	background: rgba(0, 0, 0, 0.5);
 }
-.smoky-black.dimmer:hover {
-	background: rgba(4, 4, 4, 0.55);
+.smoky-black.dimmer:hover, .smoky-black.active {
+	background: rgba(4, 4, 4, 0.77);
+}
+
+
+/* recent */
+
+.recent-heading h1{
+	color: #0CF;
+	display: inline-block;
+	font-family: Cubano,Helvetica,sans-serif;
+	font-size: 3.4rem;
+	font-weight: 400;
+	line-height: 3.4rem;
+}
+
+.slug {
+	min-height: 4px;
+	width: 100%;
+	padding: 0;
 }

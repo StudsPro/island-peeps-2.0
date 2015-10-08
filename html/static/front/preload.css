@@ -17,6 +17,9 @@ body.preload > .loader{
 	top: 50%;
 	margin-top: -30px;
 }
+body.preload > *:not(.loader){
+	display: none;
+}
 
 .sk-cube-grid {
   width: 60px;

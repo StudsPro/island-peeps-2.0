@@ -289,39 +289,25 @@ class DB
 	public function slugs()
 	{
 		$data = [
-			'memes'=>[
-			
-			],
 			'countries'=>[
 			
 			],
-			'funfacts'=>[
-			
-			]
 		];
-		$memes = \R::getAll('SELECT uri FROM masterlist WHERE type_id="2"');
-		foreach($memes as $m){
-			$data['memes'][] = '/meme/'.$m['uri'];
-		}
-		$funfacts = \R::getAll('SELECT uri FROM masterlist WHERE type_id="3"');
-		foreach($funfacts as $m){
-			$data['funfacts'][] = '/fun-fact/'.$m['uri'];
-		}
 		$countries = \R::getAll('SELECT uri,id FROM country');
 		foreach($countries as $m){
-			$tmp = [
-				'uri'=>'/explore/'.$m['uri'],
-				'people'=>[]
-			];
-			$pp = \R::getAll('SELECT uri FROM masterlist WHERE type_id="1" AND FIND_IN_SET('.$m['id'].',regions)');
-			foreach($pp as $p){
-				$tmp['people'][] = '/explore/'.$m['uri'].'/'.$p['uri'];
-			}
-			$data['countries'][] = $tmp;
+			$data['countries'][] = '/explore/'.$m['uri'];
 		}
 		return $data;
 	}
 
+	public function getRecent()
+	{
+		$data = \R::getAll('SELECT * FROM masterlist WHERE type_id="1" ORDER BY a.id DESC LIMIT 0,12');
+		foreach($data as &$row){
+			$row['regions'] = \R::getAll('SELECT name,map_img,uri FROM country WHERE id IN ('.implode(','$row['regions']).')');
+		}
+		return $data;
+	}
 	//end app specific funcs
 	
 	//private utilities
