@@ -302,10 +302,18 @@ class DB
 
 	public function getRecent()
 	{
-		$data = \R::getAll('SELECT * FROM masterlist WHERE type_id="1" ORDER BY a.id DESC LIMIT 0,12');
+		$data = \R::getAll('SELECT * FROM masterlist WHERE type_id IN (1,3) AND status="4" ORDER BY id DESC LIMIT 0,12');
 		foreach($data as &$row){
-			$row['regions'] = \R::getAll('SELECT name,map_img,uri FROM country WHERE id IN ('.implode(','$row['regions']).')');
+			$row['regions'] = \R::getAll('SELECT name,map_img,uri FROM country WHERE id IN ('.$row['regions'].')');
 		}
+		return $data;
+	}
+	
+	public function  getCountry($uri,$page=1)
+	{
+		$per_page = 20;
+		$data = \R::getRow('SELECT * FROM country WHERE uri=:uri',[':uri'=>$uri]);
+		$data['profiles'] = \R::getAll('SELECT a.*,b.name as category FROM masterlist a JOIN category b on b.id=a.category_id WHERE a.type_id IN(1,3) AND FIND_IN_SET(:id,a.regions) LIMIT 0,20',[':id'=>$data['id']]);
 		return $data;
 	}
 	//end app specific funcs

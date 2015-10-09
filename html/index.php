@@ -9,6 +9,7 @@
 		<link href="http://islandpeeps.openex.info/static/front/preload.css" rel="stylesheet" type="text/css" />
 		<link href="http://islandpeeps.openex.info/static/front/grid.css" rel="stylesheet" type="text/css" />
 		<link href="http://islandpeeps.openex.info/static/front/style.css" rel="stylesheet" type="text/css" />
+		<link href="http://islandpeeps.openex.info/static/front/owl-carousel/owl.carousel.css" rel="stylesheet" type="text/css" />
 	</head>
 	<body class="preload">
 		<div class="loader">
@@ -28,7 +29,7 @@
 			<div class="row" data-slider data-slug="/">
 			</div>
 		</div>
-		<div class="clearfix">
+		<div class="clearfix" data-viewport>
 			<div class="row" data-slug="/profiles/recently-added">
 			
 			</div>
@@ -45,6 +46,7 @@
 		<script src="http://islandpeeps.openex.info/static/front/foundation.min.js"></script>
 		<script src="http://islandpeeps.openex.info/static/front/router.js"></script>
 		<script src="http://islandpeeps.openex.info/static/shared.js"></script>
+		<script src="http://islandpeeps.openex.info/static/front/owl-carousel/owl.carousel.min.js"></script>
 		<script src="http://islandpeeps.openex.info/static/front/script.js"></script>
 	</body>
 </html>

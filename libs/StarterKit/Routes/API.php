@@ -77,7 +77,14 @@ class API extends ViewController
 	
 	public function init()
 	{
-		return ['error'=>0,'message'=>$this->app->session['csrf']];
+		return [
+			'error'=>0,
+			'message'=>[
+				'csrf'=>$this->app->session['csrf'],
+				'slugs'=>$this->app->db->cachedCall('slugs',[],60),
+				'slider'=> $this->twig->loadTemplate('frontend/slider.twig')->render($this->app->args)
+			]
+		];
 	}
 	
 	public function is_user_logged_in()
@@ -282,21 +289,28 @@ class API extends ViewController
 		return ['error'=>0,'message'=>1];
 	}
 	
-	public function getframeskeleton()
-	{
-		//returns the api slug skeleton which our app needs
-		return ['error'=>0,'message'=>$this->app->db->slugs()];
-	}
-	
-	public function get_slider()
-	{
-		$args = $this->app->args;
-		$html= $this->twig->loadTemplate('frontend/slider.twig')->render($args);
+	public function get_recent(){
+		$app = $this->app;
+		$args = $app->args;
+		$args['recent'] = $app->db->cachedCall('getRecent',[],60 * 5); //cache data for 5 minutes.
+		$html= $this->twig->loadTemplate('frontend/recent.twig')->render($args);
 		return ['error'=>0,'message'=>$html];
 	}
 	
-	public function get_recent(){
-		$args['recent'] = $db->cachedCall('getRecent',[],60 * 5); //cache data for 5 minutes.
-		$html= $this->twig->loadTemplate('frontend/recent.twig')->render($args);
+	public function get_country()
+	{
+		$app = $this->app;
+		$get = $app->get;
+		$uri = isset($get['uri']) ? $get['uri'] : false;
+		if(!$uri){
+			throw new \exception('Invalid URI');
+		}
+		if(!$app->db->exists('country','uri',$uri)){
+			throw new \exception('that country doesn\'t exist');
+		}
+		$args = $app->args;
+		$args['country'] = $app->db->cachedCall('getCountry',[$uri],60 * 5); //cache data for 5 minutes.
+		$html= $this->twig->loadTemplate('frontend/country.twig')->render($args);
+		return ['error'=>0,'message'=>$html];
 	}
 }

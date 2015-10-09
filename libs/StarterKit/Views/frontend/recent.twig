@@ -1,17 +1,35 @@
 <div class="recent-heading columns">
 	<h1>Recently Added</h1>
 </div>
-<ul class="recent small-block-grid-4">
-{% for item in recent %}
-<li>
-	{% if item.regions|length == 1 %}
-	{% set t = item.regions[0] %}
-	<a data-href="/explore/{{t.uri}}/"
-	{% endif %}
-	<img src="{{item.img}}" />
-	<div class="overlay">
-	
-	</div>
-</li>
-{% endfor %}
-</ul>
+<div class="recent-wrap columns">
+	<ul class="recent small-block-grid-2 medium-block-grid-3 large-block-grid-4">
+	{% for item in recent %}
+	<li>
+		<div class="contain">
+			<img src="{{item.img}}" />
+			<div class="overlay">
+				<div class="center">
+					<div class="regions clearfix">
+						{% for item2 in item.regions %}
+						{% if item.type_id == 1 %}
+						<a data-href="/explore/{{item2.uri}}/people/{{item.uri}}">
+						{% endif %}
+						{% if item.type_id == 3 %}
+						<a data-href="/explore/{{item2.uri}}/fun-fact/{{item.uri}}">
+						{% endif %}
+							<img src="{{item2.map_img}}"/>
+							<span>{{item2.name}}</span>
+						</a>
+						{% endfor %}
+					</div>
+					{% if item.type_id == 3 %}
+					<span class="fun-facts">-Fun Facts-</span>
+					{% endif %}
+					<h3>{{item.title}}</h3>
+				</div>
+			</div>
+		</div>
+	</li>
+	{% endfor %}
+	</ul>
+</div>

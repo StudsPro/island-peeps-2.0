@@ -135,7 +135,7 @@ class Admin extends ViewController
 			'funfacts'=>$db->count('masterlist',' type_id="3" ')
 		];
 		
-		$args['categories'] = $db->getAll('SELECT * FROM category');
+		$args['categories'] = $db->getAll('SELECT * FROM category ORDER BY name ASC');
 		
 		$args['masterlist'] = $db->getMasterList($type_id,$cat_id,$sort);
 
@@ -153,8 +153,8 @@ class Admin extends ViewController
 			case 'profile':
 				$template = 'crud_profile.twig';
 				$args['action'] = 'Create People Profile';
-				$args['categories'] = $db->getAll('SELECT * FROM category');
-				$args['regions'] = $db->getAll('SELECT * FROM country');
+				$args['categories'] = $db->getAll('SELECT * FROM category ORDER BY name ASC');
+				$args['regions'] = $db->getAll('SELECT * FROM country ORDER BY name ASC');
 			break;
 			case 'meme':
 				$template = 'crud_meme.twig';
@@ -163,8 +163,8 @@ class Admin extends ViewController
 			case 'funfact':
 				$template = 'crud_funfact.twig';
 				$args['action'] = 'Create Fun Fact';
-				$args['categories'] = $db->getAll('SELECT * FROM category');
-				$args['regions'] = $db->getAll('SELECT * FROM country');
+				$args['categories'] = $db->getAll('SELECT * FROM category ORDER BY name ASC');
+				$args['regions'] = $db->getAll('SELECT * FROM country ORDER BY name ASC');
 			break;
 			case 'country':
 				$template = 'crud_country.twig';
@@ -207,8 +207,8 @@ class Admin extends ViewController
 			case 'profile':
 				$template = 'crud_profile.twig';
 				$args['action'] = 'Edit People Profile';
-				$args['categories'] = $db->getAll('SELECT * FROM category');
-				$args['regions'] = $db->getAll('SELECT * FROM country');
+				$args['categories'] = $db->getAll('SELECT * FROM category ORDER BY name ASC');
+				$args['regions'] = $db->getAll('SELECT * FROM country ORDER BY name ASC');
 				$args['item'] = $db->getPeopleProfile($id);
 			break;
 			case 'meme':
@@ -219,8 +219,8 @@ class Admin extends ViewController
 			case 'funfact':
 				$template = 'crud_funfact.twig';
 				$args['action'] = 'Edit Fun Fact';
-				$args['categories'] = $db->getAll('SELECT * FROM category');
-				$args['regions'] = $db->getAll('SELECT * FROM country');
+				$args['categories'] = $db->getAll('SELECT * FROM category ORDER BY name ASC');
+				$args['regions'] = $db->getAll('SELECT * FROM country ORDER BY name ASC');
 				$args['item'] = $db->getPeopleProfile($id);
 			break;
 			case 'country':
@@ -271,7 +271,7 @@ class Admin extends ViewController
 			'js/tooltip/tooltip.css'
 		];
 		
-		$args['countries'] = $db->getAll('SELECT * FROM country WHERE 1');
+		$args['countries'] = $db->getAll('SELECT * FROM country ORDER BY name ASC');
 
 		parent::render('countries.twig',$args);
 	}
