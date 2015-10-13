@@ -77,12 +77,14 @@ class API extends ViewController
 	
 	public function init()
 	{
+		$this->app->args['menu'] = $this->app->db->getMenu();
 		return [
 			'error'=>0,
 			'message'=>[
 				'csrf'=>$this->app->session['csrf'],
 				'slugs'=>$this->app->db->cachedCall('slugs',[],60),
-				'slider'=> $this->twig->loadTemplate('frontend/slider.twig')->render($this->app->args)
+				'slider'=> $this->twig->loadTemplate('frontend/slider.twig')->render($this->app->args),
+				'menu'=> $this->twig->loadTemplate('frontend/menu.twig')->render($this->app->args)
 			]
 		];
 	}
@@ -310,7 +312,35 @@ class API extends ViewController
 		}
 		$args = $app->args;
 		$args['country'] = $app->db->cachedCall('getCountry',[$uri],60 * 5); //cache data for 5 minutes.
+		$args['ad'] = $app->db->getAd($args['country']['id']);
 		$html= $this->twig->loadTemplate('frontend/country.twig')->render($args);
+		return ['error'=>0,'message'=>$html];
+	}
+	
+	public function get_country_item()
+	{
+		$app = $this->app;
+		$get = $app->get;
+		$uri = isset($get['uri']) ? $get['uri'] : false;	
+
+		if(!$uri){
+			throw new \exception('Invalid URI');
+		}
+	
+		if(!$app->db->exists('masterlist','uri',$uri)){
+			throw new \exception('that masterlist doesn\'t exist');
+		}
+		$c_uri = isset($get['c_uri']) ? $get['c_uri'] : false;
+		if(!$c_uri){
+			throw new \exception('Invalid Country URI');
+		}
+		if(!$app->db->exists('country','uri',$c_uri)){
+			throw new \exception('that country doesn\'t exist');
+		}
+		$args = $app->args;
+		$args['country'] = $app->db->getCell('SELECT name FROM country WHERE uri=:uri',[':uri'=>$c_uri]); 
+		$args['profile'] = $app->db->getCountryItem($uri);
+		$html= $this->twig->loadTemplate('frontend/profile.twig')->render($args);
 		return ['error'=>0,'message'=>$html];
 	}
 }

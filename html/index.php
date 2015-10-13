@@ -10,6 +10,7 @@
 		<link href="http://islandpeeps.openex.info/static/front/grid.css" rel="stylesheet" type="text/css" />
 		<link href="http://islandpeeps.openex.info/static/front/style.css" rel="stylesheet" type="text/css" />
 		<link href="http://islandpeeps.openex.info/static/front/owl-carousel/owl.carousel.css" rel="stylesheet" type="text/css" />
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 	</head>
 	<body class="preload">
 		<div class="loader">

@@ -314,7 +314,37 @@ class DB
 		$per_page = 20;
 		$data = \R::getRow('SELECT * FROM country WHERE uri=:uri',[':uri'=>$uri]);
 		$data['profiles'] = \R::getAll('SELECT a.*,b.name as category FROM masterlist a JOIN category b on b.id=a.category_id WHERE a.type_id IN(1,3) AND FIND_IN_SET(:id,a.regions) LIMIT 0,20',[':id'=>$data['id']]);
+		foreach($data['profiles'] as &$row)
+		{
+			$row['regions'] = \R::getAll('SELECT name,map_img,uri FROM country WHERE id IN ('.$row['regions'].')');
+		}
 		return $data;
+	}
+	
+	public function getCountryItem($uri)
+	{
+		$data = \R::getRow('SELECT * FROM masterlist WHERE uri=:uri',[':uri'=>$uri]);
+		return $data;
+	}
+	
+	public function getMenu()
+	{
+		$args = \R::getAll('SELECT name as title, uri FROM country ORDER BY title ASC');
+		foreach($args as &$row)
+		{
+			$row['uri'] = '/explore/'.$row['uri'];
+		}
+		$args[] = ['title'=>'Memes','uri'=>'/extras/memes'];
+		$args[] = ['title'=>'Map','uri'=>'/map'];
+		$args[] = ['title'=>'Stats','uri'=>'/stats'];
+		$args[] = ['title'=>'Suggestion','uri'=>'/suggest'];
+		return $args;
+	}
+	
+	public function getAd($id)
+	{
+		$d = \R::getRow('SELECT * FROM ad WHERE FIND_IN_SET(:id,regions) LIMIT 1',[':id'=>$id]);
+		return (empty($d)) ? false : $d;
 	}
 	//end app specific funcs
 	

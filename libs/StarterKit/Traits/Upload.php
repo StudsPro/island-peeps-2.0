@@ -106,7 +106,7 @@ trait Upload
 	}
 	
 	//private methods
-	private function img_upload($img_name,$files,$min_width = 120, $min_height = 120)
+	private function img_upload($img_name,$files,$min_width = 120, $min_height = 120,$ignore_trans=false)
 	{
 		$this->precheck($img_name,$files); //performs basic file upload prechecks
 		
@@ -151,10 +151,13 @@ trait Upload
 				imagegif($fr);
 			break;
 			case 'image/png':
-				imagesavealpha($fr, true);
-				$trans_colour = imagecolorallocatealpha($fr, 0, 0, 0, 127);
-				imagefill($fr, 0, 0, $trans_colour);
-				imagepng($fr);
+				if(!$ignore_trans){
+					imagesavealpha($fr, true);
+					$trans_colour = imagecolorallocatealpha($fr, 0, 0, 0, 127);
+					imagefill($fr, 0, 0, $trans_colour);	
+				}
+				imagecopyresampled($fr,$image,0,0,0,0,$z,$z,$size,$size);
+				imagepng($fr,NULL,2);
 			break;
 			case 'image/jpeg':
 			case 'image/jpg':
@@ -168,6 +171,17 @@ trait Upload
 		fclose($fh);
 		unset($fr,$fh,$fc);
 		return $this->putFile($image_temp,'.'.$type2);
+	}
+	
+	
+	private function video_upload($vname,$files)
+	{
+		$this->precheck($vname,$files);
+		$ftemp = $files[$vname]['tmp_name'];
+		if(finfo_file(finfo_open(FILEINFO_MIME_TYPE),$ftemp) !== 'video/mp4'){
+			throw new \exception('You may only upload MP4 videos.');
+		}
+		return $this->putFile($ftemp,'.mp4');
 	}
 	
 	private function precheck($a,$files)
@@ -213,7 +227,7 @@ trait Upload
 		$a = fopen($app->public_html . 'uploads/'.$name,'w+');
 		fwrite($a,$body);
 		fclose($a);
-		return $app->args['base_url'].'uploads/'.$name; //if we were successful in writing to the bucket, we return the full url to the resource.
+		return $app->args['base_url'].'uploads/'.$name;
 	}
 	
 	private function delFile($file)
@@ -223,55 +237,6 @@ trait Upload
 		}
 		$app = \StarterKit\App::getInstance();
 		unlink($app->public_html . 'uploads/' .$file);
-	}
-	
-	//performs basic image security and returns data needed to process image.
-	private function img_factory($a)
-	{
-		$response = [];
-		
-		$image_temp = $files[$a]['tmp_name'];
-		@$image_info = getimagesize($image_temp);
-		$exif = [IMAGETYPE_GIF,IMAGETYPE_JPEG,IMAGETYPE_PNG];
-		$finfo  = ['image/gif','image/png','image/jpeg','image/pjpeg'];
-		$etype = exif_imagetype($image_temp);
-		if(!function_exists('finfo_file')){
-			throw new \exception('Unable to determine image mime type.');
-		}
-		$type = finfo_file(finfo_open(FILEINFO_MIME_TYPE),$image_temp);
-
-		if( !in_array($etype,$exif) || !in_array($type,$finfo)){
-			throw new \exception('file type not allowed');
-		}
-		switch($type){
-			case 'image/gif':
-				$type2 = 'gif';
-			break;
-			case 'image/png':
-				$type2 = 'png';
-			break;
-			case 'image/jpeg':
-			case 'image/jpg':
-			case 'image/pjpeg':
-				$type2 = 'jpg';
-			break;
-		}
-		if( !$image_info ){
-			throw new \exception('invalid image size.');
-		}
-		
-		//get the image resource
-		$image = imagecreatefromstring(file_get_contents($image_temp));
-		$width  = $image_info[0];
-		$height = $image_info[1];
-		
-		return [
-			'resource'=>$image,
-			'width'=>$width,
-			'height'=>$height,
-			'extension'=>$type,
-			'type'=>$type
-		];
 	}
 	
 	private function url_safe($title)

@@ -170,6 +170,12 @@ class Admin extends ViewController
 				$template = 'crud_country.twig';
 				$args['action'] = 'Create Country';
 			break;
+			case 'advertisement':
+				$template = 'crud_ad.twig';
+				$args['action'] = 'Create Ad';
+				$args['regions'] = $db->getAll('SELECT * FROM country ORDER BY name ASC');
+			
+			break;
 			case 'about-page':
 				$template = 'crud_about.twig';
 				$args['action'] = 'Create Page';
@@ -227,6 +233,12 @@ class Admin extends ViewController
 				$template = 'crud_country.twig';
 				$args['action'] = 'Edit Country';
 				$args['item'] = $db->getRow('SELECT * FROM country WHERE id=:id',[':id'=>$id]);
+			break;
+			case 'advertisement':
+				$template = 'crud_ad.twig';
+				$args['action'] = 'Edit Ad';
+				$args['regions'] = $db->getAll('SELECT * FROM country ORDER BY name ASC');
+				$args['item'] = $db->getRow('SELECT * FROM ad WHERE id=:id',[':id'=>$id]);
 			break;
 			case 'about-page':
 				$template = 'crud_about.twig';
@@ -353,6 +365,27 @@ class Admin extends ViewController
 		];
 		$args['affiliates'] = $db->getAll('SELECT * FROM admin WHERE 1');
 		parent::render('affiliates.twig',$args);
+	}
+	
+	public function ads()
+	{
+		$app  = $this->app;
+		$args = $app->args;
+		$get  = $app->get;
+		$db   = $app->db;
+		$args['scripts'] = [
+			'js/tooltip/tooltip.js',
+			'js/plugins/datatables/jquery.dataTables.min.js',
+			'js/demo/dataTables.bootstrap.js',
+			'js/demo/tables.js',
+			'js/masterlist.js'
+		];
+		
+		$args['styles'] = [
+			'js/tooltip/tooltip.css'
+		];
+		$args['ads'] = $db->getAll('SELECT * FROM ad WHERE 1');
+		parent::render('ads.twig',$args);
 	}
 	
 	public function login()

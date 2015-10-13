@@ -454,7 +454,8 @@ class AdminAPI
 		foreach($images as $k=>$v){
 			try{
 				$img = $t->{$v};
-				$upl = $this->img_upload($k,$app->files,1,1);
+				$ignore_trans = ($k == 'map_file') ? false : true;
+				$upl = $this->img_upload($k,$app->files,1,1,$ignore_trans);
 				$t->{$v} = $upl;
 				if(!empty($img) && $t->{$v} !== $img && $upl !== null){
 					$this->delFile($img);
@@ -747,6 +748,95 @@ class AdminAPI
 		});
 		
 		$filter->generate_model($t,$required,[],$post);
+		
+		$db->store($t);
+		
+		return ['error'=>0,'message'=>1];
+	}
+	
+	public function advertisement()
+	{
+		$app = $this->app;
+		$filter = $app->filter;
+		$get = $app->get;
+		$post = $app->post; 
+		$db = $app->db;
+		$admin = $app->session['admin'];
+		
+		$id = isset($get['id']) ? $filter->cast_int($get['id']) : false;
+		
+		if($id){
+			$t = $db->model('ad',$id);
+			
+			if( (int) $t->id !== $id){
+				throw new \exception('a 1 ');
+			}
+		}else{
+			$t = $db->model('ad');
+		}
+		
+		$required = [
+			'title'=>['min','rmnl'],
+			'regions'=>'region_fm',
+			'type'=>'type_fm',
+			'size'=>'size_fm'
+		];
+		
+		$filter->custom_filter('type_fm',function($input){
+			if(!in_array($input,['video','image'])){
+				throw new \exception('Invalid option present in form. (Ad Type)');
+			}
+			return $input;
+		});
+		
+		$filter->custom_filter('size_fm',function($input){
+			if(!in_array($input,['ad-lg','ad-fw'])){
+				throw new \exception('Invalid option present in form (Ad Size)');
+			}
+			return $input;
+		});
+		
+		
+		
+		$filter->custom_filter('region_fm',function($input) use($filter,$db){
+			if(!is_array($input)){
+				throw new \exception('Invalid input format:: Regions');
+			}
+			$input = array_map([$filter,'cast_int'],$input);
+			$x = count($input);
+			$y = (int) $db->getCell('SELECT COUNT(id) FROM country WHERE id IN('.implode(',',$input).')');
+			if($x !== $y){
+				throw new \exception('1 or more regions is invalid X: '.$x.' Y: '.$y);
+			}
+			return implode(',',$input);
+		});
+		
+		$optional = [
+			'url'=>'min',
+			'desc'=>'min'
+		];
+		
+		$filter->generate_model($t,$required,$optional,$post);
+		
+		if($t->type == 'image'){
+			try{
+				$t->image = $this->img_upload('uploaded_image',$app->files);
+			}
+			catch(\exception $e){
+				if(!$id){
+					throw $e;
+				}
+			}
+		}else{
+			try{
+				$t->video = $this->video_upload('uploaded_video',$app->files);
+			}
+			catch(\exception $e){
+				if(!$id){
+					throw $e;
+				}
+			}
+		}
 		
 		$db->store($t);
 		
