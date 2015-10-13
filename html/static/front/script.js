@@ -394,6 +394,7 @@ $(function(){
 		$.getJSON(window.location.origin+'/api/v1/init',function(data){
 			$('meta[name="csrf"]').attr('content',data.message.csrf);
 			$('[data-slider]').append(data.message.slider).addClass('done');
+			$('.menu').html(data.message.menu);
 			slide.el = $('.owl-carousel').owlCarousel({
 				navigation : false,
 				slideSpeed : 300,

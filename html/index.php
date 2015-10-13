@@ -13,6 +13,9 @@
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 	</head>
 	<body class="preload">
+		<div class="menu columns">
+		
+		</div>
 		<div class="loader">
 			<div class="sk-cube-grid">
 			  <div class="sk-cube sk-cube1"></div>

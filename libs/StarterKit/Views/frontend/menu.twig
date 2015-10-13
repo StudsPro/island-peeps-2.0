@@ -1,0 +1,15 @@
+<style type="text/css">
+{% set x = 14.2857 %}
+</style>
+<div class="logo columns">
+	<a data-href="/home">
+		<img src="{{base_url}}static/front/img/logo_sm.png" />
+	</a>
+</div>
+<ul class="list columns">
+	{% for item in menu %}
+	<li>
+		<a data-href="{{item.uri}}">{{item.title}}</a>
+	</li>
+	{% endfor %}
+</ul>
