@@ -49,11 +49,31 @@
 							</div>
 							<div class="clearfix" data-type-select>
 								<div class="form-group" data-type="image">
-									<label for="title" class="col-md-2 control-label"> Select Image</label>
-									<div class="col-md-5">
-										<input type="file" name="uploaded_image" class="form-control input-md" />
+									<div class="container clearfix">
+										<label for="title" class="col-md-2 control-label">Background Image</label>
+										<div class="col-md-5">
+											<input type="file" name="background_image" class="form-control input-md" />
+											<br/>
+										</div>
+									</div>
+									<div class="container clearfix">
+											{% for i in range(1,5) %}
+												<div class="form-group" data-type="image">
+													<label for="title" class="col-md-2 control-label"> Image {{i}}</label>
+													<div class="col-md-4">
+														<input type="file" name="image_{{i}}" class="form-control input-md" />
+													</div>
+													<div class="col-md-3">
+														<input type="text" name="link_{{i}}" value="{{item['link_'~i]}}" class="form-control input-md" placeholder="Link" />
+													</div>
+													<div class="col-md-3">
+														<input type="text" name="title_{{i}}" value="{{item['title_'~i]}}" class="form-control input-md" placeholder="Link Title" />
+													</div>
+												</div>
+										{% endfor %}
 									</div>
 								</div>
+								
 								<div class="form-group hide" data-type="video">
 									<label for="title" class="col-md-2 control-label"> Select Video</label>
 									<div class="col-md-5">

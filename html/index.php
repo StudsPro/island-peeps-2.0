@@ -33,8 +33,8 @@
 			<div class="row" data-slider data-slug="/">
 			</div>
 		</div>
-		<div class="clearfix" data-viewport>
-			<div class="row" data-slug="/profiles/recently-added">
+		<div class="clearfix" data-viewpoint>
+			<div class="row below-fold" data-slug="/profiles/recently-added">
 			
 			</div>
 		</div>

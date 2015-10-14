@@ -820,13 +820,55 @@ class AdminAPI
 		
 		if($t->type == 'image'){
 			try{
-				$t->image = $this->img_upload('uploaded_image',$app->files);
+				$t->bg_image = $this->img_upload('background_image',$app->files);
 			}
 			catch(\exception $e){
 				if(!$id){
 					throw $e;
 				}
 			}
+			$images = (!$id) ? [] : json_decode($t->images,true);
+			$set = [
+				'link_',
+				'title_',
+			];
+			for($i=1;$i<6;$i++){
+				$tmp = [
+					'link'=>'',
+					'title'=>'',
+					'image'=>''
+				];
+				if(isset($post['link_'.$i])){
+					$tmp['link'] = $filter->min($post['link_'.$i]);
+				}
+				
+				if(isset($post['title_'.$i])){
+					$tmp['title'] = $filter->min($post['title_'.$i]);
+				}
+				
+				if(isset($app->files['image_'.$i])){
+					try{
+						$tmp['image'] = $this->img_upload('image_'.$i,$app->files);
+					}
+					catch(\exception $e){
+						$tmp['image'] = '';
+					}
+				}
+				if($id && isset($images[$i])){
+					foreach($tmp as $k=>$v){
+						if($k == 'image'){
+							if(!empty($tmp['image'])){
+								$images[$i]['image'] = $tmp['image'];
+							}
+						}else{
+							$images[$i][$k] = $v;
+						}
+					}
+				}else{
+					$images[$i] = $tmp;
+				}
+			}
+			$t->images = json_encode($images);
 		}else{
 			try{
 				$t->video = $this->video_upload('uploaded_video',$app->files);

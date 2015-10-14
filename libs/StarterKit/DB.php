@@ -341,9 +341,15 @@ class DB
 		return $args;
 	}
 	
-	public function getAd($id)
+	public function getAd($id,$type)
 	{
-		$d = \R::getRow('SELECT * FROM ad WHERE FIND_IN_SET(:id,regions) LIMIT 1',[':id'=>$id]);
+		$d = \R::getRow('SELECT * FROM ad WHERE FIND_IN_SET(:id,regions) AND type=:type LIMIT 1',[':id'=>$id,':type'=>$type]);
+		if(!empty($d) && $type=='image'){
+			$d['images'] = json_decode($d['images'],true);
+			$tmp = $d['images'];
+			shuffle($tmp);
+			$d['images'] = $tmp;
+		}
 		return (empty($d)) ? false : $d;
 	}
 	//end app specific funcs

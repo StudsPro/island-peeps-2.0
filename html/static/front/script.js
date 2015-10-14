@@ -94,8 +94,24 @@ $.fn.ensureInview = function(repeat){
 				$('html, body').animate({
 					scrollTop: $el.offset().top
 				},50);
+				var scroll = window.pageYOffset || window.scrollTop;
+				if( scroll+1 >= $(window).height() && !$('body').hasClass('has-menu')){
+					$('body').addClass('has-menu');
+				}
+				if($('[data-slider]').inView() && $('body').hasClass('has-menu')){
+					$('body').removeClass('has-menu');
+				}
 				console.log('done');
 				setTimeout(function(){
+					setTimeout(function(){
+						if($('.menu').is(':visible')){
+							var el2 = $('.menu').find('[data-href="'+location.pathname+'"]');
+							console.log(location.pathname,el2)
+							if(el2.length > 0){
+								el2.parent('li').addClass('active').siblings().removeClass('active');
+							}
+						}
+					},0)
 					scroll_lock = false;	
 				},0);
 			}
@@ -284,7 +300,7 @@ $(function(){
 	{
 		
 		$.getJSON(window.location.origin+'/api/v1/get_country?uri='+country,function(data){
-			$('[data-slug="/explore/'+country+'"]').html(data.message).addClass('done').closest('[data-viewport]').ensureInview();
+			$('[data-slug="/explore/'+country+'"]').html(data.message).addClass('done').closest('[data-viewpoint]').ensureInview();
 			
 			if(typeof callback === 'function'){
 				callback.apply(this,[]);
@@ -298,7 +314,7 @@ $(function(){
 	{
 		var el = $('[data-slug="/explore/'+country+'"]').find('.country-profile').html('').attr('data-slug',location.pathname);
 		$.getJSON(window.location.origin+'/api/v1/get_country_item?uri='+uri+'&c_uri='+country,function(data){
-			el.html(data.message).closest('[data-viewport]').ensureInview();
+			el.html(data.message).closest('[data-viewpoint]').ensureInview();
 			$.app.done()
 		});
 	}
@@ -365,11 +381,11 @@ $(function(){
 		if(!el.hasClass('done')){
 			$.getJSON(window.location.origin+'/api/v1/get_recent',function(data){
 				el.html(data.message).addClass('done');
-				el.closest('[data-viewport]').ensureInview();
+				el.closest('[data-viewpoint]').ensureInview();
 				$.app.done();
 			});
 		}else{
-			el.closest('[data-viewport]').ensureInview();
+			el.closest('[data-viewpoint]').ensureInview();
 			$.app.done();
 		}
 	});
@@ -419,7 +435,7 @@ $(function(){
 			{
 				var html = '';
 				for(var i = 0; i < z[j].length;i++){
-					html +='<div class="row" data-viewport><div class="column slug" data-slug="'+z[j][i]+'"></div></div>';
+					html +='<div class="row below-fold" data-viewpoint><div class="column slug" data-slug="'+z[j][i]+'"></div></div>';
 					if(i == z[j].length -1){
 						$('[data-'+y[j]+']').html(html);
 						setTimeout(function(){
@@ -453,6 +469,8 @@ $(function(){
 					}else{
 						scrollUp();
 					}		
+				}else{
+					window.scrollTop = scroll_last;
 				}
 			},80);
 		}

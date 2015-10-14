@@ -843,7 +843,7 @@ a.ptv:hover .ctr_detail{
 	transform: scaleX(1.88);
 }
 
-body.has-menu{
+body.has-menu .below-fold{
 	padding-top: 110px;
 }
 

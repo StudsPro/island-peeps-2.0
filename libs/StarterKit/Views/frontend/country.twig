@@ -1,16 +1,12 @@
-{% if ad != false %}
-<div class="{{ad.size}} columns">
-	<a href="{{ad.link}}" title="{{ad.title}}">
-		{% if ad.type=='image' %}
-		<img src="{{ad.image}}" alt="{{ad.description}}" />
-		{% else %}
-		<video src="{{ad.video}}">
+{% if ad_top != false %}
+<div class="{{ad_top.size}} columns">
+	<a href="{{ad_top.link}}" title="{{ad_top.title}}">
+		<video src="{{ad_top.video}}">
 		
 		</video>
-		{% endif %}
 	</a>
 </div>
-<div class="country columns" data-callback="adRun_{{ad.type}}">
+<div class="country columns" data-callback="adRun_video">
 {% else %}
 <div class="country columns">
 {% endif %}
@@ -130,3 +126,20 @@
 	{% endfor %}
 	</ul>
 </div>
+{% if ad_bottom != false %}
+<div class="{{ad_bottom.size}} img-ad columns" style="background-image: url('{{ad_bottom.bg_image}}')">
+	<div class="large-8 columns large-offset-2 medium-10 medium-offset-1 small-12">
+		<ul class="small-block-grid-2 medium-block-grid-5 large-block-grid-5">
+			{% for item in ad.images %}
+			{% if item.image is not empty %}
+			<li>
+				<a href="#" class="show-img">
+					<img src="{{item.image}}" data-title="{{item.title}}" data-link="{{item.link}}" style="height: 200px; width:100%;" />
+				</a>
+			</li>
+			{% endif %}
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+{% endif %}

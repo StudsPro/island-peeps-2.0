@@ -312,7 +312,8 @@ class API extends ViewController
 		}
 		$args = $app->args;
 		$args['country'] = $app->db->cachedCall('getCountry',[$uri],60 * 5); //cache data for 5 minutes.
-		$args['ad'] = $app->db->getAd($args['country']['id']);
+		$args['ad_top'] = $app->db->getAd($args['country']['id'],'video');
+		$args['ad_bottom'] = $app->db->getAd($args['country']['id'],'image');
 		$html= $this->twig->loadTemplate('frontend/country.twig')->render($args);
 		return ['error'=>0,'message'=>$html];
 	}
