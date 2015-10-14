@@ -435,7 +435,7 @@ $(function(){
 			{
 				var html = '';
 				for(var i = 0; i < z[j].length;i++){
-					html +='<div class="row below-fold" data-viewpoint><div class="column slug" data-slug="'+z[j][i]+'"></div></div>';
+					html +='<div class="row below-fold" data-viewpoint><div class="column slug country-slug" data-slug="'+z[j][i]+'"></div></div>';
 					if(i == z[j].length -1){
 						$('[data-'+y[j]+']').html(html);
 						setTimeout(function(){
@@ -501,4 +501,12 @@ $(function(){
 			iE(this);
 		});
 	},1500);
+	
+	lightbox.option({
+      'resizeDuration': 200,
+      'wrapAround': true,
+	  'showImageNumberLabel': false,
+	  'positionFromTop': 140,
+	  'maxHeight': $(window).height() - 190
+    });
 });

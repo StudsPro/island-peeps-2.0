@@ -128,13 +128,19 @@
 </div>
 {% if ad_bottom != false %}
 <div class="{{ad_bottom.size}} img-ad columns" style="background-image: url('{{ad_bottom.bg_image}}')">
-	<div class="large-8 columns large-offset-2 medium-10 medium-offset-1 small-12">
+	<div class="large-10 columns large-offset-1 medium-10 medium-offset-1 small-12">
 		<ul class="small-block-grid-2 medium-block-grid-5 large-block-grid-5">
-			{% for item in ad.images %}
+			{% for item in ad_bottom.images %}
 			{% if item.image is not empty %}
 			<li>
-				<a href="#" class="show-img">
-					<img src="{{item.image}}" data-title="{{item.title}}" data-link="{{item.link}}" style="height: 200px; width:100%;" />
+				<a href="{{item.image}}" class="show-img" data-title="{{item.title}}" data-lightbox="ad_{{country.name}}" data-link="{{item.link}}">
+					<img src="{{item.image}}" />
+					<div class="zoom">
+						<div>
+							<i class="fa fa-search"></i>
+							<span>Zoom</span>
+						</div>
+					</div>
 				</a>
 			</li>
 			{% endif %}

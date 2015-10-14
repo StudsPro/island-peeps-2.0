@@ -932,3 +932,61 @@ body.has-menu .menu{
 	background-origin: padding-box;
 	background-size: auto auto;
 }
+
+.country-slug {
+	margin-bottom: 150px;
+}
+
+/*image ad*/
+.ad-lg.img-ad{
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center-center;
+	height: 450px;
+}
+.img-ad ul{
+	height: 180px;
+	margin-top: 135px;
+}
+.img-ad ul li{
+	margin-bottom:0;
+}
+.img-ad ul li img{
+	border: 5px solid #FFF;
+	width: 100%;
+	height: 180px;
+}
+.img-ad ul li a{
+	position: relative;
+	display: block;
+	height: 180px;
+	width: 100%;
+}
+.img-ad ul li .zoom{
+	position: absolute;
+	top:5px;
+	bottom:5px;
+	right:5px;
+	left:5px;
+	display: none;
+	background: rgba(30, 39, 41, .777);
+	pointer-events: none;
+}
+.img-ad ul li:hover .zoom{
+	display: block;
+}
+.img-ad ul li .zoom div{
+	height: 45px;
+	margin: 62.5px 0px;
+}
+.img-ad ul li .zoom div > *{
+	display: block;
+	text-align: center;
+	width: 100%;
+	color: #E9AD39;
+	font-size: 1em;
+    line-height: 1.4;
+}
+.img-ad ul li .zoom div span{
+	text-decoration: underline;
+}
