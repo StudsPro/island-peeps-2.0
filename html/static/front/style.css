@@ -220,6 +220,10 @@ slider .owl-carousel {
 	width: 100%;
 }
 
+.recent-wrap,.country-wrap{
+	padding: 0;
+}
+
 .recent-heading h1{
 	color: #0CF;
 	display: block;
@@ -232,8 +236,21 @@ slider .owl-carousel {
 	margin-bottom: 2.55rem;
 }
 
+.recent,.country{
+	margin: 0px;
+	padding: 0px 0.2rem;
+}
+
+.recent li,.country li{
+	padding: 0 .2rem .4rem;
+}
+
 .recent li div.contain{
 	position: relative;
+}
+
+.recent li div.contain > img, .country li div.contain  > img{
+	height: 250px;
 }
 
 .recent li .overlay{
@@ -339,7 +356,7 @@ slider .owl-carousel {
 	padding-left: 2%;
 }
 
-.country, .country > div .columns{
+.country > div .columns{
 	padding: 0;
 }
 
@@ -895,11 +912,11 @@ body.has-menu .menu{
 	height: 22px;
 }
 .menu .list li a{
-	line-height: 22px;
-	font-size: 1.1rem;
-	font-weight: 500;
-	height: 22px;
+	line-height: 18px;
+	height: 18px;
 	color: #FFF !important;
+	font-size: 0.68rem;
+	font-weight: 500;
 }
 
 .menu .list li.active a, .menu .list li:hover a{
