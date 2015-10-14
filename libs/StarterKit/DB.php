@@ -293,7 +293,7 @@ class DB
 			
 			],
 		];
-		$countries = \R::getAll('SELECT uri,id FROM country');
+		$countries = \R::getAll('SELECT uri,id FROM country ORDER BY name ASC');
 		foreach($countries as $m){
 			$data['countries'][] = '/explore/'.$m['uri'];
 		}
