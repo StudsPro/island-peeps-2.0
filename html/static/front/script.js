@@ -1,3 +1,175 @@
+/*map*/
+
+window.map = document.getElementById('map');
+
+$.mapbox = {
+	active: false,
+	data: null,
+	interval: null,
+	unload: function(){
+		clearInterval(map.interval);
+		$.mapbox.interval = null;
+		window.map.remove();
+		$.mapbox.active = true;
+	},
+	load: function(){
+		
+		window.map = L.mapbox.map('map', 'derrickstuds.imab7m7e').setView([15, -74], 5);
+		$.mapbox.quiet();
+	},
+	quiet: function(){
+		var myLayer = L.mapbox.featureLayer().addTo(window.map);
+		$.mapbox.active = true;
+		
+		/*
+		var coder = L.mapbox.geocoder('mapbox.places');
+		
+		coder.reverseQuery({lat : 19.896766,lon: -155.582782},function(data){
+			console.log(data);
+		});
+		*/
+		$.getJSON(window.location.origin+'/api/v1/getMapData',function(data){
+			var geoJson = [
+				{type: 'Feature',
+					geometry: {type: 'Point',coordinates: [-77.387695,15.284185 ]},
+					properties: {
+						title: 'Bermuda',
+						'change' : '7','lat' : '32.307800','long': '-64.750500',
+						"icon": {
+							"iconSize": [43, 22],
+							"iconAnchor": [50, 50],
+							"popupAnchor": [0, -55],
+							"className": "dot",
+						}
+				}
+				},
+				{
+					type: 'Feature',
+					geometry: {
+						type: 'Point',coordinates: [-77.629394,12.033948 ]
+					},
+					properties: {
+						title: 'Hawaii',
+						'change' : '7',
+						'lat' : '19.896766',
+						'long': '-155.582782',
+						"icon": {
+							"iconSize": [43, 22],
+							"iconAnchor": [50, 50],
+							"popupAnchor": [0, -55],
+							"className": "dot"
+						}
+					}
+				},
+
+			];
+			for(var i=0;i<data.message.length;i++){
+				geoJson.push(data.message[i]);
+				if(i == data.message.length-1){
+					console.log(geoJson);
+					myLayer.setGeoJSON(geoJson);
+				}
+			}
+		})
+		
+		
+		// Set a custom icon on each marker based on feature properties.
+		myLayer.on('layeradd', function(e) {
+			
+			//var marker = e.layer,feature = marker.feature;marker.setIcon(L.icon(feature.properties.icon));
+		
+		});
+		
+		
+		myLayer.on('click', function(e) { 
+			e.layer.closePopup();e.layer.unbindPopup();var feature = e.layer.feature;
+			if(feature.properties.change){
+				$.mapbox.unload();
+				window.map = L.mapbox.map('map', 'derrickstuds.imab7m7e').setView([feature.properties.lat , feature.properties.long], 7);
+				$.mapbox.quiet();
+				showInfo(feature);
+				return false;   
+			}
+		});
+		
+		
+		myLayer.on('mouseover',showInfo);
+		myLayer.on('mouseout',hideInfo);
+		// Clear the tooltip when map is clicked or moved.
+		window.map.on('move click',hideInfo);
+		
+		function showInfo(e)
+		{
+			var feature= e.layer.feature;
+			var content = '<div class="info map_details_con"><ul class="deta_map"><li><strong>Name : <span style="color:#206BEF;">' + feature.properties.title + '<span></strong><li><li><strong>Capital</strong> : ' + stripslashes(feature.properties.capital) + '</li><li><strong>Population</strong> : ' + feature.properties.population + '</li><li><strong>National Dish</strong> : ' + feature.properties.national_dish + '</li><li>' + feature.properties.description + '</li></ul><ul class="deta_map datali"></span><li id="chart2" style="width:100%; height:190px;"></li><li id="chart3" style="height:190px; width:100%;"></li> </ul></div>';
+			$('.map-info').html(content).fadeIn(50);
+		}
+		
+		function hideInfo()
+		{
+			$('.map-info').fadeOut(50).html('');
+		}
+
+		var geojson = { 
+			type: 'LineString', coordinates: [] 
+		};
+		var geojson1 = { 
+			type: 'LineString', coordinates: [] 
+		};
+		
+		var start = [-77.387695,15.284185 ];
+		var momentum = [1.2637195,1.7023615];
+		var start1 =  [-77.629394,12.033948 ];
+		var momentum1 = [7.7953388,0.7862818];
+
+		for (var i = 0; i < 11; i++) {
+			geojson.coordinates.push(start.slice());
+			geojson1.coordinates.push(start1.slice());
+			start[0] += momentum[0];
+			start[1] += momentum[1];
+			start1[0] -= momentum1[0];
+			start1[1] += momentum1[1];
+		}
+
+		// Add this generated geojson object to the map.
+		L.geoJson(geojson).addTo(window.map);
+		L.geoJson(geojson1).addTo(window.map);
+
+		// Create a counter with a value of 0.
+		var j = 0;
+		// Create a marker and add it to the map.
+		var marker = L.marker([0, 0], {icon: L.mapbox.marker.icon({'marker-color': '#f86767'})}).addTo(map);
+		var marker2 = L.marker([0, 0], {icon: L.mapbox.marker.icon({'marker-color': '#f86767'})}).addTo(map);
+		
+		$.mapbox.interval = setInterval(function(){
+			j = 0;tick();}, 2000
+		);
+
+		function tick() {
+			// Set the marker to be at the same point as one
+			// of the segments or the line.
+			marker.setLatLng(L.latLng(
+			geojson.coordinates[j][1],
+			geojson.coordinates[j][0]));
+			marker2.setLatLng(L.latLng(
+			geojson1.coordinates[j][1],
+			geojson1.coordinates[j][0]));
+			if (++j < geojson.coordinates.length) setTimeout(tick, 100);
+		}
+	}
+};
+
+
+$(function(){
+	$(document).on('click','.map-reset',function(e){
+		e.preventDefault();
+		map.unload();
+		map.load();
+		return false;
+	});	
+});
+/*endmap*/
+
 var scroll_lock = false;
 var scroll_int = null;
 var scroll_last = 0;
@@ -121,7 +293,6 @@ $.fn.partiallyInView = function(){
 
 
 $.fn.ensureInview = function(repeat){
-	
 	if(!this.inView() || typeof repeat !== undefined){
 		scroll_last = this.offset().top;
 		scroll_lock = true;
@@ -129,12 +300,13 @@ $.fn.ensureInview = function(repeat){
 		$('html, body').animate({
 			scrollTop: scroll_last
 		}, 100,'swing',function(){
-			if( Math.abs( $(window).scrollTop() - $el.offset().top ) > 5 ) {
+			if( Math.abs( $(window).scrollTop() - $el.offset().top ) > 5 && $(window).scrollTop() + $(window).height() != $(document).height()) {
 				console.log('recursing');
 				setTimeout(function(){
 					$el.ensureInview(true);
 				},0);
 			}else{
+				view_i = 0;
 				$('html, body').animate({
 					scrollTop: $el.offset().top
 				},50);
@@ -149,6 +321,7 @@ $.fn.ensureInview = function(repeat){
 				setTimeout(function(){
 					setTimeout(function(){
 						if($('.menu').is(':visible')){
+							slide.cleanup();
 							if($('[data-slider]').find('video').length > 0){
 								slide.hideVideos();
 							}
@@ -223,21 +396,12 @@ function adRun_video()
 	}
 }
 
-function adPlay_image()
-{
-	
-}
-
-
 function playvideo(el,timeout)
 {
 	var video = el.get(0);
 	console.log(el);
 	video.loop = true;
-	video.addEventListener('error',function(){
-		video.load();
-	});
-	video.addEventListener("canplay", function() {
+	$(video).one('canplay', function() {
 		console.log('canplay');
 		setTimeout(function() {
 			video.play();
@@ -246,9 +410,13 @@ function playvideo(el,timeout)
 			}
 		}, timeout || 0);
 	});
+}
+
+function mapRun()
+{
 	setTimeout(function(){
-		el.trigger('canplay');//it may have already fired. fire it just in case.
-	},50);
+		$.mapbox.load();	
+	},1000);
 }
 
 var slide = {
@@ -262,17 +430,46 @@ var slide = {
 	},
 	playCurrentVideo: function(){
 		var target = $('[data-slider]').find('.item:inview').find('img.lazyOwl');
-		var video = target.data('video');
-		if(typeof video !== 'undefined' && video != false && video != ''){
-			console.log(video);
-			target.siblings('.video-slideup').append('<video src="'+video+'?ts='+ (new Date().getTime() / 1000) +'" loop style="display:none;" preload="auto"></video>');
-			setTimeout(function(){
-				var el = target.siblings('.video-slideup').children('video');
-				playvideo(el,1000);
-			},0);
+		if(target.length > 0){
+			var video = target.data('video');
+			if(typeof video !== 'undefined' && video != false && video != ''){
+				console.log(video);
+				target.siblings('.video-slideup').append('<video src="'+video+'?cache-buster='+ (new Date().getTime() / 1000) +'" loop style="display:none;" preload="auto"></video>');
+				setTimeout(function(){
+					var el = target.siblings('.video-slideup').children('video');
+					playvideo(el,1000);
+				},0);
+			}	
+		}
+	},
+	handleCallbacks: function(){
+		var slug = $('[data-slug="'+location.pathname+'"]');
+		if(slug.length > 0 && typeof slug.data('callback') !== 'undefined' && slug.data('callback') !== false){
+			var cb = slug.data('callback');
+			try{
+				if(window[cb]){
+					window[cb].call(window,null);	
+				}	
+			}
+			catch(e){}
+		}
+	},
+	cleanup: function(){
+		//a catchall function that can remove some things for us if necessary.
+		if($.mapbox.active && location.pathname !== '/map'){
+			$.mapbox.unload()
+		}
+		console.log(location.pathname);
+		if($('body').hasClass('nav-minimized') && location.pathname !== '/suggest'){
+			$('body').removeClass('nav-minimized');
 		}
 	}
 };
+
+function navMin()
+{
+	$('body').addClass('nav-minimized');
+}
 
 var z = 0;
 function slideIt( b )
@@ -296,8 +493,11 @@ function slideIt( b )
 		slide.hideVideos();
 		setTimeout(function(){
 			slide.playCurrentVideo();
+			slide.handleCallbacks();
+			slide.cleanup();
 		},500);
 		$.app.done();
+		
 	}
 }
 
@@ -399,6 +599,15 @@ $(function(){
 		});
 	}
 	
+	function loadMeme(uri)
+	{
+		var el = $('.meme-viewer').html('').attr('data-slug',location.pathname);
+		$.getJSON(window.location.origin+'/api/v1/get_meme?uri='+uri,function(data){
+			el.html(data.message).closest('[data-viewpoint]').ensureInview();
+			$.app.done()
+		});
+	}
+	
 	$.app
 	.get('/',function(){
 		//index page redirects to slide.
@@ -437,10 +646,14 @@ $(function(){
 		
 	})
 	.get('/extras/memes',function(){
-		
+		var el = $('[data-memes]').closest('[data-viewpoint]');
+		console.log(el);
+		el.ensureInview();
+		$.app.done()
 	})
 	.get('/extras/memes/:uri',function(data){
 		var meme = data.uri;
+		loadMeme(meme);
 	})
 	.get('/explore/:country/fun-fact/:uri',function(data){
 		var country = data.country,
@@ -491,6 +704,7 @@ $(function(){
 			$('meta[name="csrf"]').attr('content',data.message.csrf);
 			$('[data-slider]').append(data.message.slider).addClass('done');
 			$('.menu').html(data.message.menu);
+			$('[data-memes]').html(data.message.memes);
 			slide.el = $('.owl-carousel').owlCarousel({
 				navigation : false,
 				slideSpeed : 300,
@@ -523,6 +737,7 @@ $(function(){
 						$('[data-'+y[j]+']').html(html);
 						setTimeout(function(){
 							skel_created = true;
+							$(document).foundation();
 						},0)
 					}
 				}
@@ -606,4 +821,5 @@ $(function(){
 		}
 		return false;
 	});
+
 });

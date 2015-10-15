@@ -1,0 +1,41 @@
+<div class="large-12 columns meme-profile">
+	<div class="large-7 columns">
+		<img src="{{meme.img}}"  width="100%">
+	</div>
+	<div class="large-5 columns">
+		<div class="large-12 columns">
+			<div class="row">
+				<h2 class="heading">
+				{{meme.title}}
+				</h2>
+			</div>
+		</div> 
+		<div class="large-12 columns paddress-left0">
+			<div class="large-8 columns end paddress-left0">
+				<div id="menu-wrap" class="row">
+					<div class="menu-item">
+						<span id="active" class="icon fa fa-facebook"></span>
+						<a style="outline: medium none;" hidefocus="true" id="hover" class="text share_fb"  href="javascript:void(0);"><i class="fa fa-facebook"></i></a>
+					</div>
+					<div class="menu-item">
+						<span id="active" class="icon fa fa-twitter"></span>
+						<a style="outline: medium none;" hidefocus="true" id="hover" target="_blank" href="http://twitter.com/share?text={{description}}&url={{url}}&hashtags=<{{profile.tags}}" class="text share_t"><i class="fa fa-twitter"></i></a>
+					</div>
+					<div class="menu-item">
+						<span id="active" class="icon fa fa-pinterest-square"></span>
+						<a href="http://www.pinterest.com/pin/create/button/?url={{url}}&media={{profile.image}}&description={{profile.description}}" target="_blank" class="text share_pinte" id="hover"><i class="fa fa-pinterest-square"></i></a>
+					</div> 
+					<div class="menu-item">
+						<span id="active" class="icon fa fa-tumblr"></span>
+						<a style="outline: medium none;" hidefocus="true" href="http://www.tumblr.com/share/photo?source={{profile.image}}&caption={{profile.description}}&click_thru={{url}}" id="hover" class="text share_tumblr" target="_blank"><i class="fa fa-tumblr"></i></a>
+					</div> 
+				</div>
+			</div>
+			<div class="large-4 columns">
+				<div class="disqus-btn">
+					<button></button>
+				</div>
+			</div>
+		</div> 
+	</div>
+</div>

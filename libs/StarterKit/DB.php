@@ -309,7 +309,7 @@ class DB
 		return $data;
 	}
 	
-	public function  getCountry($uri,$page=1)
+	public function  getCountry($uri)
 	{
 		$per_page = 20;
 		$data = \R::getRow('SELECT * FROM country WHERE uri=:uri',[':uri'=>$uri]);
@@ -319,6 +319,16 @@ class DB
 			$row['regions'] = \R::getAll('SELECT name,map_img,uri FROM country WHERE id IN ('.$row['regions'].')');
 		}
 		return $data;
+	}
+	
+	public function getMemes()
+	{
+		$d = \R::getAll('SELECT * FROM masterlist WHERE type_id="2" AND status="4"');
+		foreach($d['profiles'] as &$row)
+		{
+			$row['regions'] = \R::getAll('SELECT name,map_img,uri FROM country WHERE id IN ('.$row['regions'].')');
+		}
+		return $d;
 	}
 	
 	public function getCountryItem($uri)
@@ -351,6 +361,37 @@ class DB
 			$d['images'] = $tmp;
 		}
 		return (empty($d)) ? false : $d;
+	}
+	
+	public function mapData()
+	{
+		$data = [];
+		$d = \R::getAll('SELECT * FROM country WHERE name NOT IN("Hawaii","Bermuda")');
+		
+		foreach($d as $row)
+		{
+			$data[]= [
+				'type'=>'Feature',
+				'geometry'=>[
+					'type'=>'Point',
+					'coordinates'=>[-74,15]
+				],
+				'properties'=>[
+					'title'=>$row['name'],
+					'change'=>7,
+					'lat'=>$row['latitude'],
+					'long'=>$row['longitude'],
+					'icon'=>[
+						"iconSize"=>[43, 22],
+						"iconAnchor"=>[50, 50],
+						"popupAnchor"=>[0, -55],
+						"className"=>"dot",
+					]
+					//'uri'=>$row['uri'],
+				]
+			];
+		}
+		return $data;
 	}
 	//end app specific funcs
 	

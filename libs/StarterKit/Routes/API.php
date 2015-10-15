@@ -80,16 +80,19 @@ class API extends ViewController
 		$app = $this->app;
 		$args = $app->args;
 		$db = $app->db;
-		$args['menu'] = $this->app->db->getMenu();
+		$args['menu'] = $db->getMenu();
 		$args['banners'] = $db->getAll('SELECT * FROM slide WHERE 1');
 		$args['about'] = $db->getAll('SELECT * FROM about');
+		$args['memes'] = $db->getMemes();
+		$args['regions'] = $db->getAll('SELECT id,name FROM country');
 		return [
 			'error'=>0,
 			'message'=>[
 				'csrf'=>$this->app->session['csrf'],
 				'slugs'=>$db->cachedCall('slugs',[],60),
 				'slider'=> $this->twig->loadTemplate('frontend/slider.twig')->render($args),
-				'menu'=> $this->twig->loadTemplate('frontend/menu.twig')->render($args)
+				'menu'=> $this->twig->loadTemplate('frontend/menu.twig')->render($args),
+				'memes'=> $this->twig->loadTemplate('frontend/memes.twig')->render($args)
 			]
 		];
 	}
@@ -348,5 +351,30 @@ class API extends ViewController
 		$args['profile'] = $app->db->getCountryItem($uri);
 		$html= $this->twig->loadTemplate('frontend/profile.twig')->render($args);
 		return ['error'=>0,'message'=>$html];
+	}
+	
+	public function get_meme()
+	{
+		$app = $this->app;
+		$get = $app->get;
+		
+		$uri = isset($get['uri']) ? $get['uri'] : false;	
+
+		if(!$uri){
+			throw new \exception('Invalid URI');
+		}
+	
+		if(!$app->db->exists('masterlist','uri',$uri)){
+			throw new \exception('that masterlist doesn\'t exist');
+		}
+		$args = $app->args;
+		$args['meme'] = $app->db->getRow('SELECT * FROM masterlist WHERE type_id="2" AND status="4" AND uri=:uri',[':uri'=>$uri]);
+		$html= $this->twig->loadTemplate('frontend/meme.twig')->render($args);
+		return ['error'=>0,'message'=>$html];
+	}
+	
+	public function getMapData()
+	{
+		return ['error'=>0,'message'=>$this->app->db->cachedCall('mapData',[],5*60)];
 	}
 }

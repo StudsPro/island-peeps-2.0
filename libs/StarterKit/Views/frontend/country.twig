@@ -99,28 +99,31 @@
 	{% for item in country.profiles %}
 	<li>
 		<div class="contain">
-			<img src="{{item.img}}" onerror="iE(this);"/>
-			<div class="overlay">
-				<div class="center">
-					<div class="regions clearfix">
-						{% for item2 in item.regions %}
-						{% if item.type_id == 1 %}
-						<a data-href="/explore/{{item2.uri}}/people/{{item.uri}}">
-						{% endif %}
+			{% if item.type_id == 1 %}
+			<a data-href="/explore/{{item.regions[0].uri}}/people/{{item.uri}}">
+			{% endif %}
+			{% if item.type_id == 3 %}
+			<a data-href="/explore/{{item.regions[0].uri}}/fun-fact/{{item.uri}}">
+			{% endif %}
+				<img src="{{item.img}}" onerror="iE(this);" />
+				<div class="overlay">
+					<div class="center">
+						<div class="regions clearfix">
+							{% for item2 in item.regions %}
+							<div>
+								<img src="{{item2.map_img}}"/>
+								<span>{{item2.name}}</span>
+							</div>
+							{% endfor %}
+						</div>
 						{% if item.type_id == 3 %}
-						<a data-href="/explore/{{item2.uri}}/fun-fact/{{item.uri}}">
+						<span class="fun-facts">-Fun Facts-</span>
 						{% endif %}
-							<img src="{{item2.map_img}}"/>
-							<span>{{item2.name}}</span>
-						</a>
-						{% endfor %}
+						<h3>{{item.title}}</h3>
+						<h4>{{item.category}}</h4>
 					</div>
-					{% if item.type_id == 3 %}
-					<span class="fun-facts">-Fun Facts-</span>
-					{% endif %}
-					<h3>{{item.title}}</h3>
 				</div>
-			</div>
+			</a>
 		</div>
 	</li>
 	{% endfor %}

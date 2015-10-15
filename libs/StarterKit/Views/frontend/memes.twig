@@ -1,6 +1,6 @@
 <div class="memes columns">
 	<div class="large-12 columns">
-		<div class="blue-heading columns">
+		<div class="heading columns">
 			<h1>Memes</h1>
 		</div>
 	</div>
@@ -17,28 +17,22 @@
 	{% for item in memes %}
 	<li>
 		<div class="contain">
-			<img src="{{item.img}}" onerror="iE(this);"/>
-			<div class="overlay">
-				<div class="center">
-					<div class="regions clearfix">
-						{% for item2 in item.regions %}
-						{% if item.type_id == 1 %}
-						<a data-href="/explore/{{item2.uri}}/people/{{item.uri}}">
-						{% endif %}
-						{% if item.type_id == 3 %}
-						<a data-href="/explore/{{item2.uri}}/fun-fact/{{item.uri}}">
-						{% endif %}
-							<img src="{{item2.map_img}}"/>
-							<span>{{item2.name}}</span>
-						</a>
-						{% endfor %}
+			<a data-href="/extras/memes/{{item.uri}}">
+				<img src="{{item.img}}" onerror="iE(this);" />
+				<div class="overlay">
+					<div class="center">
+						<div class="regions clearfix">
+							{% for item2 in item.regions %}
+							<div>
+								<img src="{{item2.map_img}}"/>
+								<span>{{item2.name}}</span>
+							</div>
+							{% endfor %}
+						</div>
+						<h3>{{item.title}}</h3>
 					</div>
-					{% if item.type_id == 3 %}
-					<span class="fun-facts">-Fun Facts-</span>
-					{% endif %}
-					<h3>{{item.title}}</h3>
 				</div>
-			</div>
+			</a>
 		</div>
 	</li>
 	{% endfor %}
