@@ -156,7 +156,6 @@ trait Upload
 					$trans_colour = imagecolorallocatealpha($fr, 0, 0, 0, 127);
 					imagefill($fr, 0, 0, $trans_colour);	
 				}
-				imagecopyresampled($fr,$image,0,0,0,0,$z,$z,$size,$size);
 				imagepng($fr,NULL,2);
 			break;
 			case 'image/jpeg':

@@ -77,14 +77,19 @@ class API extends ViewController
 	
 	public function init()
 	{
-		$this->app->args['menu'] = $this->app->db->getMenu();
+		$app = $this->app;
+		$args = $app->args;
+		$db = $app->db;
+		$args['menu'] = $this->app->db->getMenu();
+		$args['banners'] = $db->getAll('SELECT * FROM slide WHERE 1');
+		$args['about'] = $db->getAll('SELECT * FROM about');
 		return [
 			'error'=>0,
 			'message'=>[
 				'csrf'=>$this->app->session['csrf'],
-				'slugs'=>$this->app->db->cachedCall('slugs',[],60),
-				'slider'=> $this->twig->loadTemplate('frontend/slider.twig')->render($this->app->args),
-				'menu'=> $this->twig->loadTemplate('frontend/menu.twig')->render($this->app->args)
+				'slugs'=>$db->cachedCall('slugs',[],60),
+				'slider'=> $this->twig->loadTemplate('frontend/slider.twig')->render($args),
+				'menu'=> $this->twig->loadTemplate('frontend/menu.twig')->render($args)
 			]
 		];
 	}

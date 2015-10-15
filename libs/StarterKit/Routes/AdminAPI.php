@@ -885,4 +885,37 @@ class AdminAPI
 		return ['error'=>0,'message'=>1];
 	}
 
+	function slide()
+	{
+		$app = $this->app;
+		$filter = $app->filter;
+		$get = $app->get;
+		$post = $app->post; 
+		$db = $app->db;
+		$admin = $app->session['admin'];
+		
+		$id = isset($get['id']) ? $filter->cast_int($get['id']) : false;
+		
+		if(!$id){
+			throw new \exception('Missing Id');
+		}
+		$t = $db->model('slide',$id);
+		
+		if( (int) $t->id !== $id){
+			throw new \exception('a 1 ');
+		}
+		
+		try{
+			$t->video = $this->video_upload('uploaded_video',$app->files);
+		}
+		catch(\exception $e){
+		}
+		try{
+			$t->image = $this->img_upload('uploaded_image',$app->files);
+		}
+		catch(\exception $e){
+		}
+		$db->store($t);
+		return ['error'=>0,'message'=>1];
+	}
 } 

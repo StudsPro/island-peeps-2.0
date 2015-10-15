@@ -64,10 +64,10 @@
 														<input type="file" name="image_{{i}}" class="form-control input-md" />
 													</div>
 													<div class="col-md-3">
-														<input type="text" name="link_{{i}}" value="{{item['link_'~i]}}" class="form-control input-md" placeholder="Link" />
+														<input type="text" name="link_{{i}}" value="{{item.images[i].link}}" class="form-control input-md" placeholder="Link" />
 													</div>
 													<div class="col-md-3">
-														<input type="text" name="title_{{i}}" value="{{item['title_'~i]}}" class="form-control input-md" placeholder="Link Title" />
+														<input type="text" name="title_{{i}}" value="{{item.images[i].title}}" class="form-control input-md" placeholder="Link Title" />
 													</div>
 												</div>
 										{% endfor %}

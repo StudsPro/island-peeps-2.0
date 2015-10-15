@@ -2,10 +2,54 @@ var scroll_lock = false;
 var scroll_int = null;
 var scroll_last = 0;
 var skel_created = false;
+var tmp_int_1 = null;
 
 // left: 37, up: 38, right: 39, down: 40,
 // spacebar: 32, pageup: 33, pagedown: 34, end: 35, home: 36
 var keys = {37: 1, 38: 1, 39: 1, 40: 1};
+
+//throttle utility from underscore.js
+function throttle(func, wait, options) {
+	var context, args, result;
+	var timeout = null;
+	var previous = 0;
+	if (!options) options = {};
+	var later = function() {
+	  previous = options.leading === false ? 0 : now2();
+	  timeout = null;
+	  result = func.apply(context, args);
+	  if (!timeout) context = args = null;
+	};
+	return function() {
+	  var now = now2();
+	  if (!previous && options.leading === false) previous = now;
+	  var remaining = wait - (now - previous);
+	  context = this;
+	  args = arguments;
+	  if (remaining <= 0 || remaining > wait) {
+		if (timeout) {
+		  clearTimeout(timeout);
+		  timeout = null;
+		}
+		previous = now;
+		result = func.apply(context, args);
+		if (!timeout) context = args = null;
+	  } else if (!timeout && options.trailing !== false) {
+		timeout = setTimeout(later, remaining);
+	  }
+	  return result;
+	};
+};
+
+//now from underscore
+function now2()
+{
+	return Date.now || function() {
+		return new Date().getTime();
+	};
+}
+
+var scroll_events = [];
 
 function preventDefault(e) {
   e = e || window.event;
@@ -105,6 +149,9 @@ $.fn.ensureInview = function(repeat){
 				setTimeout(function(){
 					setTimeout(function(){
 						if($('.menu').is(':visible')){
+							if($('[data-slider]').find('video').length > 0){
+								slide.hideVideos();
+							}
 							var el2 = $('.menu').find('[data-href="'+location.pathname+'"]');
 							console.log(location.pathname,el2)
 							if(el2.length > 0){
@@ -172,14 +219,7 @@ function adRun_video()
 {
 	var v = $('[data-slug="'+location.pathname+'"]').find('video');
 	if(v.length > 0){
-		var video = v[0];
-		video.CurrentTime = 0;
-		video.play();
-		video.loop = true;
-		video.onended = function(){
-			video.CurrentTime = 0;
-			video.play();
-		};
+		playvideo(v);
 	}
 }
 
@@ -188,6 +228,78 @@ function adPlay_image()
 	
 }
 
+
+function playvideo(el,timeout)
+{
+	var video = el.get(0);
+	console.log(el);
+	video.loop = true;
+	video.addEventListener('error',function(){
+		video.load();
+	});
+	video.addEventListener("canplay", function() {
+		console.log('canplay');
+		setTimeout(function() {
+			video.play();
+			if(!el.is(':visible')){
+				el.fadeIn(100);
+			}
+		}, timeout || 0);
+	});
+	setTimeout(function(){
+		el.trigger('canplay');//it may have already fired. fire it just in case.
+	},50);
+}
+
+var slide = {
+	el: null,
+	created: false,
+	go: function(a){
+		slideIt(a);
+	},
+	hideVideos: function(){
+		$('.video-slideup').html('');
+	},
+	playCurrentVideo: function(){
+		var target = $('[data-slider]').find('.item:inview').find('img.lazyOwl');
+		var video = target.data('video');
+		if(typeof video !== 'undefined' && video != false && video != ''){
+			console.log(video);
+			target.siblings('.video-slideup').append('<video src="'+video+'?ts='+ (new Date().getTime() / 1000) +'" loop style="display:none;" preload="auto"></video>');
+			setTimeout(function(){
+				var el = target.siblings('.video-slideup').children('video');
+				playvideo(el,1000);
+			},0);
+		}
+	}
+};
+
+var z = 0;
+function slideIt( b )
+{
+	//slide.el maybe hasn't been created yet. use recursion to poll until it is.
+	if(slide.el == null){
+		if(z > 50){
+			throw 'slide.el failed to be constructed. abort';
+			z = 0;
+		}
+		setTimeout(function(){
+			slideIt(b);
+			z++;
+		},100);
+	}else{
+		$('.nav > li.active').removeClass('active');
+		var n = $('.nav > li a[data-href="/'+b+'"]').parent('li').addClass('active').index();
+		slide.el.goTo(n);
+		$('[data-slug="/"]').find('[data-viewpoint]').ensureInview();
+		z=0;
+		slide.hideVideos();
+		setTimeout(function(){
+			slide.playCurrentVideo();
+		},500);
+		$.app.done();
+	}
+}
 
 //setup the google analytics object.
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -245,38 +357,6 @@ $(function(){
 		link.rel = 'stylesheet';
 		link.href = window.location.origin + file;
 		document.head.appendChild(link);
-	}
-	
-	
-	var slide = {
-		el: null,
-		created: false,
-		go: function(a){
-			slideIt(a);
-		}
-	};
-	
-	z = 0;
-	function slideIt( b )
-	{
-		//slide.el maybe hasn't been created yet. use recursion to poll until it is.
-		if(slide.el == null){
-			if(z > 50){
-				throw 'slide.el failed to be constructed. abort';
-				z = 0;
-			}
-			setTimeout(function(){
-				slideIt(b);
-				z++;
-			},100);
-		}else{
-			$('.nav > li.active').removeClass('active');
-			var n = $('.nav > li a[data-href="/'+b+'"]').parent('li').addClass('active').index();
-			slide.el.goTo(n);
-			$('[data-slug="/"]').find('[data-viewpoint]').ensureInview();
-			z=0;
-			$.app.done();
-		}
 	}
 	
 	$(document).on('click','.nav-btns > div',function(e){
@@ -420,11 +500,14 @@ $(function(){
 				touchDrag:false,
 				afterInit: function(){
 					$('.owl-carousel').find('.item').addClass('done');
-					setTimeout(function(){
-						console.log(typeof slide.el);
-						slide.created = true;
-					},300);
-				}
+					tmp_int_1 = setInterval(function(){
+						if(typeof slide.el === 'object'){
+							slide.created = true;
+							clearInterval(tmp_int_1);	
+						}
+					},50);
+				},
+				lazyLoad: true,
 			}).data('owlCarousel');
 			var z = [
 				data.message.slugs.countries
@@ -455,7 +538,7 @@ $(function(){
 		}
 	});
 	
-	$(window).on('scroll',function(e){
+	var scroll_fn = throttle(function(e){
 		if(scroll_lock){
 			disableScroll();
 			setTimeout(enableScroll,50);
@@ -474,7 +557,9 @@ $(function(){
 				}
 			},80);
 		}
-	})
+	},100);
+	
+	$(window).on('scroll',scroll_fn);
 	
 	function scrollUp()
 	{
@@ -496,11 +581,13 @@ $(function(){
 		scrollTo(el);
 	}
 	
+	/*
 	setInterval(function(e){
 		$('img:failed').each(function(){
 			iE(this);
 		});
 	},1500);
+	*/
 	
 	lightbox.option({
       'resizeDuration': 200,
@@ -509,4 +596,14 @@ $(function(){
 	  'positionFromTop': 140,
 	  'maxHeight': $(window).height() - 190
     });
+	
+	$(document).on('click','.about li a',function(e){
+		e.preventDefault();
+		if(!$(this).hasClass('active')){
+			$('.about li a.active').removeClass('active');
+			$('.about-viewer').hide().html( decodeURIComponent( $(this).data('contents')) ).fadeIn(100);
+			$(this).addClass('active');
+		}
+		return false;
+	});
 });

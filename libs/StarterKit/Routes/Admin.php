@@ -239,6 +239,14 @@ class Admin extends ViewController
 				$args['action'] = 'Edit Ad';
 				$args['regions'] = $db->getAll('SELECT * FROM country ORDER BY name ASC');
 				$args['item'] = $db->getRow('SELECT * FROM ad WHERE id=:id',[':id'=>$id]);
+				if($args['item']['type'] == 'image'){
+					$args['item']['images'] = json_decode($args['item']['images'],true);
+				}
+			break;
+			case 'banner':
+				$template = 'crud_banner.twig';
+				$args['action'] = 'Edit Banner';
+				$args['item'] = $db->getRow('SELECT * FROM slide WHERE id=:id',[':id'=>$id]);
 			break;
 			case 'about-page':
 				$template = 'crud_about.twig';
@@ -386,6 +394,27 @@ class Admin extends ViewController
 		];
 		$args['ads'] = $db->getAll('SELECT * FROM ad WHERE 1');
 		parent::render('ads.twig',$args);
+	}
+	
+	public function banners()
+	{
+		$app  = $this->app;
+		$args = $app->args;
+		$get  = $app->get;
+		$db   = $app->db;
+		$args['scripts'] = [
+			'js/tooltip/tooltip.js',
+			'js/plugins/datatables/jquery.dataTables.min.js',
+			'js/demo/dataTables.bootstrap.js',
+			'js/demo/tables.js',
+			'js/masterlist.js'
+		];
+		
+		$args['styles'] = [
+			'js/tooltip/tooltip.css'
+		];
+		$args['banners'] = $db->getAll('SELECT * FROM slide WHERE 1');
+		parent::render('banners.twig',$args);
 	}
 	
 	public function login()

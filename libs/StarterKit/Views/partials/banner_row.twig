@@ -1,0 +1,19 @@
+{% if banners|length > 0 %}
+{% for item in banners %}
+<tr>
+	<td>{{loop.index}}</td>
+	<td>{{item.title}}</td>
+	<td>
+		<a href="{{base_url}}admin/edit?t=banner&id={{item.id}}">
+		<img src="{{base_url}}static/adm/img/editicon.gif">
+		</a> 
+	</td>
+</tr>
+{% endfor %}
+{% else %}
+<tr>
+	<td width="100%" colspan="100%">
+		<h3 style="text-align:center;">No Records Available.</h3>
+	</td>
+</tr>
+{% endif %}

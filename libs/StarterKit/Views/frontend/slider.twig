@@ -6,39 +6,129 @@
 	<div class="columns owl-carousel">
 	 
 		<div class="item" data-slug="/home">
-			<img src="{{base_url}}static/front/img/slider/slide1.jpg" />
+			<img class="lazyOwl" data-src="{{banners[0].image|default(base_url~'static/front/img/slider/slide1.jpg')}}" data-video="{{banners[0].video}}" />
+			<div class="video-slideup"></div>
+			<div class="content">
+				<div class="columns home-c medium-6 small-12 fh">
+					<h2 class="underlined toupper">the basic premise of the website</h2>
+					<p class="nunito white justified">
+					Is to highlight with a small profile famous, prominent, notorious people from the Caribbean islands, 
+					but rather than the webmaster just updating the content, the users have an input 
+					& other ppl can validate the persons claim to a specific island!
+					</p>
+				</div>
+			</div>
 		</div>
 		
 		<div class="item" data-slug="/map" >
-		
+			<img class="lazyOwl" data-src="{{banners[1].image|default(base_url~'static/front/img/slider/slide1.jpg')}}" data-video="{{banners[1].video}}" />
+			<div class="video-slideup"></div>
+			<div class="content"></div>
 		</div>
 		
 		<div class="item" data-slug="/suggest">
-		
+			<img class="lazyOwl" data-src="{{banners[2].image|default(base_url~'static/front/img/slider/slide1.jpg')}}" data-video="{{banners[2].video}}" />
+			<div class="video-slideup"></div>
+			<div class="content"></div>
 		</div>
 		
 		<div class="item" data-slug="/haiti">
-		
+			<img class="lazyOwl" data-src="{{banners[3].image|default(base_url~'static/front/img/slider/slide1.jpg')}}" data-video="{{banners[3].video}}" />
+			<div class="video-slideup"></div>
+			<div class="content"></div>
+			<div class="content">
+				<div class="columns home-c medium-6 small-12 fh">
+					<h2 class="underlined toupper">haiti</h2>
+					<p class="nunito white justified">
+					<img class="caption" src="{{base_url}}static/front/img/slider/flag-haiti.jpg" />
+					Haiti has a long and storied history and therefore retains a rich culture. 
+					Haitian culture is a mixture of primarily French, African elements, and native Taíno, with influence from the colonial Spanish. 
+					Around 80% of Haitians profess to be Catholics. Protestants make up about 16% of the population. 
+					Some Haitians combine their Catholicism with elements of Voodoo.
+					<a class="explore-btn right" data-href="/explore/haiti">Explore Haiti ▶</a>
+					</p>
+				</div>
+			</div>
 		</div>
 		
 		<div class="item" data-slug="/jamaica">
-		
+			<img class="lazyOwl" data-src="{{banners[4].image|default(base_url~'static/front/img/slider/slide1.jpg')}}" data-video="{{banners[4].video}}" />
+			<div class="video-slideup"></div>
+			<div class="content">
+				<div class="columns home-c medium-6 small-12 fh">
+					<h2 class="underlined toupper">jamaica</h2>
+					<p class="nunito white justified">
+					<img class="caption" src="{{base_url}}static/front/img/slider/flag-jamaica.jpg" />
+					Once a Spanish possession known as Santiago, in 1655 it came under the rule of England later (Great Britain), 
+					and was called Jamaica. It achieved full independence from the United Kingdom on 6 August 1962. 
+					With 2.8 million people, it is the third most populous anglophone country in the Americas, after the United States and Canada. 
+					Kingston is the country's largest city and its capital, Jamaica has a large diaspora around the world, due to emigration from the country. 
+					<a class="explore-btn right" data-href="/explore/jamaica">Explore Jamaica ▶</a>
+					</p>
+				</div>
+			</div>
 		</div>
 		
 		<div class="item" data-slug="/puerto-rico">
-			
+			<img class="lazyOwl" data-src="{{banners[5].image|default(base_url~'static/front/img/slider/slide1.jpg')}}" data-video="{{banners[5].video}}" />
+			<div class="video-slideup"></div>
+			<div class="content">
+				<div class="columns home-c medium-6 small-12 fh">
+					<h2 class="underlined toupper shadow">puerto rico</h2>
+					<p class="nunito white justified shadow">
+					<img class="caption" src="{{base_url}}static/front/img/slider/flag-puerto-rico.jpg" />
+					Puerto Rico (Spanish for "rich port") comprises an archipelago that includes the main island of Puerto Rico 
+					and a number of smaller islands, the largest of which are Vieques, Culebra, and Mona. Due to its location, 
+					Puerto Rico enjoys a tropical climate and is subject to the Atlantic hurricane season. 
+					The island is also popularly known in Spanish as La Isla Del Encanto, meaning "The Island Of Enchantment".
+					<a class="explore-btn purp right" data-href="/explore/puerto-rico">Explore Puerto Rico ▶</a>
+					</p>
+				</div>
+			</div>
 		</div>
 		
 		<div class="item" data-slug="/trinidad">
-		
+			<img class="lazyOwl" data-src="{{banners[6].image|default(base_url~'static/front/img/slider/slide1.jpg')}}" data-video="{{banners[6].video}}" />
+			<div class="video-slideup"></div>
+			<div class="content">
+				<div class="columns home-c medium-6 small-12 fh">
+					<h2 class="underlined toupper">trinidad</h2>
+					<p class="nunito white justified">
+					<img class="caption" src="{{base_url}}static/front/img/slider/flag-trinidad.png" />
+					Trinidad and Tobago is known for its Carnival and is the birthplace of Steelpan, 
+					Calypso, Soca, Chutney and Limbo. Trinidad and Tobago lie on the continental 
+					shelf of South America, and is thus geologically considered to lie entirely in 
+					South America. However, the West Indies are generally considered to be part of 
+					North America, and as the language and cultural links of Trinidad and Tobago are not to South America, 
+					but to the rest of the English-speaking Caribbean nations, the nation is often treated as part of North America.
+					<a class="explore-btn right" data-href="/explore/trinidad-tobago">Explore Trinidad ▶</a>
+					</p>
+				</div>
+			</div>
 		</div>
 		
 		<div class="item" data-slug="/stats">
-		
+			<img class="lazyOwl" data-src="{{banners[7].image|default(base_url~'static/front/img/slider/slide1.jpg')}}" data-video="{{banners[7].video}}" />
+			<div class="video-slideup"></div>
 		</div>
 		
 		<div class="item" data-slug="/about">
-		
+			<img class="lazyOwl" data-src="{{banners[8].image|default(base_url~'static/front/img/slider/slide1.jpg')}}" data-video="{{banners[8].video}}" />
+			<div class="video-slideup"></div>
+			<div class="content">
+				<div class="columns home-c bigger medium-6 small-12 fh">
+					<ul class="about large-4 columns">
+						{% for item in about %}
+						<li>
+							<a href="#" data-contents="{{item.content|url_encode}}" {% if loop.index0 == 0 %}class="active"{%endif%}>{{item.title}}</a>
+						</li>
+						{% endfor %}
+					</ul>
+					<div class="large-8 columns about-viewer">
+						{{about[0].content|raw}}
+					</div>
+				</div>
+			</div>
 		</div>
 	 
 	</div>
