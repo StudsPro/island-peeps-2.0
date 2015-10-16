@@ -377,4 +377,78 @@ class API extends ViewController
 	{
 		return ['error'=>0,'message'=>$this->app->db->cachedCall('mapData',[],5*60)];
 	}
+	
+	public function suggest()
+	{
+		$app = $this->app;
+		$filter = $app->filter;
+		$get = $app->get;
+		$post = $app->post; 
+		$db = $app->db;
+		
+		$t = $db->model('suggestion');
+		
+		//unset regions[] and replace with regions
+		if(isset($post['regions[]'])){
+			unset($post['regions[]']);
+		}
+		$post['regions'] = isset($_POST['regions']) ? $_POST['regions'] : [];
+		
+		$required = [
+			'title'=>'min',
+			'email'=>'email',
+			'submitter'=>'min',
+			'type_id'=>'c_type',
+			'regions'=>'region_fm',
+		];
+		
+		$optional = [
+			'description'=>'min'
+		];
+		
+		$filter->custom_filter('region_fm',function($input) use($filter,$db){
+			if(!is_array($input)){
+				throw new \exception('Invalid input format:: Regions');
+			}
+			$input = array_map([$filter,'cast_int'],$input);
+			$x = count($input);
+			$y = (int) $db->getCell('SELECT COUNT(id) FROM country WHERE id IN('.implode(',',$input).')');
+			if($x !== $y){
+				throw new \exception('1 or more regions is invalid X: '.$x.' Y: '.$y);
+			}
+			return implode(',',$input);
+		});
+		
+		$filter->custom_filter('c_type',function($input) use($filter){
+			$input = $filter->cast_int($input);
+			if(!in_array($input,range(1,3))){
+				throw new \exception('Invalid Profile Type');
+			}
+			return $input;
+		});
+		
+		$filter->generate_model($t,$required,$optional,$post);
+		
+		if(isset($app->files['uploaded_image']['tmp_name']) && is_uploaded_file($app->files['uploaded_image']['tmp_name'])){
+			$t->img = $this->img_upload('uploaded_image',$app->files);
+		}
+		
+		$db->store($t);
+		
+		return ['error'=>0,'message'=>1];
+	}
+	
+	public function searchInstant()
+	{
+		$app = $this->app;
+		$db = $app->db;
+		$get = $app->get;
+		$args = $app->args;
+		$query = isset($get['q']) ? $get['q'] : false;
+		if(!$query){
+			throw new \exception('e');
+		}
+		$args['results'] = $db->searchInstant($query);
+		return ['error'=>0,'message'=>$this->twig->loadTemplate('frontend/search_result.twig')->render($args)];
+	}
 }

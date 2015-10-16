@@ -23,7 +23,9 @@
 		<div class="item" data-slug="/map"  data-callback="mapRun">
 			<div class="content">
 				<div class="mapbox-custom" id="map">
-				</div> 
+				</div>
+				<div class="map-info"></div>
+				<button class="map-reset">Reset</button>
 			</div>
 		</div>
 		
@@ -31,14 +33,9 @@
 			<img class="lazyOwl" data-src="{{banners[2].image|default(base_url~'static/front/img/slider/slide1.jpg')}}" data-video="{{banners[2].video}}" />
 			<div class="video-slideup"></div>
 			<div class="content">
-				<div class="columns large-4 fh end items-center" style="text-align:center">
-					<div class="items">
-						<img src="{{base_url}}static/front/img/suggestions-comments.gif" class="suggest-im"/>
-					</div>
-				</div>
 				<div class="columns home-c medium-6 small-12 fh">
 					<div class="suggest">
-						<form method="post" action="{{base_url}}api/v1/suggest" data-callback="suggestDone">
+						<form method="post" class="contains-file" action="{{base_url}}api/v1/suggest" data-callback="suggestDone">
 							<div class="row">
 								<div class="large-12 columns">
 									<div class="mbox">
@@ -87,7 +84,7 @@
 								</div>
 								<div class="large-6 columns">
 									<label>Your Email
-										<input placeholder="Your Email" type="text" name="submitter_email">
+										<input placeholder="Your Email" type="text" name="email">
 									</label>
 								</div>
 								<div class="large-12 columns">
@@ -175,9 +172,45 @@
 			</div>
 		</div>
 		
-		<div class="item" data-slug="/stats">
+		<div class="item" data-slug="/stats" data-callback="statsCb">
 			<img class="lazyOwl" data-src="{{banners[7].image|default(base_url~'static/front/img/slider/slide1.jpg')}}" data-video="{{banners[7].video}}" />
 			<div class="video-slideup"></div>
+			<div class="content">
+			
+				<div class="searchbar columns">
+					<input type="search" name="search" placeholder="Type here to begin your search" />
+					<a><i class="fa fa-search"></i></a>
+					<ul class="results">
+					</ul>
+				</div>
+				
+				<div class="searchgraph-results active">
+					<div class="large-12 columns">
+						<strong class="count">Showing 5 Results</strong>
+						<a class="close"><i class="fa fa-times"></i> <span>Close Results</span></a>
+					</div>
+					<div class="large-2 columns by-country">
+						<strong>View Results By Country</strong>
+						<ul>
+							<li>
+								<a data-country="jamaica">Jamaica</a>
+							</li>
+							<li>
+								<a data-country="jamaica">Jamaica</a>
+							</li>
+						</ul>
+					</div>
+					<div class="large-10 columns chart">
+					
+					</div>
+					<div class="large-10 columns graph-results">
+						<a class="back-to-chart"><i class="fa fa-arrow-left"></i> Back To Chart</a>
+						<ul class="results-inner large-block-grid-6 medium-block-grid-4 small-block-grid-1">
+							
+						</ul>
+					</div>
+				</div>
+			</div>
 		</div>
 		
 		<div class="item" data-slug="/about">

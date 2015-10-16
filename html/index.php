@@ -13,6 +13,8 @@
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 		<link href="http://islandpeeps.openex.info/static/front/lightbox/css/lightbox.css" rel="stylesheet" type="text/css" />
 		<link href="https://api.tiles.mapbox.com/mapbox.js/v1.6.4/mapbox.css" rel="stylesheet" />
+		<link href="http://islandpeeps.openex.info/static/shared.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.4.0/animate.min.css">
 	</head>
 	<body class="preload">
 		<div class="menu columns">
@@ -51,6 +53,7 @@
 		<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 		<script src="http://islandpeeps.openex.info/static/front/foundation.min.js"></script>
 		<script src="http://islandpeeps.openex.info/static/front/router.js"></script>
+		<script src="http://islandpeeps.openex.info/static/noty.min.js"></script>
 		<script src="http://islandpeeps.openex.info/static/shared.js"></script>
 		<script src="http://islandpeeps.openex.info/static/front/owl-carousel/owl.carousel.min.js"></script>
 		<script src="http://islandpeeps.openex.info/static/front/lightbox/js/lightbox.min.js"></script>

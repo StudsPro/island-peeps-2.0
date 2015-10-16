@@ -53,6 +53,26 @@ var sk = {
 				}
 			]
 		});
+	},
+	
+	option: function(_text,option1,option2){
+		noty({
+			text: _text,
+			layout: 'center',
+			theme: 'relax',
+			buttons: [
+				{addClass: 'btn btn-primary', text: option1.text, onClick: function($noty) {
+						$noty.close();
+						option1.callback.apply(window,option1.args);
+					}
+				},
+				{addClass: 'btn btn-danger', text: option2.text, onClick: function($noty) {
+						$noty.close();
+						option2.callback.apply(window,option2.args);
+					}
+				}
+			]
+		});
 	}
 	
 };
@@ -64,7 +84,7 @@ $(function(){
 		event.preventDefault();
 		var _this         = $(this),
 		before_function   = _this.attr('data-before'),
-		callback_function = _this.attr('data-callback'),
+		callback_function = _this.data('callback'),
 		endpoint          = _this.attr('action'),
 		query_string      = _this.serialize()+'&'+$.param({'c':sk.csrf()});
 		_this.find('button[type="submit"]').prop('disabled',true).addClass('m-progress').promise().done(function(){
@@ -75,7 +95,7 @@ $(function(){
 					return;
 				}
 			}
-			if(typeof callback_function === "undefined"){
+			if(typeof callback_function === "undefined" || callback_function === false){
 				sk.alert('FORM DOES NOT SPECIFY CALLBACK. UNABLE TO CONTINUE.','error');
 				return;
 			}
@@ -95,9 +115,9 @@ $(function(){
 		console.log('--ajax file upload v2--');
 		e.preventDefault();
 		var formData = new FormData(this),
-		_this         = $(this),
-		before_function   = _this.attr('data-before'),
-		callback_function = _this.attr('data-callback'),
+		_this         = $(this);
+		var before_function   = _this.attr('data-before'),
+		callback_function = _this.data('callback'),
 		endpoint          = _this.attr('action');
 		formData.append('c',sk.csrf());
 		_this.find('button[type="submit"]').prop('disabled',true).addClass('m-progress').promise().done(function(){
@@ -126,11 +146,11 @@ $(function(){
 				cache: false,
 				processData:false,
 				success: function(data){
-					window[_this.attr('data-callback')].call( _this , JSON.parse(data) );
+					window[callback_function].call( _this , JSON.parse(data) );
 				},
 				error: function(jqXHR, textStatus, errorThrown ){
 					
-					window[_this.attr('data-callback')].call( _this , {'error':1,'message': jqXHR.status + textStatus} );
+					window[callback_function].call( _this , {'error':1,'message': jqXHR.status + textStatus} );
 				} 	        
 			}).always(function(){
 				_this.find('button[type="submit"]').removeClass('m-progress').prop('disabled',false);

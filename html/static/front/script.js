@@ -13,21 +13,20 @@ $.mapbox = {
 		$.mapbox.active = true;
 	},
 	load: function(){
-		
-		window.map = L.mapbox.map('map', 'derrickstuds.imab7m7e').setView([15, -74], 5);
+		window.map = L.mapbox.map('map', 'derrickstuds.imab7m7e',{
+			accessToken: 'pk.eyJ1IjoiZGVycmlja3N0dWRzIiwiYSI6ImlSS2VHQW8ifQ.sFDiNJZ-s-N87fEDHniqHg'
+		}).setView([15, -74], 5);
 		$.mapbox.quiet();
 	},
 	quiet: function(){
 		var myLayer = L.mapbox.featureLayer().addTo(window.map);
 		$.mapbox.active = true;
 		
-		/*
-		var coder = L.mapbox.geocoder('mapbox.places');
+		var coder = L.mapbox.geocoder('derrickstuds.imab7m7e',{accessToken:'pk.eyJ1IjoiZGVycmlja3N0dWRzIiwiYSI6ImlSS2VHQW8ifQ.sFDiNJZ-s-N87fEDHniqHg'});
 		
-		coder.reverseQuery({lat : 19.896766,lon: -155.582782},function(data){
+		coder.reverseQuery({lat : 19.896766,lon: -155.582782},function(error,data){
 			console.log(data);
 		});
-		*/
 		$.getJSON(window.location.origin+'/api/v1/getMapData',function(data){
 			var geoJson = [
 				{type: 'Feature',
@@ -72,24 +71,35 @@ $.mapbox = {
 			}
 		})
 		
-		
-		// Set a custom icon on each marker based on feature properties.
-		myLayer.on('layeradd', function(e) {
-			
-			//var marker = e.layer,feature = marker.feature;marker.setIcon(L.icon(feature.properties.icon));
-		
-		});
-		
+
 		
 		myLayer.on('click', function(e) { 
-			e.layer.closePopup();e.layer.unbindPopup();var feature = e.layer.feature;
-			if(feature.properties.change){
-				$.mapbox.unload();
-				window.map = L.mapbox.map('map', 'derrickstuds.imab7m7e').setView([feature.properties.lat , feature.properties.long], 7);
-				$.mapbox.quiet();
-				showInfo(feature);
-				return false;   
-			}
+			e.layer.closePopup();
+			e.layer.unbindPopup();
+			var feature = e.layer.feature;
+			sk.option(
+			
+				'What Do you want to do?',
+				
+				{
+					text:'Explore',
+					callback: function(feature){
+						$.app.go('/explore/'+feature.properties.uri);
+					},
+					args:[feature]
+				},
+				{
+					text:'Zoom in',
+					callback: function(feature){
+						$.mapbox.unload();
+						window.map = L.mapbox.map('map', 'derrickstuds.imab7m7e').setView([feature.properties.lat , feature.properties.long], 7);
+						$.mapbox.quiet();
+						showInfo(feature);
+						return false;   
+					},
+					args:[feature]
+				}
+			)
 		});
 		
 		
@@ -101,7 +111,7 @@ $.mapbox = {
 		function showInfo(e)
 		{
 			var feature= e.layer.feature;
-			var content = '<div class="info map_details_con"><ul class="deta_map"><li><strong>Name : <span style="color:#206BEF;">' + feature.properties.title + '<span></strong><li><li><strong>Capital</strong> : ' + stripslashes(feature.properties.capital) + '</li><li><strong>Population</strong> : ' + feature.properties.population + '</li><li><strong>National Dish</strong> : ' + feature.properties.national_dish + '</li><li>' + feature.properties.description + '</li></ul><ul class="deta_map datali"></span><li id="chart2" style="width:100%; height:190px;"></li><li id="chart3" style="height:190px; width:100%;"></li> </ul></div>';
+			var content = '<ul><li><strong>Name : <span style="color:#206BEF;">' + feature.properties.title + '<span></strong><li><li><strong>Capital</strong> : ' + feature.properties.capital + '</li><li><strong>Population</strong> : ' + feature.properties.population + '</li></ul></ul>';
 			$('.map-info').html(content).fadeIn(50);
 		}
 		
@@ -160,11 +170,15 @@ $.mapbox = {
 };
 
 
+function randColor(){
+	return '#'+Math.floor(Math.random()*16777215).toString(16);
+}
+
 $(function(){
 	$(document).on('click','.map-reset',function(e){
 		e.preventDefault();
-		map.unload();
-		map.load();
+		$.mapbox.unload();
+		$.mapbox.load();
 		return false;
 	});	
 });
@@ -456,19 +470,38 @@ var slide = {
 	},
 	cleanup: function(){
 		//a catchall function that can remove some things for us if necessary.
-		if($.mapbox.active && location.pathname !== '/map'){
-			$.mapbox.unload()
+		try{
+			if($.mapbox.active && location.pathname !== '/map'){
+				$.mapbox.unload()
+			}
 		}
+		catch(e){}
 		console.log(location.pathname);
-		if($('body').hasClass('nav-minimized') && location.pathname !== '/suggest'){
-			$('body').removeClass('nav-minimized');
+		if($('body').hasClass('nav-minimized')){
+			if(location.pathname !== '/suggest' && location.pathname !== '/stats')
+			{
+				$('body').removeClass('nav-minimized');	
+			}
 		}
+		if($('body > .searchbar').length > 0 && location.pathname !== '/stats'){
+			$('.searchbar').appendTo('[data-slug="/stats"] .content');
+			$('.searchbar .results').html('').removeClass('active');
+			$('.searchgraph-results').html('').removeClass('active');
+			$('.searchbar input').val('');
+		}
+		$.noty.closeAll();
 	}
 };
 
 function navMin()
 {
 	$('body').addClass('nav-minimized');
+}
+
+function statsCb()
+{
+	navMin();
+	$('.searchbar').appendTo('body');
 }
 
 var z = 0;
@@ -721,6 +754,18 @@ $(function(){
 						}
 					},50);
 				},
+				afterAction: function(el){
+					//remove class active
+					this
+					.$owlItems
+					.removeClass('active')
+
+					//add class active
+					this
+					.$owlItems //owl internal $ object containing items
+					.eq(this.currentItem)
+					.addClass('active')
+				},
 				lazyLoad: true,
 			}).data('owlCarousel');
 			var z = [
@@ -821,5 +866,44 @@ $(function(){
 		}
 		return false;
 	});
+	
+	//search handlers
+	var search_int = null;
+	$(document).on('keyup','.searchbar input',function(e){
+		if(e.which == 13 && $(this).val() != "")
+		{
+			//submit the search to generate a graph of results
+		}else{
+			if(search_int !== null) clearInterval(search_int);
+			search_int = setTimeout(function(value){
+				//do instant search but only if val not empty
+				if(value==''){
+					$('.searchbar .results').removeClass('active');
+					return false;
+				}
+				$.getJSON(window.location.origin+'/api/v1/searchInstant?q='+encodeURIComponent(value),function(data){
+					if(data.error == 0){
+						$('.searchbar .results').addClass('active').html(data.message);
+					}else{
+						$('.searchbar .results').removeClass('active');
+						sk.alert(data.message,'error');
+					}
+				});
+			},100,this.value);
+		}
+	})
 
 });
+
+
+//misc functions
+
+function suggestDone(data)
+{
+	if(data.error == 0){
+		this.trigger('reset'); //reset the form
+		sk.alert('Your Suggestion has been submitted! You will receive a confirmation email as soon as we have reviewed your submission. Thanks!','success');
+	}else{
+		sk.alert(data.message,'error');
+	}
+}

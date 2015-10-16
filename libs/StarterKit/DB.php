@@ -366,7 +366,7 @@ class DB
 	public function mapData()
 	{
 		$data = [];
-		$d = \R::getAll('SELECT * FROM country WHERE name NOT IN("Hawaii","Bermuda")');
+		$d = \R::getAll('SELECT * FROM country');
 		
 		foreach($d as $row)
 		{
@@ -374,9 +374,10 @@ class DB
 				'type'=>'Feature',
 				'geometry'=>[
 					'type'=>'Point',
-					'coordinates'=>[-74,15]
+					'coordinates'=>[$row['longitude'],$row['latitude']]
 				],
 				'properties'=>[
+					'marker-color'=>$this->randColor(),
 					'title'=>$row['name'],
 					'change'=>7,
 					'lat'=>$row['latitude'],
@@ -386,13 +387,84 @@ class DB
 						"iconAnchor"=>[50, 50],
 						"popupAnchor"=>[0, -55],
 						"className"=>"dot",
-					]
-					//'uri'=>$row['uri'],
+					],
+					'capital'=>$row['capital'],
+					'uri'=>$row['uri'],
+					//'national_dish'=>$row['national_dish'],
+					'population'=>$row['population'],
+					//'description'=>$row['description']
 				]
 			];
 		}
 		return $data;
 	}
+	
+	public function searchInstant($query)
+	{
+		//if query contains multiple terms. 
+		
+		$original = $query;
+		$like = '%'.$query.'%';
+		
+		$params = [
+			':l'=>$like,
+			':o'=>$original,
+		];
+		
+		$sql = 'SELECT uri,img,type_id,title,regions FROM masterlist WHERE status="4" AND 
+		(
+		title LIKE :l OR 
+		tags LIKE :l OR 
+		title=:o OR
+		FIND_IN_SET(:o,tags)
+		';
+		
+		if(strpos($original,' ') !== false){
+			$query = explode(' ',$query);
+			if(count($query) > 5){
+				//die('here');
+				return []; //ddos attempt.
+			}else{
+				$i = 0;
+				foreach($query as $q)
+				{
+					$sql .= ' OR title LIKE :c'.$i.' OR FIND_IN_SET(:c'.$i.',tags) ';
+					$params[':c'.$i] = $q;
+					$i++;
+				}
+			}
+		}
+		
+		$sql .= ')'; //closing brace in giant or clause.
+
+		$sql.= ' LIMIT 0,12';
+		//die($sql);
+		$data = \R::getAll($sql,$params);
+		foreach($data as &$row){
+			if($row['type_id'] !== 2){
+				$r = explode(',',$row['regions']);
+				$country = \R::getCell('SELECT uri FROM country WHERE id=:r',[':r'=>$r[0]]);
+			}
+			switch($row['type_id']){
+				case 1:
+				$row['uri'] = '/explore/'.$country.'/people/'.$row['uri'];
+				break;
+				case 3:
+				$row['uri'] = '/explore/'.$country.'/fun-fact/'.$row['uri'];
+				break;
+				case 2: 
+				$row['uri'] = '/extras/memes/'.$row['uri'];
+				break;
+			}
+		}
+		return $data;
+	}
+	
+	public function statSearch()
+	{
+		
+	}
+	
 	//end app specific funcs
 	
 	//private utilities
@@ -441,6 +513,12 @@ class DB
 			$row[$column] = isset($source[$i]) ? $source[$i] : null;
 			$i++;
 		}
+	}
+	
+	private function randColor()
+	{
+		$c = '#' . substr(str_shuffle(implode(array_merge(range(0, 9), range('A', 'F')))), 0, 6);
+		return $c;
 	}
 	
 	private function countFormat($num)

@@ -1,0 +1,7 @@
+{% for item in results %}
+<li>
+	<a data-href="{{item.uri}}">
+		<img src="{{item.img}}" alt="" /> <span>{{item.title}}</span>
+	</a>
+</li>
+{% endfor %}

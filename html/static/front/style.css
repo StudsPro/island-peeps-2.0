@@ -1095,9 +1095,47 @@ a.explore-btn.purp{
 	min-height: 1000px;
 }
 
-.leaflet-control-container .leaflet-top.leaflet.left{
-	position: relative;
-	top: 62px;
+.map-info{
+	position: absolute;
+	height: 220px;
+	right: 10px;
+	top: 72px;
+	width: 280px;
+	background-color: #FFF;
+	border: 1px solid rgba(0, 0, 0, 0.4);
+	color: rgba(0, 0, 0, 0.75);
+	border-radius: 3px;
+	display:none;
+	padding: 8px;
+}
+
+.map-info ul{
+	padding:0;
+	list-style:none;
+	margin:0;
+	width:100%;
+}
+.map-info ul li{
+	font-size: 0.9rem;
+	line-height: normal;
+	margin-bottom: .2rem;
+}
+
+.map-reset{
+	position: absolute;
+	top: 130px;
+	left: 10px;
+	background-color: #FFF;
+	border: 1px solid rgba(0, 0, 0, 0.4);
+	color: rgba(0, 0, 0, 0.75);
+	border-radius: 3px;
+	height: 28px;
+	line-height: 20px;
+	padding-bottom: 2px;
+}
+
+.leaflet-control-zoom.leaflet-bar.leaflet-control{
+	margin-top: 72px !important;
 }
 
 
@@ -1233,4 +1271,208 @@ body.nav-minimized .nav:not(:hover) > *{
 	padding-top: 0;
 	appearance: none;
 	border: 2px solid #43AC60;
+	cursor: pointer;
+}
+
+.owl-item .searchbar{
+	display:none;
+}
+.owl-item.active .searchbar{
+	display: block;
+}
+
+.searchbar{
+	position: absolute;
+	top: 0;
+	left:0;
+	display: block;
+	width: 50%;
+	margin: 14px 0px 14px 25%;
+	padding:0;
+	z-index:999;
+}
+
+.searchbar > input{
+	border-radius:3px;
+}
+.searchbar > input + a{
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	font-size: 1.22rem;
+	height: 2.05556rem;
+	line-height: 2.05556rem;
+	padding: 0px 1rem;
+	background: #4DCBF4 none repeat scroll 0% 0%;
+	color: rgb(255, 255, 255);
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 3px;
+}
+.searchbar > input + a:hover{
+	background-color: #4285F4;
+}
+
+.searchbar .results{
+	display: none;
+	position: absolute;
+	top: 37px;
+	margin:0;
+	width:100%;
+	left: 0;
+	right: 0;
+	z-index: 10;
+	font-size:13px !important;
+	background: #fdfdfd;
+	border: 1px solid;
+	border-color: #cbcfe2 #c8cee7 #c4c7d7;
+	border-radius: 3px;
+	height:200px !important;
+	overflow-x:hidden;
+	list-style: none;
+	padding: 0;
+}
+
+.searchbar .results.active{
+	display: block;
+}
+
+.searchbar .results li{
+	margin:0;
+	width: 100%;
+	padding:0;
+}
+
+.searchbar .results li a{
+	display: block;
+	display: block;
+	position: relative;
+	color: #000;
+	font-weight: 500;
+	text-decoration: none;
+	text-shadow: 0px 1px #FFF;
+	border: 1px solid transparent;
+	margin: 0px;
+	padding: 12px;
+}
+
+.searchbar .results li a:hover{
+	color: #FFF;
+	text-shadow: 0px -1px rgba(0, 0, 0, 0.3);
+	background: #338CDF none repeat scroll 0% 0%;
+	border-color: #2380DD #2179D5 #1A60AA;
+}
+
+.searchbar .results li a img{
+	height: 50px;
+	width: 50px;
+}
+
+.searchbar .results li a span{
+	margin-left: 12px;
+	font-size: 1.2rem !important;
+	line-height: 43px;
+	position: relative;
+	bottom: -2px;
+}
+
+.searchgraph-results{
+	display: none;
+	position: absolute;
+	top: 61px;
+	background-color: rgba(255, 255, 255, .83);
+	bottom: 61px;
+	width: 100%;
+}
+.searchgraph-results.active{
+	display: block;
+}
+.searchgraph-results .count{
+	display: block;
+	width: 100%;
+	line-height: 1.4rem;
+	height: 1.4rem;
+	font-size: 1rem;
+	color: #222;
+	text-align: center;
+	margin-top: 15px;
+	line-height: 1.68rem;
+	height: 31px;
+	margin-bottom: 15px;
+}
+.searchgraph-results .close{
+	color: #EA4F4F;
+	font-weight: 100;
+	font-size: 1.1rem;
+	position: absolute;
+	right: 25%;
+	border: 1px solid;
+	width: 119px;
+	padding: 1px 9px;
+	border-radius: 2px;
+	top: 15px;
+}
+
+.searchgraph-results .close span{
+	margin-left: 3px;
+	font-size: 0.577rem;
+	text-transform: uppercase;
+	line-height: 1rem;
+	position: relative;
+	top: -2px;
+}
+
+.searchgraph-results .by-country, .searchgraph-results .chart, .searchgraph-results .graph-results{
+	height: calc(100vh - 184px);
+	position: relative;
+}
+
+.searchgraph-results .by-country ul{
+	top: 32px;
+	left: 12px;
+	right: 12px;
+	overflow-y: scroll;
+	display: block;
+	position: absolute;
+	list-style: outside none none;
+	margin: 0px;
+	padding: 0px;
+	height: auto;
+	bottom: 12px;
+}
+
+.searchgraph-results .graph-results{
+	display: none;
+}
+
+.searchgraph-results .by-country ul li{
+	
+}
+
+
+.btn{
+	display: inline-block;
+	padding: 6px 12px;
+	margin-bottom: 0px;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.42857;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	cursor: pointer;
+	-moz-user-select: none;
+	background-image: none;
+	border: 1px solid transparent;
+	border-radius: 4px;
+}
+
+.btn-primary{
+	color: #FFF;
+	background-color: #337AB7;
+	border-color: #2E6DA4;
+}
+.btn-danger{
+	color: #FFF;
+	background-color: #D9534F;
+	border-color: #D43F3;
 }
