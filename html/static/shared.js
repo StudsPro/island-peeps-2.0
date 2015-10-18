@@ -168,6 +168,16 @@ $(function(){
 			$(this).val( $(this).attr('data-selected') );
 		}
 	});
+	
+	$('.checkbox-onload').each(function(index,value){
+		if(typeof $(this).attr('data-selected') !== 'undefined'){
+			if($(this).attr('data-selected') == ''){
+				return false;
+			}
+			$(this).find(':checkbox[value="'+$(this).attr('data-selected')+'"]').prop('checked',true);
+		}
+	});
+	
 	$('select.multi-select-onload').each(function(index,value){
 		var t = $(this);
 		if(typeof t.attr('data-selected') !== 'undefined'){

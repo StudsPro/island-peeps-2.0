@@ -885,7 +885,7 @@ class AdminAPI
 		return ['error'=>0,'message'=>1];
 	}
 
-	function slide()
+	public function slide()
 	{
 		$app = $this->app;
 		$filter = $app->filter;
@@ -916,6 +916,49 @@ class AdminAPI
 		catch(\exception $e){
 		}
 		$db->store($t);
+		return ['error'=>0,'message'=>1];
+	}
+	
+	public function social_settings()
+	{
+		$app = $this->app;
+		$filter = $app->filter;
+		$get = $app->get;
+		$post = $app->post; 
+		$db = $app->db;
+		$admin = $app->session['admin'];
+		
+		$expect = [
+			'twitter','rss','stumbleupon','facebook','google','instagram','delicious','vimeo','youtube','pinterest','flickr','lastfm','dribbble','deviantart','tumblr'
+		];
+		
+		$t = $db->model('social',1);
+		
+		$required1 = ['limits','days','fmax','speed','forder','filter','rotate_direction','rotate_delay'];
+		$required = [];
+		foreach($required as $k)
+		{
+			$required[$k] = 'min';
+		}
+		
+		$filter->generate_model($t,$required,[],$post);
+		
+		//hhvm workaround
+		foreach($expect as $k)
+		{
+			$v = isset($_POST[$k]) ? $_POST[$k] : [];
+			if(empty($v)){
+				throw new \exception('Missing form data needed for module '.ucfirst($k));
+			}
+			$t->{$k} = json_encode($v);
+		}
+		
+		$db->store($t);
+		
+		$var = print_r($t,true);
+		
+		throw new \exception($var);
+		
 		return ['error'=>0,'message'=>1];
 	}
 } 

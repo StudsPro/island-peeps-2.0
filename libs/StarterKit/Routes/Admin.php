@@ -89,6 +89,8 @@ class Admin extends ViewController
 		$args = $app->args;
 		$get  = $app->get;
 		$db   = $app->db;
+		$args['styles'] = 'css/socialfeed.css';
+		$args['settings'] = $db->socialSettings();
 		parent::render('social_settings.twig',$args);
 	}
 	

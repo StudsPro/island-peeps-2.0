@@ -22,11 +22,6 @@ $.mapbox = {
 		var myLayer = L.mapbox.featureLayer().addTo(window.map);
 		$.mapbox.active = true;
 		
-		var coder = L.mapbox.geocoder('derrickstuds.imab7m7e',{accessToken:'pk.eyJ1IjoiZGVycmlja3N0dWRzIiwiYSI6ImlSS2VHQW8ifQ.sFDiNJZ-s-N87fEDHniqHg'});
-		
-		coder.reverseQuery({lat : 19.896766,lon: -155.582782},function(error,data){
-			console.log(data);
-		});
 		$.getJSON(window.location.origin+'/api/v1/getMapData',function(data){
 			var geoJson = [
 				{type: 'Feature',
@@ -69,55 +64,40 @@ $.mapbox = {
 					myLayer.setGeoJSON(geoJson);
 				}
 			}
-		})
-		
-
-		
-		myLayer.on('click', function(e) { 
-			e.layer.closePopup();
-			e.layer.unbindPopup();
-			var feature = e.layer.feature;
-			sk.option(
-			
-				'What Do you want to do?',
-				
-				{
-					text:'Explore',
-					callback: function(feature){
-						$.app.go('/explore/'+feature.properties.uri);
-					},
-					args:[feature]
-				},
-				{
-					text:'Zoom in',
-					callback: function(feature){
-						$.mapbox.unload();
-						window.map = L.mapbox.map('map', 'derrickstuds.imab7m7e').setView([feature.properties.lat , feature.properties.long], 7);
-						$.mapbox.quiet();
-						showInfo(feature);
-						return false;   
-					},
-					args:[feature]
-				}
-			)
 		});
 		
 		
-		myLayer.on('mouseover',showInfo);
-		myLayer.on('mouseout',hideInfo);
-		// Clear the tooltip when map is clicked or moved.
-		window.map.on('move click',hideInfo);
+		
+		myLayer.on('click', function(e) { 
+			e.layer.closePopup();
+			showInfo(e);
+			//var feature = e.layer.feature;
+			//$.app.go('/explore/'+feature.properties.uri);
+			$('body').one('click',hideInfo);
+		});
+		
+		
 		
 		function showInfo(e)
 		{
 			var feature= e.layer.feature;
-			var content = '<ul><li><strong>Name : <span style="color:#206BEF;">' + feature.properties.title + '<span></strong><li><li><strong>Capital</strong> : ' + feature.properties.capital + '</li><li><strong>Population</strong> : ' + feature.properties.population + '</li></ul></ul>';
-			$('.map-info').html(content).fadeIn(50);
+			var html = '<ul><li><strong>Name : <span style="color:#206BEF;">' + feature.properties.title + '<span></strong><li>';
+			html +='<li><strong>Capital</strong> : ' + feature.properties.capital + '</li>';
+			html +='<li><strong>Population</strong> : ' + feature.properties.population + '</li>';
+			console.log(feature.properties.ethnic_data);
+			html +='<li><strong>Ethnic Data</strong> : <div class="large-12 columns"><div style="margin:0 auto; width:200px">';
+			html +='<canvas id="ethnic-data" width="200" height="200"></canvas></div></div></li>';
+			html +='<li><a data-href="/explore/'+feature.properties.uri+'" class="btn btn-primary block">Explore '+feature.properties.title+'</a></li></ul></ul>';
+			$('.map-info').html(html).fadeIn(50);
+			$('.map-clickback').fadeIn(0);
+			createPie($('#ethnic-data'),feature.properties.ethnic_data);
 		}
 		
-		function hideInfo()
+		function hideInfo(e)
 		{
 			$('.map-info').fadeOut(50).html('');
+			$('.map-clickback').fadeOut(0);
+			$(e.target).click();
 		}
 
 		var geojson = { 
@@ -164,7 +144,9 @@ $.mapbox = {
 			marker2.setLatLng(L.latLng(
 			geojson1.coordinates[j][1],
 			geojson1.coordinates[j][0]));
-			if (++j < geojson.coordinates.length) setTimeout(tick, 100);
+			if (++j < geojson.coordinates.length){
+				setTimeout(tick, 100)
+			}
 		}
 	}
 };
@@ -194,47 +176,6 @@ var tmp_int_1 = null;
 // spacebar: 32, pageup: 33, pagedown: 34, end: 35, home: 36
 var keys = {37: 1, 38: 1, 39: 1, 40: 1};
 
-//throttle utility from underscore.js
-function throttle(func, wait, options) {
-	var context, args, result;
-	var timeout = null;
-	var previous = 0;
-	if (!options) options = {};
-	var later = function() {
-	  previous = options.leading === false ? 0 : now2();
-	  timeout = null;
-	  result = func.apply(context, args);
-	  if (!timeout) context = args = null;
-	};
-	return function() {
-	  var now = now2();
-	  if (!previous && options.leading === false) previous = now;
-	  var remaining = wait - (now - previous);
-	  context = this;
-	  args = arguments;
-	  if (remaining <= 0 || remaining > wait) {
-		if (timeout) {
-		  clearTimeout(timeout);
-		  timeout = null;
-		}
-		previous = now;
-		result = func.apply(context, args);
-		if (!timeout) context = args = null;
-	  } else if (!timeout && options.trailing !== false) {
-		timeout = setTimeout(later, remaining);
-	  }
-	  return result;
-	};
-};
-
-//now from underscore
-function now2()
-{
-	return Date.now || function() {
-		return new Date().getTime();
-	};
-}
-
 var scroll_events = [];
 
 function preventDefault(e) {
@@ -249,6 +190,17 @@ function preventDefaultForScrollKeys(e) {
         preventDefault(e);
         return false;
     }
+}
+
+
+function createPie(target,data)
+{
+	console.log(target);
+	new Chart(target[0].getContext("2d")).Pie(data,
+		{
+			tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>%"
+		}
+	);
 }
 
 function disableScroll() {
@@ -305,9 +257,8 @@ $.fn.partiallyInView = function(){
 };
 
 
-
 $.fn.ensureInview = function(repeat){
-	if(!this.inView() || typeof repeat !== undefined){
+	if(!this.inView() && scroll_lock == false || typeof repeat !== undefined){
 		scroll_last = this.offset().top;
 		scroll_lock = true;
 		var $el = this;
@@ -467,6 +418,11 @@ var slide = {
 			}
 			catch(e){}
 		}
+		if($('[data-slug="'+location.pathname+'"][data-min]').length == 1)
+		{
+			console.log('adding minimized nav bar');
+			$('body').addClass('nav-minimized');	
+		}
 	},
 	cleanup: function(){
 		//a catchall function that can remove some things for us if necessary.
@@ -478,8 +434,9 @@ var slide = {
 		catch(e){}
 		console.log(location.pathname);
 		if($('body').hasClass('nav-minimized')){
-			if(location.pathname !== '/suggest' && location.pathname !== '/stats')
+			if($('[data-slug="'+location.pathname+'"][data-min]').length == 0)
 			{
+				console.log('removing minimized nav bar');
 				$('body').removeClass('nav-minimized');	
 			}
 		}
@@ -564,33 +521,6 @@ $(function(){
 			return $.app;
 		}
 	};
-	
-	function loadJs(file,callback)
-	{
-		if($('script[src="'+window.location.origin+file+'"]').length > 0){
-			return false;
-		}
-		var s = document.createElement('script');
-		s.setAttribute('src', window.location.origin + file);
-		s.onload = function(){
-			if( typeof callback === 'function' ){
-				callback.apply(this,[]);	
-			}
-		};
-		document.body.appendChild( s );
-	}
-	
-	function loadCss(file)
-	{
-		if($('link[href="'+window.location.origin+file+'"]').length > 0){
-			return false;
-		}
-		var link = document.createElement('link');
-		link.type = 'text/css';
-		link.rel = 'stylesheet';
-		link.href = window.location.origin + file;
-		document.head.appendChild(link);
-	}
 	
 	$(document).on('click','.nav-btns > div',function(e){
 		var z = $(this).hasClass('next');
@@ -798,7 +728,7 @@ $(function(){
 		}
 	});
 	
-	var scroll_fn = throttle(function(e){
+	$(window).on('scroll',function(e){
 		if(scroll_lock){
 			disableScroll();
 			setTimeout(enableScroll,50);
@@ -817,9 +747,7 @@ $(function(){
 				}
 			},80);
 		}
-	},100);
-	
-	$(window).on('scroll',scroll_fn);
+	});
 	
 	function scrollUp()
 	{
@@ -891,7 +819,17 @@ $(function(){
 				});
 			},100,this.value);
 		}
-	})
+	});
+	
+	$(document).on('click','[data-language]',function(){
+		if($(this).data('selected') == 'English'){
+			var language = 'Spanish';
+		}else{
+			var language = 'English';
+		}
+		$('.goog-te-menu-frame:first').contents().find('.goog-te-menu2-item span.text:contains('+language+')').get(0).click();
+		return false;
+	});
 
 });
 

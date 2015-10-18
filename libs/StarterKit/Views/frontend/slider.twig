@@ -1,7 +1,7 @@
 <div class="columns slider" data-viewpoint>
 	<img src="{{base_url}}static/front/img/slider/logo.png" class="logo" data-href="/home" />
 	<div class="bar smoky-black">
-		<span data-language data-selected="english">Español</span>
+		<span data-language data-selected="English">Español</span>
 	</div>
 	<div class="columns owl-carousel">
 	 
@@ -20,16 +20,17 @@
 			</div>
 		</div>
 		
-		<div class="item" data-slug="/map"  data-callback="mapRun">
+		<div class="item" data-slug="/map"  data-callback="mapRun" data-min>
 			<div class="content">
 				<div class="mapbox-custom" id="map">
 				</div>
 				<div class="map-info"></div>
 				<button class="map-reset">Reset</button>
+				<div class="map-clickback"></div>
 			</div>
 		</div>
 		
-		<div class="item" data-slug="/suggest" data-callback="navMin">
+		<div class="item" data-slug="/suggest" data-min>
 			<img class="lazyOwl" data-src="{{banners[2].image|default(base_url~'static/front/img/slider/slide1.jpg')}}" data-video="{{banners[2].video}}" />
 			<div class="video-slideup"></div>
 			<div class="content">
@@ -56,6 +57,10 @@
 										</select>
 									</label>
 								</div>
+								<div class="large-12 columns">
+									<label>Date Of Birth (Optional)</label>
+								</div>
+								{% include 'frontend/yearinput.twig' %}
 								<div class="large-6 columns">
 									<label>Select Region(s)
 										<select multiple name="regions[]" class="custom-input">
@@ -172,7 +177,7 @@
 			</div>
 		</div>
 		
-		<div class="item" data-slug="/stats" data-callback="statsCb">
+		<div class="item" data-slug="/stats" data-callback="statsCb" data-min>
 			<img class="lazyOwl" data-src="{{banners[7].image|default(base_url~'static/front/img/slider/slide1.jpg')}}" data-video="{{banners[7].video}}" />
 			<div class="video-slideup"></div>
 			<div class="content">

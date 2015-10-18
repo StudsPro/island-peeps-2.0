@@ -96,4 +96,16 @@ class Debug extends ViewController
 			echo $html;
 		}
 	}
+	
+	public function parseEthnic()
+	{
+		$this->pretty(
+			$this->app->db->parseEthnic(
+				'Ethnic Groups
+35% East Indian
+34% Afro-Trinbagonian
+23% Mixed (includes Dougla,Chindian,Mestizo)'
+			)
+		);
+	}
 }

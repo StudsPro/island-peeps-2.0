@@ -390,9 +390,10 @@ class DB
 					],
 					'capital'=>$row['capital'],
 					'uri'=>$row['uri'],
-					//'national_dish'=>$row['national_dish'],
+					'national_dish'=>$row['national_dish'],
 					'population'=>$row['population'],
-					//'description'=>$row['description']
+					'description'=>$row['description'],
+					'ethnic_data'=>$this->parseEthnic($row['ethnic_data'])
 				]
 			];
 		}
@@ -465,6 +466,20 @@ class DB
 		
 	}
 	
+	
+	public function socialSettings()
+	{
+		$d = \R::getRow('SELECT * FROM social WHERE id="1"');
+		$decode = [
+			'twitter','rss','stumbleupon','facebook','google','instagram','delicious','vimeo','youtube','pinterest','flickr','lastfm','dribbble','deviantart','tumblr'
+		];
+		foreach($decode as $c)
+		{
+			$d[$c] = json_decode($d[$c],true);
+		}
+		return $d;
+	}
+	
 	//end app specific funcs
 	
 	//private utilities
@@ -519,6 +534,52 @@ class DB
 	{
 		$c = '#' . substr(str_shuffle(implode(array_merge(range(0, 9), range('A', 'F')))), 0, 6);
 		return $c;
+	}
+	
+	private function adjustColor($hex, $steps) {
+		// Steps should be between -255 and 255. Negative = darker, positive = lighter
+		$steps = max(-255, min(255, $steps));
+
+		// Normalize into a six character long hex string
+		$hex = str_replace('#', '', $hex);
+		if (strlen($hex) == 3) {
+			$hex = str_repeat(substr($hex,0,1), 2).str_repeat(substr($hex,1,1), 2).str_repeat(substr($hex,2,1), 2);
+		}
+
+		// Split into three parts: R, G and B
+		$color_parts = str_split($hex, 2);
+		$return = '#';
+
+		foreach ($color_parts as $color) {
+			$color   = hexdec($color); // Convert to decimal
+			$color   = max(0,min(255,$color + $steps)); // Adjust color
+			$return .= str_pad(dechex($color), 2, '0', STR_PAD_LEFT); // Make two char hex code
+		}
+
+		return $return;
+	}
+	
+	private function parseEthnic($data)
+	{
+		$data = str_replace(['Ethnic Groups','%'],'',$data);
+		$data = explode(PHP_EOL,$data);
+		foreach($data as &$d)
+		{
+			$tmp = explode(' ',$d,2);
+			if(count($tmp) !== 2){
+				$d = '';
+			}else{
+				$tmp2 = [
+					'value'=>$tmp[0],
+					'label'=>$tmp[1],
+					'color'=>$this->randColor()
+				];
+				
+				$tmp2['highlight']=$this->adjustColor($tmp2['color'],-15);
+				$d = $tmp2;	
+			}
+		}
+		return array_filter($data);
 	}
 	
 	private function countFormat($num)

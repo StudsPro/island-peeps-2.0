@@ -5,6 +5,7 @@
 		<meta name="csrf" content="" />
 		<meta name="google-translate-customization" content="65767690a1227b85-d85bad67b2241c3e-g47e8572041164f9e-25">
 		<title>Island Peeps</title>
+		<link href="http://islandpeeps.openex.info/static/front/preload.css" rel="stylesheet" type="text/css" />
 		<link href="http://fonts.googleapis.com/css?family=Pacifico|Aeolus|BlackJack|koala|Learning+Curve+Dashed" rel="stylesheet" type="text/css"/>
 		<link href="http://islandpeeps.openex.info/static/front/preload.css" rel="stylesheet" type="text/css" />
 		<link href="http://islandpeeps.openex.info/static/front/grid.css" rel="stylesheet" type="text/css" />
@@ -57,7 +58,13 @@
 		<script src="http://islandpeeps.openex.info/static/shared.js"></script>
 		<script src="http://islandpeeps.openex.info/static/front/owl-carousel/owl.carousel.min.js"></script>
 		<script src="http://islandpeeps.openex.info/static/front/lightbox/js/lightbox.min.js"></script>
-		<script src="http://islandpeeps.openex.info/static/front/map/mapbox.js"></script>
+		<script src="http://islandpeeps.openex.info/static/front/mapbox.js"></script>
 		<script src="http://islandpeeps.openex.info/static/front/script.js"></script>
+		<script src="http://islandpeeps.openex.info/static/front/chart/Chart.min.js"></script>
+		<div id="google_translate_element"></div><script type="text/javascript">
+		function googleTranslateElementInit() {
+		  new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, autoDisplay: false}, 'google_translate_element');
+		}
+		</script><script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 	</body>
 </html>

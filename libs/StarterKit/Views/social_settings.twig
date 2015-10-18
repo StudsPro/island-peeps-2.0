@@ -1,0 +1,772 @@
+{% include 'widgets/nav.twig' %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<ul class="breadcrumb breadcrumb-arrows breadcrumb-default">
+				<li><a href="{{base_url}}admin"><i class="fa fa-home fa-lg"></i></a></li>
+				<li><a href="#">Social Feed</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<div class="panel-title">Edit Social Feed Settings</div>
+				</div>
+				<form action="{{base_url}}admin/api/social_settings" method="post" class="form-horizontal" data-callback="socialCB">
+					<div class="panel-body">
+						<div class="tabbable tabs-left" id="tabs">
+							<div class="col-md-2">
+								<ul class="nav nav-tabs nav-tabs-default nav-tabs-advanced nav-stacked nav-tabs-orange">
+									<li class="active"><a aria-expanded="false" href="#gen" data-toggle="tab"> General </a></li>
+									<li><a aria-expanded="true" href="#twi" data-toggle="tab"> Twitter</a></li>
+									<li><a href="#rss" data-toggle="tab"> RSS</a></li>
+									<li><a href="#fbt" data-toggle="tab"> Facebook</a></li>
+									<li><a href="#goo" data-toggle="tab"> Google</a></li>
+									<li><a href="#ins" data-toggle="tab"> Instagram</a></li>
+									<li><a href="#dus" data-toggle="tab"> Delicious</a></li>
+									<li><a href="#vimo" data-toggle="tab"> Vimeo</a></li>
+									<li><a href="#yout" data-toggle="tab"> Youtube</a></li>
+									<li><a href="#pintr" data-toggle="tab"> Pinterest</a></li>
+									<li><a href="#filc" data-toggle="tab"> Flickr</a></li>
+									<li><a href="#drib" data-toggle="tab"> Dribbble</a></li>
+									<li><a href="#tumb" data-toggle="tab"> Tumblr</a></li>
+									<li><a href="#stun" data-toggle="tab"> Stumbleupon</a></li>
+									<li><a href="#lfm" data-toggle="tab"> Lastfm</a></li>
+									<li><a href="#devi" data-toggle="tab"> Deviantart</a></li>
+								</ul>
+							</div>  
+							<div class="col-md-10">   
+								<div class="tab-content">
+								
+									<div class="tab-pane active" id="gen">
+										<p><strong>General</strong></p>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Limits</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="limits" value="{{settings.limits}}" type="text">
+											</div>
+										</div> 
+										<div class="form-group">
+											<label class="col-md-3 control-label">Days</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="days" value="{{settings.days}}" type="text">
+
+											</div>
+										</div>  
+										<div class="form-group">
+											<label class="col-md-3 control-label">Max</label>
+											<div class="col-md-5">
+												<select class="form-control input-md select-onload" name="fmax" data-selected="{{settings.fmax}}">
+													<option value="days">Days</option> 
+													<option value="limit">Limit</option>
+												</select>
+											</div>
+										</div>  
+										<div class="form-group">
+											<label class="col-md-3 control-label">Speed</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="speed" value="{{settings.speed}}" type="text">
+											</div>
+										</div>  
+										<div class="form-group">
+											<label class="col-md-3 control-label">Order by</label>
+											<div class="col-md-5">
+												<select class="form-control input-md select-onload" name="forder" data-selected="{{settings.forder}}">
+													<option value="date">Date</option> 
+													<option value="random">Random</option>
+												</select>                 
+											</div>
+										</div>  
+										<div class="form-group">
+											<label class="col-md-3 control-label">Filter</label>
+											<div class="col-md-5">
+												<select class="form-control input-md select-onload" name="filter" data-selected="{{settings.filter}}">
+													<option value="true">True</option> 
+													<option value="false">False</option>
+												</select>  
+											</div>
+										</div>  
+										<div class="form-group">
+											<label class="col-md-3 control-label">Rotate Direction</label>
+											<div class="col-md-5">
+												<select class="form-control input-md select-onload" name="rotate_direction" data-selected="{{settings.rotate_direction}}">
+													<option value="up">Up</option> 
+													<option value="down">Down</option>
+												</select> 
+											</div>
+										</div>  
+										<div class="form-group">
+											<label class="col-md-3 control-label">Rotate Delay</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="rotate_delay" value="{{settings.rotate_delay}}" type="text">
+											</div>
+										</div>
+									</div>
+									
+									<div class="tab-pane" id="twi">
+										<p><strong>Twitter</strong></p>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Twitter ID</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="twitter[twitterid]" value="{{settings.twitter.twitterid}}" type="text">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Stream item output</label>  
+											<div class="col-md-5">
+												<label class="checkbox">
+												<input name="twitter[out][]" id="db__tout" value="intro" type="checkbox">intro
+												</label>
+												<label class="checkbox">
+												<input name="twitter[out][]" id="db__tout" value="thumb" type="checkbox">thumb
+												</label>
+												<label class="checkbox">
+												<input name="twitter[out][]" id="db__tout" value="text" type="checkbox">text
+												</label>
+												<label class="checkbox">
+												<input name="twitter[out][]" id="db__tout" value="share" type="checkbox">share
+												</label>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Show Retweets</label>
+											<div class="col-md-5">
+												<select class="form-control input-md select-onload" name="twitter[retweets]" data-selected="{{settings.twitter.retweets}}">
+													<option value="true">True</option>
+													<option value="false">False</option>
+												</select>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Show Replies</label>
+											<div class="col-md-5">
+												<select class="form-control input-md select-onload" name="twitter[replies]" data-selected="{{settings.twitter.replies}}">
+													<option value="true">True</option>
+													<option value="false">False</option>
+												</select>
+											</div>
+										</div>
+									</div>
+
+									<div class="tab-pane" id="rss">
+										<p><strong>RSS </strong></p>
+										<div class="form-group">
+											<label class="col-md-3 control-label">RSS URL</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="rss[rssid]" value="{{settings.rss.rssid}}" type="text">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Stream item output</label>	 
+											<div class="col-md-5 checkbox-onload">
+												<label class="checkbox">
+												<input name="rss[out][]" value="intro" type="checkbox">intro
+												</label>
+												<label class="checkbox">
+												<input name="rss[out][]" value="title" type="checkbox">title
+												</label>
+												<label class="checkbox">
+												<input name="rss[out][]" value="text" type="checkbox">text
+												</label>
+												<label class="checkbox">
+												<input name="rss[out][]" value="share" type="checkbox">share
+												</label>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Show text</label>
+											<div class="col-md-5">
+												<select class="form-control input-md select-onload" name="rss[text]" data-selected="{{settings.rss.text}}">
+													<option value="content" selected="">content</option>
+													<option value="contentSnippet">contentSnippet</option>
+												</select>
+											</div>
+										</div>
+									</div>
+
+									<div class="tab-pane" id="fbt">
+										<p><strong>Facebook</strong></p>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Facebook</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="facebook[fbid]" value="{{settings.facebook.fbid}}" type="text">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Stream item output</label>	 
+											<div class="col-md-5">
+												<label class="checkbox">
+												<input name="facebook[out][]" checked="" value="intro" type="checkbox">intro
+												</label>
+												<label class="checkbox">
+												<input name="facebook[out][]" id="db__tout" value="thumb" type="checkbox">thumb
+												</label>
+												<label class="checkbox">
+												<input name="facebook[out][]" checked="" id="db__tout" value="title" type="checkbox">title
+												</label>
+												<label class="checkbox">
+												<input name="facebook[out][]" checked="" id="db__tout" value="user" type="checkbox">user
+												</label>
+												<label class="checkbox">
+												<input name="facebook[out][]" checked="" id="db__tout" value="text" type="checkbox">text
+												</label>
+												<label class="checkbox">
+												<input name="facebook[out][]" checked="" id="db__tout" value="share" type="checkbox">share
+												</label>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Show text</label>
+											<div class="col-md-5">
+												<select class="form-control input-md select-onload" name="facebook[text]" data-selected="{{settings.facebook.text}}">
+													<option value="content">content</option>
+													<option value="contentSnippet">contentSnippet</option>
+												</select>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Comments <br>(maximum number of comments to display for facebook page.maximum value = 25 )</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="facebook[comments]" id="db_comments" value="{{settings.facebook.comments}}" type="text">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Image Width</label>
+											<div class="col-md-5">
+												<select class="form-control input-md select-onload" name="facebook[image_width]" data-selected="{{settings.facebook.image_width}}">
+													<option value="3">600</option>
+													<option value="4">480</option>
+													<option value="5">320</option>
+													<option value="6">180</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									
+									<div class="tab-pane" id="goo">
+										<p><strong>Google</strong></p>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Google</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="google[googleid]" id="db__google" value="{{settings.google.googleid}}" type="text">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Stream item output</label>	 
+											<div class="col-md-5">
+												<label class="checkbox">
+												<input name="google[out][]" checked="" id="db__tout" value="intro" type="checkbox">intro
+												</label>
+												<label class="checkbox">
+												<input name="google[out][]" checked="" id="db__tout" value="title" type="checkbox">title
+												</label>
+												<label class="checkbox">
+												<input name="google[out][]" checked="" id="db__tout" value="thumb" type="checkbox">thumb
+												</label>
+												<label class="checkbox">
+												<input name="google[out][]" checked="" id="db__tout" value="text" type="checkbox">text
+												</label>
+												<label class="checkbox">
+												<input name="google[out][]" checked="" id="db__tout" value="share" type="checkbox">share
+												</label>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Google API key</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="google[apikey]" id="db__apikey" value="{{settings.google.apikey}}" type="text">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Show Shares</label>
+											<div class="col-md-5">
+												<select class="form-control input-md select-onload" name="google[shares]" data-selected="{{settings.google.shares}}">
+													<option value="true">True</option>
+													<option value="false">False</option>
+												</select>
+											</div>
+										</div>
+									</div>							
+									
+									<div class="tab-pane" id="ins">
+										<p><strong>Instagram</strong></p>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Instagram ID</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="instagram[instagramid]" id="db__instagram" value="{{settings.instagram.instagramid}}" type="text">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Stream item output</label>	 
+											<div class="col-md-5">
+												<label class="checkbox">
+												<input name="instagram[out][]" checked="" id="db__tout" value="intro" type="checkbox">intro
+												</label>
+												<label class="checkbox">
+												<input name="instagram[out][]" checked="" id="db__tout" value="thumb" type="checkbox">thumb
+												</label>
+												<label class="checkbox">
+												<input name="instagram[out][]" checked="" id="db__tout" value="meta" type="checkbox">meta
+												</label>
+												<label class="checkbox">
+												<input name="instagram[out][]" checked="" id="db__tout" value="user" type="checkbox">user
+												</label>
+												<label class="checkbox">
+												<input name="instagram[out][]" checked="" id="db__tout" value="text" type="checkbox">text
+												</label>
+												<label class="checkbox">
+												<input name="instagram[out][]" checked="" id="db__tout" value="share" type="checkbox">share
+												</label>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Access Token</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="instagram[accessToken]" id="db__accessToken" value="{{settings.instagram.accessToken}}" type="text">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Client ID</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="instagram[clientId]" id="db__clientId" value="{{settings.instagram.clientId}}" type="text">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Comments <br>(maximum number of comments to display)</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="instagram[comments]" id="db__comments" value="{{settings.instagram.comments}}" type="text">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Like  <br>(maximum number of Like to display)</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="instagram[like]" id="db__like" value="{{settings.instagram.like}}" type="text">
+											</div>
+										</div>
+									</div>
+
+									<div class="tab-pane" id="dus">
+										<p><strong>Delicious</strong></p>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Delicious</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="delicious[deliciousid]" id="db__delicious" value="" type="text">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Stream item output</label>	 
+											<div class="col-md-5">
+												<label class="checkbox">
+												<input name="delicious[out][]" checked="" id="db__tout" value="intro" type="checkbox">intro
+												</label>
+												<label class="checkbox">
+												<input name="delicious[out][]" checked="" id="db__tout" value="title" type="checkbox">title
+												</label>
+												<label class="checkbox">
+												<input name="delicious[out][]" checked="" id="db__tout" value="thumb" type="checkbox">thumb
+												</label>
+												<label class="checkbox">
+												<input name="delicious[out][]" checked="" id="db__tout" value="user" type="checkbox">user
+												</label>
+												<label class="checkbox">
+												<input name="delicious[out][]" checked="" id="db__tout" value="text" type="checkbox">text
+												</label>
+												<label class="checkbox">
+												<input name="delicious[out][]" checked="" id="db__tout" value="share" type="checkbox">share
+												</label>
+											</div>
+										</div>
+									</div>
+
+									<!-- below are not done -->
+									<div class="tab-pane" id="vimo">
+										<p><strong>Vimeo</strong></p>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Vimeo</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="vimeo[vimeoid]" id="db__vimeo" value="" type="text">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Feed item</label>	 
+											<div class="col-md-5">
+												<label class="checkbox">
+												<input name="vimeo[feed][]" checked="" id="db__feed" value="likes" type="checkbox">likes 	 
+												</label>
+												<label class="checkbox">
+												<input name="vimeo[feed][]" checked="" id="db__feed" value="videos" type="checkbox">videos
+												</label>
+												<label class="checkbox">
+												<input name="vimeo[feed][]" checked="" id="db__feed" value="appears_in" type="checkbox">Appeared In
+												</label>
+												<label class="checkbox">
+												<input name="vimeo[feed][]" checked="" id="db__feed" value="all_videos" type="checkbox">all videos
+												</label>
+												<label class="checkbox">
+												<input name="vimeo[feed][]" checked="" id="db__feed" value="albums" type="checkbox">albums
+												</label>
+												<label class="checkbox">
+												<input name="vimeo[feed][]" checked="" id="db__feed" value="channels" type="checkbox">channels
+												</label>
+												<label class="checkbox">
+												<input name="vimeo[feed][]" checked="" id="db__feed" value="groups" type="checkbox">groups
+												</label>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Stream item output</label>	 
+											<div class="col-md-5">
+												<label class="checkbox">
+												<input name="vimeo[out][]" checked="" id="db__tout" value="intro" type="checkbox">intro
+												</label>
+												<label class="checkbox">
+												<input name="vimeo[out][]" checked="" id="db__tout" value="title" type="checkbox">title
+												</label>
+												<label class="checkbox">
+												<input name="vimeo[out][]" checked="" id="db__tout" value="thumb" type="checkbox">thumb
+												</label>
+												<label class="checkbox">
+												<input name="vimeo[out][]" checked="" id="db__tout" value="user" type="checkbox">user
+												</label>
+												<label class="checkbox">
+												<input name="vimeo[out][]" checked="" id="db__tout" value="text" type="checkbox">text
+												</label>
+												<label class="checkbox">
+												<input name="vimeo[out][]" checked="" id="db__tout" value="share" type="checkbox">share
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="tab-pane" id="yout">
+										<p><strong>Youtube</strong></p>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Youtube</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="youtube[youtubeid]" id="db__youtube" value="" type="text">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Feed item</label>	 
+											<div class="col-md-5">
+												<label class="checkbox">
+												<input name="youtube[feed][]" checked="" id="db__feed" value="uploads" type="checkbox"> Uploads 	 
+												</label>
+												<label class="checkbox">
+												<input name="youtube[feed][]" checked="" id="db__feed" value="favorites" type="checkbox"> Favorites
+												</label>
+												<label class="checkbox">
+												<input name="youtube[feed][]" checked="" id="db__feed" value="newsubscriptionvideos" type="checkbox">New subscription videos
+												</label>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Stream item output</label>	 
+											<div class="col-md-5">
+												<label class="checkbox">
+												<input name="youtube[out][]" checked="" id="db__tout" value="intro" type="checkbox">intro
+												</label>
+												<label class="checkbox">
+												<input name="youtube[out][]" checked="" id="db__tout" value="title" type="checkbox">title
+												</label>
+												<label class="checkbox">
+												<input name="youtube[out][]" checked="" id="db__tout" value="thumb" type="checkbox">thumb
+												</label>
+												<label class="checkbox">
+												<input name="youtube[out][]" checked="" id="db__tout" value="text" type="checkbox">text
+												</label>
+												<label class="checkbox">
+												<input name="youtube[out][]" id="db__tout" value="user" type="checkbox">user
+												</label>
+												<label class="checkbox">
+												<input name="youtube[out][]" checked="" id="db__tout" value="share" type="checkbox">share
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="tab-pane" id="pintr">
+										<p><strong>Pinterest</strong></p>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Pinterest</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="pinterest[pinterestid]" id="db__pinterest" value="islandpeeps" type="text">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Stream item output</label>	 
+											<div class="col-md-5">
+												<label class="checkbox">
+												<input name="pinterest[out][]" checked="" id="db__tout" value="intro" type="checkbox">intro
+												</label>
+												<label class="checkbox">
+												<input name="pinterest[out][]" checked="" id="db__tout" value="title" type="checkbox">title
+												</label>
+												<label class="checkbox">
+												<input name="pinterest[out][]" checked="" id="db__tout" value="thumb" type="checkbox">thumb
+												</label>
+												<label class="checkbox">
+												<input name="pinterest[out][]" checked="" id="db__tout" value="user" type="checkbox">user
+												</label>
+												<label class="checkbox">
+												<input name="pinterest[out][]" checked="" id="db__tout" value="text" type="checkbox">text
+												</label>
+												<label class="checkbox">
+												<input name="pinterest[out][]" checked="" id="db__tout" value="share" type="checkbox">share
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="tab-pane" id="filc">
+										<p><strong>Flickr</strong></p>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Flickr</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="flickr[flickrid]" id="db__flickr" value="" type="text">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Stream item output</label>	 
+											<div class="col-md-5">
+												<label class="checkbox">
+												<input name="flickr[out][]" checked="" id="db__tout" value="intro" type="checkbox">intro
+												</label>
+												<label class="checkbox">
+												<input name="flickr[out][]" checked="" id="db__tout" value="title" type="checkbox">title
+												</label>
+												<label class="checkbox">
+												<input name="flickr[out][]" checked="" id="db__tout" value="thumb" type="checkbox">thumb
+												</label>
+												<label class="checkbox">
+												<input name="flickr[out][]" checked="" id="db__tout" value="text" type="checkbox">text
+												</label>
+												<label class="checkbox">
+												<input name="flickr[out][]" checked="" id="db__tout" value="share" type="checkbox">share
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="tab-pane" id="drib">
+										<p><strong>Dribbble</strong></p>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Dribbble</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="dribbble[dribbbleid]" id="db__dribbble" value="" type="text">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Stream item output</label>	 
+											<div class="col-md-5">
+												<label class="checkbox">
+												<input name="dribbble[out][]" checked="" id="db__tout" value="intro" type="checkbox">intro
+												</label>
+												<label class="checkbox">
+												<input name="dribbble[out][]" checked="" id="db__tout" value="title" type="checkbox">title
+												</label>
+												<label class="checkbox">
+												<input name="dribbble[out][]" checked="" id="db__tout" value="thumb" type="checkbox">thumb
+												</label>
+												<label class="checkbox">
+												<input name="dribbble[out][]" checked="" id="db__tout" value="user" type="checkbox">user
+												</label>
+												<label class="checkbox">
+												<input name="dribbble[out][]" checked="" id="db__tout" value="text" type="checkbox">text
+												</label>
+												<label class="checkbox">
+												<input name="dribbble[out][]" checked="" id="db__tout" value="share" type="checkbox">share
+												</label>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Feed item</label>	 
+											<div class="col-md-5">
+												<label class="checkbox">
+												<input name="dribbble[feed][]" checked="" id="db__feed" value="shots" type="checkbox"> Shots 	 
+												</label>
+												<label class="checkbox">
+												<input name="dribbble[feed][]" checked="" id="db__feed" value="likes" type="checkbox"> Likes
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="tab-pane" id="tumb">
+										<p><strong>Tumblr</strong></p>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Tumblr</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="tumblr[tumblrid]" id="db__tumblr" value="islandpeeps" type="text">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Stream item output</label>	 
+											<div class="col-md-5">
+												<label class="checkbox">
+												<input name="tumblr[out][]" checked="" id="db__tout" value="intro" type="checkbox">intro
+												</label>
+												<label class="checkbox">
+												<input name="tumblr[out][]" checked="" id="db__tout" value="title" type="checkbox">title
+												</label>
+												<label class="checkbox">
+												<input name="tumblr[out][]" checked="" id="db__tout" value="user" type="checkbox">user
+												</label>
+												<label class="checkbox">
+												<input name="tumblr[out][]" checked="" id="db__tout" value="text" type="checkbox">text
+												</label>
+												<label class="checkbox">
+												<input name="tumblr[out][]" checked="" id="db__tout" value="share" type="checkbox">share
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="tab-pane" id="stun">
+										<p><strong>Stumbleupon</strong></p>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Stumbleupon</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="stumbleupon[stumbleuponid]" id="db__stumbleupon" value="" type="text">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Stream item output</label>	 
+											<div class="col-md-5">
+												<label class="checkbox">
+												<input name="stumbleupon[out][]" checked="" id="db__tout" value="intro" type="checkbox">intro
+												</label>
+												<label class="checkbox">
+												<input name="stumbleupon[out][]" checked="" id="db__tout" value="title" type="checkbox">title
+												</label>
+												<label class="checkbox">
+												<input name="stumbleupon[out][]" checked="" id="db__tout" value="thumb" type="checkbox">thumb
+												</label>
+												<label class="checkbox">
+												<input name="stumbleupon[out][]" checked="" id="db__tout" value="user" type="checkbox">user
+												</label>
+												<label class="checkbox">
+												<input name="stumbleupon[out][]" checked="" id="db__tout" value="text" type="checkbox">text
+												</label>
+												<label class="checkbox">
+												<input name="stumbleupon[out][]" checked="" id="db__tout" value="share" type="checkbox">share
+												</label>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Feed item</label>	 
+											<div class="col-md-5">
+												<label class="checkbox">
+												<input name="stumbleupon[feed][]" checked="" id="db__feed" value="favorites" type="checkbox"> Favorites 	 
+												</label>
+												<label class="checkbox">
+												<input name="stumbleupon[feed][]" checked="" id="db__feed" value="reviews" type="checkbox"> Reviews
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="tab-pane" id="lfm">
+										<p><strong>Lastfm</strong></p>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Lastfm</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="lastfm[lastfmid]" id="db__lastfm" value="" type="text">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Stream item output</label>	 
+											<div class="col-md-5">
+												<label class="checkbox">
+												<input name="lastfm[out][]" checked="" id="db__tout" value="intro" type="checkbox">intro
+												</label>
+												<label class="checkbox">
+												<input name="lastfm[out][]" checked="" id="db__tout" value="title" type="checkbox">title
+												</label>
+												<label class="checkbox">
+												<input name="lastfm[out][]" checked="" id="db__tout" value="thumb" type="checkbox">thumb
+												</label>
+												<label class="checkbox">
+												<input name="lastfm[out][]" checked="" id="db__tout" value="user" type="checkbox">user
+												</label>
+												<label class="checkbox">
+												<input name="lastfm[out][]" checked="" id="db__tout" value="text" type="checkbox">text
+												</label>
+												<label class="checkbox">
+												<input name="lastfm[out][]" checked="" id="db__tout" value="share" type="checkbox">share
+												</label>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Feed item</label>	 
+											<div class="col-md-5">
+												<label class="checkbox">
+												<input name="lastfm[feed][]" checked="" id="db__feed" value="recenttracks" type="checkbox"> Recent tracks 	 
+												</label>
+												<label class="checkbox">
+												<input name="lastfm[feed][]" checked="" id="db__feed" value="lovedtracks" type="checkbox"> Loved tracks
+												</label>
+												<label class="checkbox">
+												<input name="lastfm[feed][]" checked="" id="db__feed" value="replytracker" type="checkbox"> Reply tracks
+												</label>		
+											</div>
+										</div>
+									</div>
+									<div class="tab-pane" id="devi">
+										<p><strong>Deviantart</strong></p>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Deviantart</label>
+											<div class="col-md-5">
+												<input class="form-control input-md" name="deviantart[deviantartid]" id="db__deviantart" value="" type="text">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-3 control-label">Stream item output</label>	 
+											<div class="col-md-5">
+												<label class="checkbox">
+												<input name="deviantart[out][]" checked="" id="db__tout" value="intro" type="checkbox">intro
+												</label>
+												<label class="checkbox">
+												<input name="deviantart[out][]" checked="" id="db__tout" value="title" type="checkbox">title
+												</label>
+												<label class="checkbox">
+												<input name="deviantart[out][]" checked="" id="db__tout" value="thumb" type="checkbox">thumb
+												</label>
+												<label class="checkbox">
+												<input name="deviantart[out][]" checked="" id="db__tout" value="user" type="checkbox">user
+												</label>
+												<label class="checkbox">
+												<input name="deviantart[out][]" checked="" id="db__tout" value="text" type="checkbox">text
+												</label>
+												<label class="checkbox">
+												<input name="deviantart[out][]" checked="" id="db__tout" value="share" type="checkbox">share
+												</label>
+											</div>
+										</div>
+									</div>
+
+									
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="panel-footer text-right">
+						<div class="form-group">
+							<div class="col-sm-offset-3 col-sm-9">
+								<button type="submit" class="btn btn-primary">Save</button>
+							</div>
+						</div>
+					</div>	
+				</form>
+			</div>		
+		</div>
+	</div>
+</div>
+<script>
+function socialCB(data)
+{
+	if(data.error==0){
+		sk.alert('Your changes were saved','success');
+	}else{
+		sk.alert(data.message,'error');
+	}
+}
+</script>
+{% include 'widgets/footer.twig' %}

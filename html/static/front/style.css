@@ -1093,20 +1093,37 @@ a.explore-btn.purp{
 	width: 100%;
 	height: 100% !important;
 	min-height: 1000px;
+	z-index:10;
 }
 
 .map-info{
 	position: absolute;
-	height: 220px;
+	bottom: 72px;
+	height: auto;
+	overflow-y: scroll;
 	right: 10px;
 	top: 72px;
 	width: 280px;
-	background-color: #FFF;
-	border: 1px solid rgba(0, 0, 0, 0.4);
-	color: rgba(0, 0, 0, 0.75);
+	background-color: #333;
+	border: 7px solid #555;
+	color: #fff;
 	border-radius: 3px;
 	display:none;
 	padding: 8px;
+	z-index: 12;
+}
+
+.map-info .btn{
+	margin-top: 15px;
+}
+.map-clickback{
+	z-index: 11;
+	position: absolute;
+	top:0;
+	bottom:0;
+	right:0;
+	left:0;
+	display:none;
 }
 
 .map-info ul{
@@ -1132,6 +1149,7 @@ a.explore-btn.purp{
 	height: 28px;
 	line-height: 20px;
 	padding-bottom: 2px;
+	z-index:10;
 }
 
 .leaflet-control-zoom.leaflet-bar.leaflet-control{
@@ -1173,9 +1191,6 @@ select,input:not([type]), input[type="text"], input[type="password"], input[type
 select{
 	-moz-appearance: none !important;
 	background-color: #FAFAFA;
-	background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeD0iMTJweCIgeT0iMHB4IiB3aWR0aD0iMjRweCIgaGVpZ2h0PSIzcHgiIHZpZXdCb3g9IjAgMCA2IDMiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDYgMyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBvbHlnb24gcG9pbnRzPSI1Ljk5MiwwIDIuOTkyLDMgLTAuMDA4LDAgIi8+PC9zdmc+");
-	background-position: 100% center;
-	background-repeat: no-repeat;
 	border-style: solid;
 	border-width: 1px;
 	border-color: #CCC;
@@ -1186,6 +1201,11 @@ select{
 	padding: 0.44444rem;
 	border-radius: 0px;
 	height: 2.05556rem;
+}
+select:not([multiple]){
+	background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeD0iMTJweCIgeT0iMHB4IiB3aWR0aD0iMjRweCIgaGVpZ2h0PSIzcHgiIHZpZXdCb3g9IjAgMCA2IDMiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDYgMyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBvbHlnb24gcG9pbnRzPSI1Ljk5MiwwIDIuOTkyLDMgLTAuMDA4LDAgIi8+PC9zdmc+");
+	background-position: 100% center;
+	background-repeat: no-repeat;
 }
 
 select[multiple],textarea{
@@ -1448,6 +1468,15 @@ body.nav-minimized .nav:not(:hover) > *{
 	
 }
 
+body{
+	position: relative;
+	top:0 !important;
+}
+
+
+.skiptranslate, .goog-tooltip{
+	display: none;
+}
 
 .btn{
 	display: inline-block;
@@ -1464,6 +1493,12 @@ body.nav-minimized .nav:not(:hover) > *{
 	background-image: none;
 	border: 1px solid transparent;
 	border-radius: 4px;
+}
+
+.btn.block{
+	display: block;
+	float: left;
+	width: 100%;
 }
 
 .btn-primary{
