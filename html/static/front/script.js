@@ -73,7 +73,10 @@ $.mapbox = {
 			showInfo(e);
 			//var feature = e.layer.feature;
 			//$.app.go('/explore/'+feature.properties.uri);
-			$('body').one('click',hideInfo);
+			$('body').one('click',function(e){
+				
+				
+			});
 		});
 		
 		
@@ -95,9 +98,15 @@ $.mapbox = {
 		
 		function hideInfo(e)
 		{
-			$('.map-info').fadeOut(50).html('');
-			$('.map-clickback').fadeOut(0);
-			$(e.target).click();
+			var c = $(e.target);
+			if(!c.hasClass('.map-info') && $('img.leaflet-marker-icon').index(c) == -1){
+				$('.map-info').fadeOut(50).html('');
+				$('.map-clickback').fadeOut(0);
+			}else{
+				if($('img.leaflet-marker-icon').index(c) != -1){
+					c.trigger('click');
+				}
+			}
 		}
 
 		var geojson = { 

@@ -339,7 +339,7 @@ class DB
 	
 	public function getMenu()
 	{
-		$args = \R::getAll('SELECT name as title, uri FROM country ORDER BY title ASC');
+		$args = \R::getAll('SELECT title_banner as title, uri FROM country ORDER BY title ASC');
 		foreach($args as &$row)
 		{
 			$row['uri'] = '/explore/'.$row['uri'];

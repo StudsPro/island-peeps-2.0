@@ -454,7 +454,7 @@ class AdminAPI
 		foreach($images as $k=>$v){
 			try{
 				$img = $t->{$v};
-				$ignore_trans = ($k == 'map_file') ? false : true;
+				$ignore_trans = ($k == 'map_file' || $k=='cover_file') ? false : true;
 				$upl = $this->img_upload($k,$app->files,1,1,$ignore_trans);
 				$t->{$v} = $upl;
 				if(!empty($img) && $t->{$v} !== $img && $upl !== null){
