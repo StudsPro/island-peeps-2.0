@@ -1,5 +1,5 @@
 {% for item in results %}
-<li>
+<li data-regions="{{item.regions}}">
 	<a data-href="{{item.uri}}">
 		<img src="{{item.img}}" alt="" /> <span>{{item.title}}</span>
 	</a>

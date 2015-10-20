@@ -108,4 +108,11 @@ class Debug extends ViewController
 			)
 		);
 	}
+	
+	public function searchGraph()
+	{
+		$this->pretty(
+			$this->app->db->searchGraph('i')
+		);
+	}
 }

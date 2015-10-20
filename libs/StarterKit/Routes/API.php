@@ -451,4 +451,18 @@ class API extends ViewController
 		$args['results'] = $db->searchInstant($query);
 		return ['error'=>0,'message'=>$this->twig->loadTemplate('frontend/search_result.twig')->render($args)];
 	}
+	
+	public function searchGraph()
+	{
+		$app = $this->app;
+		$db = $app->db;
+		$get = $app->get;
+		$args = $app->args;
+		$query = isset($get['q']) ? $get['q'] : false;
+		if(!$query){
+			throw new \exception('e');
+		}
+		$args['data'] = $db->searchGraph($query);
+		return ['error'=>0,'message'=>$this->twig->loadTemplate('frontend/search_graph.twig')->render($args)];
+	}
 }

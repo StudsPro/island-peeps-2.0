@@ -202,6 +202,15 @@ function preventDefaultForScrollKeys(e) {
 }
 
 
+String.prototype.entities = function(){
+	var el = document.createElement('span');
+	this.replace(/&(#(?:x[0-9a-f]+|\d+)|[a-z]+);/gi,function(str) {
+			el.innerHTML= str;
+			return el.textContent || el.innerText;
+	});
+	return this;
+};
+
 function createPie(target,data)
 {
 	console.log(target);
@@ -210,6 +219,32 @@ function createPie(target,data)
 			tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>%"
 		}
 	);
+}
+
+function createBar(target,labels,data)
+{
+	console.log(target);
+	for(var i=0;i<labels.length;i++){
+		labels[i] = labels[i].entities();
+	}
+	new Chart(target[0].getContext("2d")).Bar({
+		labels: labels,
+		datasets: data
+	});
+}
+
+function createBar2(target,data)
+{
+	console.log(target);
+	new Chart(target[0].getContext("2d")).Bar({
+		labels: [data.label.entities()],
+		datasets: [data]
+	},{
+		animation: false,
+		showScale:false,
+		showTooltips:false,
+		scaleShowLabel:true,
+	});
 }
 
 function disableScroll() {
@@ -302,7 +337,8 @@ $.fn.ensureInview = function(repeat){
 							var el2 = $('.menu').find('[data-href="'+location.pathname+'"]');
 							console.log(location.pathname,el2)
 							if(el2.length > 0){
-								el2.parent('li').addClass('active').siblings().removeClass('active');
+								$('.menu li').removeClass('active');
+								el2.parent('li').addClass('active');
 							}
 						}
 					},0)
@@ -427,10 +463,13 @@ var slide = {
 			}
 			catch(e){}
 		}
-		if($('[data-slug="'+location.pathname+'"][data-min]').length == 1)
-		{
-			console.log('adding minimized nav bar');
-			$('body').addClass('nav-minimized');	
+		if($('iframe:visible').length >0){
+			conole.log('lazy loading iframe');
+			$('iframe:visible').addClass('m-progress').on('load',function(e){
+				$(this).removeClass('m-progress');
+			}).attr('src',function(){
+				return $(this).data('src');
+			});
 		}
 	},
 	cleanup: function(){
@@ -442,13 +481,6 @@ var slide = {
 		}
 		catch(e){}
 		console.log(location.pathname);
-		if($('body').hasClass('nav-minimized')){
-			if($('[data-slug="'+location.pathname+'"][data-min]').length == 0)
-			{
-				console.log('removing minimized nav bar');
-				$('body').removeClass('nav-minimized');	
-			}
-		}
 		if($('body > .searchbar').length > 0 && location.pathname !== '/stats'){
 			$('.searchbar').appendTo('[data-slug="/stats"] .content');
 			$('.searchbar .results').html('').removeClass('active');
@@ -807,9 +839,30 @@ $(function(){
 	//search handlers
 	var search_int = null;
 	$(document).on('keyup','.searchbar input',function(e){
-		if(e.which == 13 && $(this).val() != "")
+		if(e.which == 13 && this.value != "")
 		{
 			//submit the search to generate a graph of results
+			$.getJSON(window.location.origin+'/api/v1/searchGraph?q='+this.value,function(data){
+				if(data.error == 0){
+					$('.searchbar .results').removeClass('active');
+					$('.searchgraph-results').html(data.message).addClass('active');
+					setTimeout(function(){
+						var dataset = JSON.parse($('#graph-dataset').html());
+						var base = 700;
+						var width = base/dataset.length;
+						$.each(dataset,function(i,v){
+							console.log(i,v);
+							$('<canvas id="c_'+i+'" width="'+width+'" height="400"></canvas>').appendTo('.chart-wrap');
+							createBar2($('#c_'+i),v);
+						});
+					},0);
+					$('.searchgraph-results .close').one('click',function(){
+						$('.searchgraph-results').html('').removeClass('active');
+					});
+				}else{
+					sk.alert(data.message,'error');
+				}
+			});
 		}else{
 			if(search_int !== null) clearInterval(search_int);
 			search_int = setTimeout(function(value){
@@ -828,6 +881,21 @@ $(function(){
 				});
 			},100,this.value);
 		}
+	});
+	
+	
+	$(document).on('click','.by-country ul li a',function(e){
+		$('.by-country li a').removeClass('active');
+		$(this).addClass('active');
+		var id = $(this).data('country').toString();
+		$('.results-window').html($('.results-inner li[data-regions~='+id+']').clone(false));
+		$('.graph-results').addClass('active');
+		$('.chart').removeClass('active');
+	});
+	
+	$(document).on('click','.back-to-chart',function(e){
+		$('.graph-results').removeClass('active');
+		$('.chart').addClass('active');
 	});
 	
 	$(document).on('click','[data-language]',function(){

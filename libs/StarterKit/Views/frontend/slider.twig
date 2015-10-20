@@ -20,7 +20,7 @@
 			</div>
 		</div>
 		
-		<div class="item" data-slug="/map"  data-callback="mapRun" data-min>
+		<div class="item" data-slug="/map"  data-callback="mapRun" >
 			<div class="content">
 				<div class="mapbox-custom" id="map">
 				</div>
@@ -30,7 +30,7 @@
 			</div>
 		</div>
 		
-		<div class="item" data-slug="/suggest" data-min>
+		<div class="item" data-slug="/suggest" >
 			<img class="lazyOwl" data-src="{{banners[2].image|default(base_url~'static/front/img/slider/slide1.jpg')}}" data-video="{{banners[2].video}}" />
 			<div class="video-slideup"></div>
 			<div class="content">
@@ -177,7 +177,7 @@
 			</div>
 		</div>
 		
-		<div class="item" data-slug="/stats" data-callback="statsCb" data-min>
+		<div class="item" data-slug="/stats" data-callback="statsCb" >
 			<img class="lazyOwl" data-src="{{banners[7].image|default(base_url~'static/front/img/slider/slide1.jpg')}}" data-video="{{banners[7].video}}" />
 			<div class="video-slideup"></div>
 			<div class="content">
@@ -189,7 +189,7 @@
 					</ul>
 				</div>
 				
-				<div class="searchgraph-results active">
+				<div class="searchgraph-results">
 					<div class="large-12 columns">
 						<strong class="count">Showing 5 Results</strong>
 						<a class="close"><i class="fa fa-times"></i> <span>Close Results</span></a>
@@ -214,6 +214,10 @@
 							
 						</ul>
 					</div>
+				</div>
+				
+				<div class="social-wall">
+					<iframe data-src="http://islandpeeps.openex.info/socialwall.php"></iframe>
 				</div>
 			</div>
 		</div>
@@ -307,8 +311,8 @@
 	</ul>
 	
 	<div class="nav-btns">
-		<div class="prev"></div>
-		<div class="next"></div>
+		<div class="prev smoky-black dimmer"></div>
+		<div class="next smoky-black dimmer"></div>
 	</div>
 	
 </div>

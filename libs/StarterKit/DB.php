@@ -400,7 +400,7 @@ class DB
 		return $data;
 	}
 	
-	public function searchInstant($query)
+	public function searchInstant($query,$limit=true)
 	{
 		//if query contains multiple terms. 
 		
@@ -437,8 +437,11 @@ class DB
 		}
 		
 		$sql .= ')'; //closing brace in giant or clause.
-
-		$sql.= ' LIMIT 0,12';
+		
+		if($limit){
+			$sql.= ' LIMIT 0,12';
+		}
+		
 		//die($sql);
 		$data = \R::getAll($sql,$params);
 		foreach($data as &$row){
@@ -457,7 +460,55 @@ class DB
 				$row['uri'] = '/extras/memes/'.$row['uri'];
 				break;
 			}
+			$row['regions'] = implode(' ',$r);
 		}
+		return $data;
+	}
+	
+	public function searchGraph($query)
+	{
+		$tmp_regions=[];
+		
+		$d = $this->searchInstant($query,false);
+		
+		$data = [
+			'regions'=>[],
+			'chart'=>[
+				
+			],
+			'labels'=>[
+			],
+			'results'=>$d,
+		];
+
+		foreach($d as &$row)
+		{
+			$regions = explode(',',$row['regions']);
+			foreach($regions as $r)
+			{
+				if(!in_array($r,$tmp_regions)){
+					$tmp = \R::getRow('SELECT name,uri,id FROM country WHERE id=:id',[':id'=>$r]);
+					if(!empty($tmp) && !is_null($tmp)){
+						$data['chart'][$r] = [
+							'label'=>$tmp['name'],
+							'data'=>[1],
+							'fillColor'=>$this->randColor()
+						];
+						$data['labels'][$r] = $tmp['name'];
+						$data['chart'][$r]['strokeColor'] = $this->adjustColor($data['chart'][$r]['fillColor'],15);
+						$data['regions'][] = $tmp;
+						$tmp_regions[] = $r;
+					}
+				}else{
+					if(isset($data['chart'][$r])){
+						$data['chart'][$r]['data'][0] += 1;
+					}
+				}
+			}
+			$data['labels'] = array_values($data['labels']);
+			$data['chart'] = array_values($data['chart']);
+		}
+		
 		return $data;
 	}
 	
