@@ -115,4 +115,11 @@ class Debug extends ViewController
 			$this->app->db->searchGraph('i')
 		);
 	}
+	
+	public function suggestion()
+	{
+		$this->pretty(
+			$this->app->db->getSuggestions()
+		);
+	}
 }

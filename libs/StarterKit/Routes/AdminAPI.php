@@ -6,9 +6,12 @@ class AdminAPI
 {
 	use \StarterKit\Traits\Upload;
 	public $app; //app is available so you can call any method/property on app from within here.
+	public $twig;
 	function __construct()
 	{
 		$this->app = \StarterKit\App::getInstance();
+		$this->twig = new \Twig_Environment( new \Twig_Loader_Filesystem( $this->app->twig_config['template_path'] ) );
+		$this->twig->addExtension(new \Twig_Extension_StringLoader());
 	}
 	
 	public function __call($method,$args = null)
@@ -104,6 +107,44 @@ class AdminAPI
 					}
 				}
 				$app->session['admin']->order = $v;
+				$app->session['admin']->update();
+			break;
+			case 'dashboard':
+				$v = isset($get['v']) ? $get['v'] : '';
+				if(!empty($v)){
+					//run diagnostic to ensure proper results.
+					if(strpos($v,',') === false){
+						throw new \exception('formatting error');
+					}
+					$tmp = array_map('intval',explode(',',$v));
+					if(count($tmp) !== 7){
+						throw new \exception('number of elements does not match specification.');
+					}
+					$all = range(0,6);
+					if(sort($all) !== sort($tmp)){
+						throw new \exception(json_encode([$all,$tmp]));
+					}
+				}
+				$app->session['admin']->dashboard_order = $v;
+				$app->session['admin']->update();
+			break;
+			case 'stats':
+				$v = isset($get['v']) ? $get['v'] : '';
+				if(!empty($v)){
+					//run diagnostic to ensure proper results.
+					if(strpos($v,',') === false){
+						throw new \exception('formatting error');
+					}
+					$tmp = array_map('intval',explode(',',$v));
+					if(count($tmp) !== 17){
+						throw new \exception('number of elements does not match specification.');
+					}
+					$all = range(0,16);
+					if(sort($all) !== sort($tmp)){
+						throw new \exception(json_encode([$all,$tmp]));
+					}
+				}
+				$app->session['admin']->stats_order = $v;
 				$app->session['admin']->update();
 			break;
 			case 'theme':
@@ -237,6 +278,58 @@ class AdminAPI
 		}
 		
 		$db->updateColumnMulti($tbl,$col,$val,$ids);
+		
+		return ['error'=>0,'message'=>1];
+	}
+	
+	public function bulk_suggest()
+	{
+		$app = $this->app;
+		$filter = $app->filter;
+		$get = $app->get; 
+		$db = $app->db;
+		$admin = $app->session['admin'];
+		
+		$cmd = isset($get['cmd']) ? $get['cmd'] : false;
+		$ids = isset($get['ids']) ? $get['ids'] : false;
+		
+		if(!$cmd || !in_array($cmd,['add','del']) || !$ids){
+			throw new \exception('Invalid command');
+		}		
+		
+		$ids = explode(',',$ids);
+		
+		if(!is_array($ids)){
+			$ids = [$ids];
+		}
+		
+		switch($cmd){
+			case 'del':
+				foreach($ids as $id)
+				{
+					$db->delete('suggestion','id',$id);
+				}
+			break;
+			case 'add':
+				foreach($ids as $id)
+				{
+					$data = $db->getRow('SELECT * FROM suggestion WHERE id=:id',[':id'=>$id]);
+					unset($data['id'],$data['submitter'],$data['email']);
+					$t2 = $db->model('masterlist');
+					foreach($data as $k=>$v)
+					{
+						$t2->{$k} = $v;
+					}
+					$t2->admin_id = $admin->id;
+					$t2->created = time();
+					$t2->status = 1;
+					$db->store($t2);
+					$t = $db->model('suggestion',$id);
+					$t->status = 1;
+					$db->store($t);
+				}
+			break;
+		}
 		
 		return ['error'=>0,'message'=>1];
 	}
@@ -383,6 +476,7 @@ class AdminAPI
 		if(!isset($t->admin_id)){
 			$t->admin_id = $admin->id;
 		}
+		$t->uri = strtolower($this->url_safe($t->title));
 		$db->store($t);
 		
 		return ['error'=>0,'message'=>1];
@@ -409,6 +503,7 @@ class AdminAPI
 			'capital'=>'min',
 			'language'=>'min',
 			'population'=>'min',
+			'ethnic_data'=>'min',
 			'status'=>'status_fm'
 		];
 		
@@ -466,7 +561,9 @@ class AdminAPI
 		if(!isset($t->admin_id)){
 			$t->admin_id = $admin->id;
 		}
+		$t->uri = strtolower($this->url_safe($t->name));
 		$db->store($t);
+		$app->db->cachedCall('getCountry',[$t->uri],60 * 5,true);//4th parameter means force overwrite cache
 		return ['error'=>0,'message'=>1];
 	}
 	
@@ -526,6 +623,7 @@ class AdminAPI
 			$t->admin_id = $admin->id;
 		}
 		$t->type_id = 2;
+		$t->uri = strtolower($this->url_safe($t->title));
 		$db->store($t);
 		return ['error'=>0,'message'=>1];
 	}
@@ -656,6 +754,7 @@ class AdminAPI
 		if(!isset($t->admin_id)){
 			$t->admin_id = $admin->id;
 		}
+		$t->uri = strtolower($this->url_safe($t->name));
 		$db->store($t);
 		
 		return ['error'=>0,'message'=>1];
@@ -960,5 +1059,238 @@ class AdminAPI
 		throw new \exception($var);
 		
 		return ['error'=>0,'message'=>1];
+	}
+	
+	public function suggestion()
+	{
+		$app = $this->app;
+		$filter = $app->filter;
+		$get = $app->get;
+		$post = $app->post; 
+		$db = $app->db;
+		$admin = $app->session['admin'];
+		
+		$id = isset($get['id']) ? $filter->cast_int($get['id']) : false;
+		
+		if(!$id){
+			throw new \exception('Missing Id');
+		}
+		
+		$t = $db->model('suggestion',$id);
+		
+		if( (int) $t->id !== $id){
+			throw new \exception('a 1 ');
+		}
+		
+		//unset regions[] and replace with regions
+		if(isset($post['regions[]'])){
+			unset($post['regions[]']);
+		}
+		$post['regions'] = isset($_POST['regions']) ? $_POST['regions'] : [];
+		
+		$required = [
+			'title'=>'min',
+			'type_id'=>'c_type',
+			'regions'=>'region_fm',
+		];
+		
+		$optional = [
+			'description'=>'min',
+			'year'=>'min',
+			'day'=>'min',
+			'month'=>'min'
+		];
+		
+		$filter->custom_filter('region_fm',function($input) use($filter,$db){
+			if(!is_array($input)){
+				throw new \exception('Invalid input format:: Regions');
+			}
+			$input = array_map([$filter,'cast_int'],$input);
+			$x = count($input);
+			$y = (int) $db->getCell('SELECT COUNT(id) FROM country WHERE id IN('.implode(',',$input).')');
+			if($x !== $y){
+				throw new \exception('1 or more regions is invalid X: '.$x.' Y: '.$y);
+			}
+			return implode(',',$input);
+		});
+		
+		$filter->custom_filter('c_type',function($input) use($filter){
+			$input = $filter->cast_int($input);
+			if(!in_array($input,range(1,3))){
+				throw new \exception('Invalid Profile Type');
+			}
+			return $input;
+		});
+		
+		$filter->generate_model($t,$required,$optional,$post);
+		
+		if(isset($app->files['uploaded_image']['tmp_name']) && is_uploaded_file($app->files['uploaded_image']['tmp_name'])){
+			$t->img = $this->img_upload('uploaded_image',$app->files);
+		}
+		$t->status = 1;
+		
+		$db->store($t);
+		
+		$data = $db->getRow('SELECT * FROM suggestion WHERE id=:id',[':id'=>$id]);
+		unset($data['id'],$data['submitter'],$data['email']);
+		$t2 = $db->model('masterlist');
+		foreach($data as $k=>$v)
+		{
+			$t2->{$k} = $v;
+		}
+		$t2->admin_id = $admin->id;
+		$t2->created = time();
+		$t2->status = 1;
+		$id2 = $db->store($t2);
+		
+		switch($t2->type_id){
+			case 1:
+			$x = 'profile';
+			break;
+			case 2:
+			$x = 'meme';
+			break;
+			case 3:
+			$x = 'funfact';
+			break;
+		}
+		
+		return ['error'=>0,'message'=>[
+			'id'=>$id2,
+			'type'=>$x
+		]];
+	}
+	
+	public function mlist_names()
+	{
+		$db = $this->app->db;
+		
+		return ['error'=>0,'message'=>array_column($db->getAll('SELECT title FROM masterlist'),'title')];
+	}
+	
+	public function calendar()
+	{
+		$app = $this->app;
+		$get = $app->get;
+		$db = $app->db;
+		
+		$start = $get['start'];
+		$end = $get['end'];
+		
+		return ['error'=>0,'message'=>$db->getCalendar($start,$end)];
+	}
+	
+	public function calendar_min()
+	{
+		$app = $this->app;
+		$get = $app->get;
+		$db = $app->db;
+		
+		return $db->getCalendarMin($get['start'],$get['end']);
+	}
+	
+	public function calendar_full()
+	{
+		$app = $this->app;
+		$get = $app->get;
+		$db = $app->db;
+		
+		return $db->getCalendarFull($get['start'],$get['end']);
+	}
+	
+	public function getDashboard()
+	{
+		$app = $this->app;
+		$db = $app->db;
+		
+		
+		$args['recent_profiles'] = $db->getAll('SELECT a.*,b.name as username FROM masterlist a JOIN admin b ON a.admin_id=b.id WHERE a.type_id="1" ORDER BY a.id DESC LIMIT 0,20');
+		$args['affiliate_log'] = $db->getAll('SELECT a.*, b.name as username FROM affiliatelog a JOIN admin b ON a.admin_id=b.id ORDER BY a.id DESC LIMIT 0,50');
+		$visits = $db->getAnalytics('locations');
+		
+		
+		foreach($visits as &$row)
+		{
+			$tmp = [
+				'country'=>$row[0],
+				'visits'=>$row[1],
+				'color'=>$db->callPrivate('randColor')
+			];
+			$row = $tmp;
+		}
+		
+		$hits = $db->getAnalytics('this_month')['data'];
+		
+		foreach($hits as &$row){
+			$tmp = [
+				'day'=>date('M d, Y',strtotime($row[0])),
+				'count'=>$row[1],
+				'color'=>$db->callPrivate('randColor')
+			];
+			$row = $tmp;
+		}
+		
+		$hits2 = $db->getAnalytics('hits_by_city');
+		
+		foreach($hits2 as &$row){
+			$tmp = [
+				'city'=>$row[0],
+				'count'=>$row[1],
+				'color'=>$db->callPrivate('randColor')
+			];
+			$row = $tmp;
+		}
+		return [
+			'notification'=>'The aliens are watching me',
+			'recent_profiles'=>$this->twig->loadTemplate('partials/recent_profiles.twig')->render($args),
+			'affiliate_log'=>$this->twig->loadTemplate('partials/affiliate_log.twig')->render($args),
+			'profile_per'=>$db->countryPer(),
+			'visits_per'=>$visits,
+			'hits_by_day'=>$hits,
+			'hits_by_city'=>$hits2
+		];
+	}
+	
+	public function getAnalytics()
+	{
+		$data = $this->app->db->getAnalytics();
+		
+		foreach($data['browser'] as &$row)
+		{
+			$tmp = [
+				'k'=>$row[0],
+				'v'=>$row[1]
+			];
+			$row = $tmp;
+		}
+		foreach($data['screen_sizes'] as &$row)
+		{
+			$tmp = [
+				'k'=>$row[0],
+				'v'=>$row[1]
+			];
+			$row = $tmp;
+		}
+		
+		foreach($data['this_month']['data'] as &$row)
+		{
+			$tmp = [
+				'k'=>Date('M dS',strtotime($row[0])),
+				'v'=>$row[1]
+			];
+			$row = $tmp;
+		}
+		$data['this_month']['total'] = array_sum(array_column($data['this_month']['data'],'v'));
+		
+		foreach($data['new_vs_returning'] as &$row)
+		{
+			$tmp = [
+				'k'=>$row[0],
+				'v'=>$row[1]
+			];
+			$row = $tmp;
+		}
+		
+		return $data;
 	}
 } 

@@ -34,7 +34,7 @@
 			<img class="lazyOwl" data-src="{{banners[2].image|default(base_url~'static/front/img/slider/slide1.jpg')}}" data-video="{{banners[2].video}}" />
 			<div class="video-slideup"></div>
 			<div class="content">
-				<div class="columns home-c medium-6 small-12 fh">
+				<div class="columns home-c medium-6 small-12 fh" style="padding-top: 72px !important;">
 					<div class="suggest">
 						<form method="post" class="contains-file" action="{{base_url}}api/v1/suggest" data-callback="suggestDone">
 							<div class="row">
@@ -216,8 +216,8 @@
 					</div>
 				</div>
 				
-				<div class="social-wall">
-					<iframe data-src="http://islandpeeps.openex.info/socialwall.php"></iframe>
+				<div class="social-wall fs">
+					<iframe data-src="http://islandpeeps.openex.info/socialwall.php?wall"></iframe>
 				</div>
 			</div>
 		</div>

@@ -537,6 +537,23 @@ $(function(){
 		}
 	});
 	
+	$(document).on('click','.bulk-suggest',function(e){
+		var checked = $('table tbody').find(':input:checked');
+		if(checked.length > 0){
+			var cmd = $(this).data('cmd');
+			var ids = '';
+			for(var i =0;i<checked.length;i++){
+				ids += checked.eq(i).val()+',';
+				if(i == checked.length - 1){
+					ids = ids.slice(0,-1);
+					$.getJSON(window.location.origin+'/admin/api/bulk_suggest?cmd='+cmd+'&ids='+ids,function(data){
+						window.location.reload();
+					});
+				}
+			}
+		}
+	});
+	
 	$(document).on('click','.themechange',function(e){
 		var v = this.id;
 		$('.themechange').removeClass('selected');
@@ -562,4 +579,277 @@ $(function(){
 		});
 	});
 	
+	if($('#mastername').length > 0){
+		$.getJSON(window.location.origin+'/admin/api/mlist_names',function(data){
+			$("#mastername").autocomplete({
+				source: data.message,
+				minLength: 1,
+				cacheLength: 0,
+				select: function(event, ui) {
+					
+				
+				   
+				}
+			});
+		})
+	}
+	
+	$('#sort_items ul li[data-order="11"] .badge').html( $('#social-sidebar-menu').data('calendar'));
+	
+	
+	if($('#dashboard_sort').length > 0){
+		$('#dashboard_sort').sortable({
+			tolerance: 'pointer',
+			revert: 'invalid',
+			placeholder: 'span2 well placeholder tile',
+			forceHelperSize: true,
+			update: function() {
+				var v = '',ul = $('#dashboard_sort > div[data-order]');
+				for(var i=0;i<ul.length;i++){
+					v += ul.eq(i).data('order')+',';
+					if(i == ul.length - 1){
+						$.getJSON(window.location.origin + '/admin/api/update_setting?x=dashboard&v='+v.slice(0,-1),function(data){
+							if(data.error != 0 ){
+								sk.alert(data.message);
+							}
+						});
+					}
+				}
+			}					
+		});
+		$.getJSON(window.location.origin+'/admin/api/getDashboard',function(data){
+			$('#dashboard_sort div[data-order="0"] .panel-body').html(data.notification);
+			$('#dashboard_sort div[data-order="1"] .users-feed .maxheight_recent').html(data.recent_profiles);
+			$('#dashboard_sort div[data-order="1"] .activities-feed .maxheight_recent').html(data.affiliate_log);
+			
+			
+			//hits by city
+			(function(data){
+				var chart = new AmCharts.AmSerialChart();
+				chart.dataProvider = data;
+				chart.categoryField = "city";chart.marginRight = 0;chart.marginTop = 0; 
+				//chart.autoMarginOffset = 0;
+				// the following two lines makes chart 3D
+				chart.depth3D = 20;chart.angle = 30;
+				// AXES // category
+				var categoryAxis = chart.categoryAxis;categoryAxis.labelRotation = 90;categoryAxis.gridPosition = "start";
+				categoryAxis.inside = true;categoryAxis.gridCount = data.length;categoryAxis.autoGridCount = false;
+				// value
+				var valueAxis = new AmCharts.ValueAxis();valueAxis.title = "Result";chart.addValueAxis(valueAxis);
+				// GRAPH            
+				var graph = new AmCharts.AmGraph();
+				graph.valueField = "count";
+				graph.colorField = "color";
+				graph.balloonText = "[[category]]: [[value]]";graph.type = "column";graph.lineAlpha = 0;graph.fillAlphas = 1;
+				chart.addGraph(graph);
+				// WRITE
+				chart.write("vmap-world");   
+			})(data.hits_by_city);
+			
+			//profile per country chart
+			(function(data){
+				var chart = new AmCharts.AmSerialChart();
+				chart.dataProvider = data;
+				chart.categoryField = "country";
+				chart.marginRight = 0;
+				chart.marginTop = 0; 
+				chart.depth3D = 20;
+				chart.angle = 30;
+				var categoryAxis = chart.categoryAxis;
+				categoryAxis.labelRotation = 90;categoryAxis.gridPosition = "start";
+				categoryAxis.inside = true;categoryAxis.gridCount = data.length;
+				categoryAxis.autoGridCount = false;
+				var valueAxis = new AmCharts.ValueAxis();
+				valueAxis.title = "Result";
+				chart.addValueAxis(valueAxis);          
+				var graph = new AmCharts.AmGraph();
+				graph.valueField = "visits";
+				graph.colorField = "color";
+				graph.balloonText = "[[category]]: [[value]]";
+				graph.type = "column";
+				graph.lineAlpha = 0;
+				graph.fillAlphas = 1;
+				chart.addGraph(graph);
+				chart.write("pie-profileperc");   	
+			})(data.profile_per);
+			//visits by location chart
+			(function(data){
+				var chart = new AmCharts.AmSerialChart();
+				chart.dataProvider = data;
+				chart.categoryField = "country";
+				chart.marginRight = 0;
+				chart.marginTop = 0; 
+				chart.depth3D = 20;chart.angle = 30;
+				// AXES // category
+				var categoryAxis = chart.categoryAxis;categoryAxis.labelRotation = 90;categoryAxis.gridPosition = "start";
+				categoryAxis.inside = true;categoryAxis.gridCount = data.length;categoryAxis.autoGridCount = false;
+				// value
+				var valueAxis = new AmCharts.ValueAxis();valueAxis.title = "Visit";chart.addValueAxis(valueAxis);
+				// GRAPH            
+				var graph = new AmCharts.AmGraph();graph.valueField = "visits";
+				graph.colorField = "color";
+				graph.balloonText = "[[category]]: [[value]]";graph.type = "column";graph.lineAlpha = 0;graph.fillAlphas = 1;
+				chart.addGraph(graph);
+				// WRITE
+				chart.write("pie-visitsperc"); 
+			})(data.visits_per);
+			
+			(function(data){
+				var chart = new AmCharts.AmSerialChart();
+				chart.dataProvider = data;
+				chart.categoryField = "day";chart.marginRight = 0;chart.marginTop = 0; 
+				//chart.autoMarginOffset = 0;
+				// the following two lines makes chart 3D
+				chart.depth3D = 20;chart.angle = 30;
+				// AXES // category
+				var categoryAxis = chart.categoryAxis;categoryAxis.labelRotation = 90;categoryAxis.gridPosition = "start";
+				categoryAxis.inside = true;categoryAxis.gridCount = data.length;categoryAxis.autoGridCount = false;
+				// value
+				var valueAxis = new AmCharts.ValueAxis();valueAxis.title = "Result";chart.addValueAxis(valueAxis);
+				// GRAPH            
+				var graph = new AmCharts.AmGraph();
+				graph.valueField = "count";
+				graph.colorField = "color";
+				graph.balloonText = "[[category]]: [[value]]";graph.type = "column";graph.lineAlpha = 0;graph.fillAlphas = 1;
+				chart.addGraph(graph);
+				// WRITE
+				chart.write("demo-plot");   
+			})(data.hits_by_day);
+			
+		});
+	}
+	
+	if($('#stats_sort').length > 0){
+		$('#stats_sort').sortable({
+			tolerance: 'pointer',
+			revert: 'invalid',
+			placeholder: 'span2 well placeholder tile',
+			forceHelperSize: true,
+			update: function() {
+				var v = '',ul = $('#stats_sort > div[data-order]');
+				for(var i=0;i<ul.length;i++){
+					v += ul.eq(i).data('order')+',';
+					if(i == ul.length - 1){
+						$.getJSON(window.location.origin + '/admin/api/update_setting?x=stats&v='+v.slice(0,-1),function(data){
+							if(data.error != 0 ){
+								sk.alert(data.message);
+							}
+						});
+					}
+				}
+			}					
+		});
+		$.getJSON(window.location.origin+'/admin/api/getAnalytics',function(data){
+			
+			(function(data){
+				var pie = new AmCharts.AmPieChart();
+				pie.dataProvider = data;
+				pie.titleField = "k";
+				pie.valueField = "v";
+				pie.outlineColor = "#FFFFFF";
+				pie.outlineAlpha = 0.8;
+				pie.outlineThickness = 2;
+				pie.labelRadius = -30;
+				pie.labelText = "[[value]]";
+				pie.startDuration = 0;
+				// this makes the chart 3D
+				pie.depth3D = 15;
+				pie.angle = 30;
+				pie.colors = "#76ba35,#00AFF0,#C72C95,#F8FF01,#FF6600,#04D215,#2A0CD0,#FF0F00,#B0DE09,#0D52D1,#0D5221,#76b035,#06AFF0,#C70C95,#58FF01,#B05209,#44D215,#2A0C95,#2F0F0F,#B05E09".split(",");
+				
+				var legend = new AmCharts.AmLegend();
+				legend.position = "bottom";
+				legend.borderAlpha = 0;
+				legend.horizontalGap = 10;
+				legend.switchType = "x"; // or v
+				legend.valueText = "";
+				pie.addLegend(legend);
+				// WRITE
+				pie.write("pie-browser");
+			})(data.browser);
+			
+			(function (data){
+				var	screenRespie = new AmCharts.AmPieChart();
+				screenRespie.dataProvider = data;
+				screenRespie.titleField = "k";
+				screenRespie.valueField = "v";
+				screenRespie.outlineColor = "#FFFFFF";
+				screenRespie.outlineAlpha = 0.8;
+				screenRespie.outlineThickness = 2;
+				screenRespie.labelRadius = -30;
+				screenRespie.labelText = "[[value]]";
+				screenRespie.startDuration = 0;
+				// this makes the chart 3D
+				screenRespie.depth3D = 15;
+				screenRespie.angle = 30;
+				screenRespie.colors = "#76ba35,#00AFF0,#C72C95,#F8FF01,#FF6600,#04D215,#2A0CD0,#FF0F00,#B0DE09,#0D52D1,#0D5221,#76b035,#06AFF0,#C70C95,#58FF01,#B05209,#44D215,#2A0C95,#2F0F0F,#B05E09".split(",");
+
+				var	screenReslegend = new AmCharts.AmLegend();
+				screenReslegend.position = "bottom";
+				screenReslegend.borderAlpha = 0;
+				screenReslegend.horizontalGap = 10;
+				screenReslegend.switchType = "x"; // or v
+				screenReslegend.valueText = "";
+				screenRespie.addLegend(screenReslegend);
+				// WRITE
+				screenRespie.write("pie-screen");
+			})(data.screen_sizes);
+			
+			
+			(function(data){
+				$('#statsmonthlywiseinfo .panel-title').html('Month ('+data.name+') Hits - Total ('+data.total+') ');
+				var	countrypie = new AmCharts.AmPieChart();
+				countrypie.dataProvider = data.data;
+				countrypie.titleField = "k";
+				countrypie.valueField = "v";
+				countrypie.outlineColor = "#FFFFFF";
+				countrypie.outlineAlpha = 0.8;
+				countrypie.outlineThickness = 2;
+				countrypie.labelRadius = -30;
+				countrypie.labelText = "[[value]]";
+				countrypie.startDuration = 0;
+				// this makes the chart 3D
+				countrypie.depth3D = 15;
+				countrypie.angle = 30;
+				countrypie.colors = "#76ba35,#00AFF0,#C72C95,#F8FF01,#FF6600,#04D215,#2A0CD0,#FF0F00,#B0DE09,#0D52D1,#0D5221,#76b035,#06AFF0,#C70C95,#58FF01,#B05209,#44D215,#2A0C95,#2F0F0F,#B05E09".split(",");
+
+				var	countrylegend = new AmCharts.AmLegend();
+				countrylegend.position = "bottom";
+				countrylegend.borderAlpha = 0;
+				countrylegend.horizontalGap = 10;
+				countrylegend.switchType = "x"; // or v
+				countrylegend.valueText = "";
+				countrypie.addLegend(countrylegend);
+				// WRITE
+				countrypie.write("pie-monthlydiv");
+			})(data.this_month);
+			
+			(function(data){
+				var	upie = new AmCharts.AmPieChart();
+				upie.dataProvider = data;
+				upie.titleField = "k";
+				upie.valueField = "v";
+				upie.outlineColor = "#FFFFFF";
+				upie.outlineAlpha = 0.8;
+				upie.outlineThickness = 2;
+				upie.labelRadius = -30;
+				upie.labelText = "[[value]]";
+				upie.startDuration = 0;
+				// this makes the chart 3D
+				upie.depth3D = 15;
+				upie.angle = 30;
+				upie.colors = "#76ba35,#00AFF0,#C72C95,#F8FF01,#FF6600,#04D215,#2A0CD0,#FF0F00,#B0DE09,#0D52D1,#0D5221,#76b035,#06AFF0,#C70C95,#58FF01,#B05209,#44D215,#2A0C95,#2F0F0F,#B05E09".split(",");
+
+				var	ulegend = new AmCharts.AmLegend();
+				ulegend.position = "bottom";
+				ulegend.borderAlpha = 0;
+				ulegend.horizontalGap = 10;
+				ulegend.switchType = "x"; // or v
+				ulegend.valueText = "";
+				upie.addLegend(ulegend);
+				// WRITE
+				upie.write("pie-usertype1");
+			})(data.new_vs_returning);
+		});
+	}
 });

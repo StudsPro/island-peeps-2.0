@@ -1,4 +1,6 @@
 <?php
+
+die;
 // SET YOUR TWITTER API DETAILS HERE
 $consumer_key = ""; 
 $consumer_secret = "";

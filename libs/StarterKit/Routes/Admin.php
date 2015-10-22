@@ -26,7 +26,7 @@ class Admin extends ViewController
 				}
 			}
 		}
-		
+		$this->app->args['sidebar_calendar_count'] = $this->app->db->todayCountCalendar();
 		if(!$this->app->is_admin() && $fn !== 'login' ){
 			$this->app->redirect('/admin/login',302);
 		}else{
@@ -56,7 +56,8 @@ class Admin extends ViewController
 			//'plugins/justgage/lib/raphael.2.1.0.min.js',
 			'plugins/justgage/justgage.js',
 			'plugins/gmaps/gmaps.js',
-			'js/dashboard.js'
+			'js/dashboard.js',
+			'js/calendar.js'
 		];
 		
 		$args['scripts_external'] = [
@@ -67,11 +68,56 @@ class Admin extends ViewController
 			'js/plugins/jqvmap/jqvmap.css',
 			'css/plugins/fullcalendar/fullcalendar.css'
 		];
-		
-		$args['recent_profiles'] = $db->getAll('SELECT a.*,b.name as username FROM masterlist a JOIN admin b ON a.admin_id=b.id WHERE a.type_id="1" ORDER BY a.id DESC LIMIT 0,20');
-		$args['affiliate_log'] = $db->getAll('SELECT a.*, b.name as username FROM affiliatelog a JOIN admin b ON a.admin_id=b.id ORDER BY a.id DESC LIMIT 0,50');
 
 		parent::render('dashboard.twig',$args);
+	}
+	
+	public function stats()
+	{
+		$app  = $this->app;
+		$args = $app->args;
+		$get  = $app->get;
+		$db   = $app->db;
+		
+		
+		$args['scripts'] = [
+			'js/amcharts/raphael.js',
+			'js/amcharts/amcharts.js',
+			//'plugins/flot/jquery.flot.js',
+			//'plugins/flot/jquery.flot.selection.js',
+			'js/plugins/jqvmap/jquery.vmap.js',
+			'js/plugins/jqvmap/maps/jquery.vmap.world.js',
+			//'plugins/jqvmap/data/jquery.vmap.sampledata.js',
+			//'plugins/easy-pie-chart/jquery.easypiechart.min.js',
+			//'plugins/jquery.sparkline/jquery.sparkline.min.js',
+			'js/plugins/fullcalendar/fullcalendar.min.js',
+			//'plugins/justgage/lib/raphael.2.1.0.min.js',
+			'plugins/justgage/justgage.js',
+		];
+
+		parent::render('stats.twig',$args);
+	}
+	
+	public function calendar()
+	{
+		$args = $this->app->args;
+		$get = $this->app->get;
+		$args['scripts'] = [
+			'js/plugins/fullcalendar/fullcalendar.min.js',
+			'js/calendar.js'
+		];
+		
+		$args['styles'] = [
+			'css/plugins/fullcalendar/fullcalendar.css'
+		];
+		
+		if(isset($get['month'])){
+			$args['start_month'] = (int) $get['month'];
+		}
+		
+		$args['dob_count'] = $this->app->db->dobCountAdded();
+		
+		parent::render('calendar.twig',$args);
 	}
 	
 	public function user_settings()
@@ -81,6 +127,15 @@ class Admin extends ViewController
 		$get  = $app->get;
 		$db   = $app->db;
 		parent::render('user_settings.twig',$args);
+	}
+	
+	public function site_settings()
+	{
+		$app  = $this->app;
+		$args = $app->args;
+		$get  = $app->get;
+		$db   = $app->db;
+		parent::render('site_settings.twig',$args);
 	}
 	
 	public function social_settings()
@@ -265,6 +320,12 @@ class Admin extends ViewController
 					'js/about.js'
 				];
 			break;
+			case 'suggestion':
+				$template = 'crud_suggestion.twig';
+				$args['action'] = 'Edit Suggestion';
+				$args['regions'] = $db->getAll('SELECT * FROM country ORDER BY name ASC');
+				$args['item'] = $db->getRow('SELECT * FROM suggestion WHERE id=:id',[':id'=>$id]);
+			break;
 			case false:
 			default:
 				$app->pass();
@@ -417,6 +478,43 @@ class Admin extends ViewController
 		];
 		$args['banners'] = $db->getAll('SELECT * FROM slide WHERE 1');
 		parent::render('banners.twig',$args);
+	}
+	
+	public function suggestion()
+	{
+		$app  = $this->app;
+		$args = $app->args;
+		$get  = $app->get;
+		$db   = $app->db;
+		$args['scripts'] = [
+			'js/tooltip/tooltip.js',
+			'js/plugins/datatables/jquery.dataTables.min.js',
+			'js/demo/dataTables.bootstrap.js',
+			'js/demo/tables.js',
+			'js/masterlist.js'
+		];
+		
+		$args['styles'] = [
+			'js/tooltip/tooltip.css'
+		];
+		$args['banners'] = $db->getAll('SELECT * FROM slide WHERE 1');
+		
+		if(isset($get['by_email'])){
+			if(!empty($get['by_email'])){
+				$email = $get['by_email'];
+				$args['suggestions'] = $db->getSuggestions($email);
+				$args['hide_extra'] = true;
+				parent::render('suggestions.twig',$args);
+			}else{
+				$args['counts'] = $db->getAll('SELECT COUNT(email) AS num,email FROM suggestionstats GROUP BY email');
+				parent::render('suggestions_email.twig',$args);
+			}
+		}else{
+			$args['suggestions'] = $db->getSuggestions();
+			parent::render('suggestions.twig',$args);
+		}
+		
+		
 	}
 	
 	public function login()

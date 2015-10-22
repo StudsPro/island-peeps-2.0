@@ -18,6 +18,12 @@ class Admin
 	public $theme = '';
 	public $perpage = 100;
 	
+	public $dashboard = '';
+	public $dashboard_order='';
+	
+	public $stats = '';
+	public $stats_order = '';
+	
 	function __construct($email,$pass,$remember=false)
 	{
 		$details = $this->fetch($email); //fetch user details. throws exception if email doesn't exist
@@ -99,12 +105,14 @@ class Admin
 		$db = (\StarterKit\App::getInstance())->db;
 		$t = $db->model('admin',$this->id);
 		$self = get_object_vars($this);
-		unset($self['id'],$self['menu'],$self['permissions']);
+		unset($self['id'],$self['menu'],$self['permissions'],$self['dashboard'],$self['stats']);
 		foreach($self as $k=>$v){
 			$t->{$k} = $v;
 		}
 		$db->store($t);
 		$this->buildMenu();
+		$this->buildDashboard();
+		$this->buildStats();
 	}
 	
 	public function keepalive($token)
@@ -178,7 +186,7 @@ class Admin
 				</a>
 				<ul id="suggestion-ui" class="collapse">
 					<li id=""><a href="{{base_url}}admin/suggestion">Suggestion</a></li>
-					<li id=""><a href="{{base_url}}admin/suggestion/suggestemail">Email</a></li>
+					<li id=""><a href="{{base_url}}admin/suggestion?by_email">Email</a></li>
 				</ul>
 			</li>
 			',
@@ -247,7 +255,7 @@ class Admin
 			<li data-order="11" class="">
 				<a href="{{base_url}}admin/calendar">
 					<img alt="Calendar" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/calendar.png">
-					<span>Calendar</span><span class="badge">2</span>
+					<span>Calendar</span><span class="badge"></span>
 				</a>
 			</li>
 			',
@@ -269,6 +277,367 @@ class Admin
 			{
 				$x = (int) $v;
 				$this->menu .= isset($items[$x]) ? $items[$x] : '';
+			}
+		}
+	}
+	
+	public function getDashboard()
+	{
+		if(empty($this->dashboard)){
+			$this->buildDashboard();
+		}
+		return $this->dashboard;
+	}
+	
+	private function buildDashboard()
+	{
+		$items = [
+			'
+			<div class="col-md-6 dashclass span2" id="rdashboard" data-order="0">
+				<div class="panel panel-default panel_dashboard">
+					<div class="panel-heading">
+						<h3 class="panel-title"><i class="fa fa-desktop"></i>Dashboard Notification</h3>
+					</div>
+					<div class="panel-body maxheight">The aliens are watching me</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="col-md-6 dashclass span2" id="rrecent" data-order="1">
+				<div class="panel panel-primary panel-recent" >
+					<div class="panel-heading" id="recent">
+						<div class="panel-title recent-title"><i class="fa fa-list"></i> Recent </div>
+						<!-- //Notice .panel-tools class-->
+						<div class="panel-tools pull-right recent-tabs">
+						<ul class="nav nav-tabs">
+							<li class="active">
+							<a data-toggle="tab" href="#tab_home" aria-expanded="true">Profiles</a>
+							</li>
+							<li class="">
+							<a data-toggle="tab" href="#tab_profile" aria-expanded="tryue">Affiliates Activities</a>
+							</li>
+						</ul>
+						</div>
+					</div>
+					<div class="panel-body full_width padding_left_right_zero">
+						<div class="tab-content full_width">
+							<div id="tab_home" class="tab-pane active users-feed userprofile">
+								<div class="scroll maxheight_recent">
+								
+								</div>
+							</div>
+							<div id="tab_profile" class="tab-pane  activities-feed">
+								<div class="scroll maxheight_recent">
+									
+								</div>
+							</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		',
+		'
+		<div class="col-md-6 dashclass span2" id="rmap" data-order="2">
+			<div class="panel panel_location">
+				<div class="panel-heading panel-success">
+					<div class="panel-title"><i class="icon-map-marker"></i>&nbsp;Visits by location</div>
+				</div>
+				<div class="panel-body scroll maxheight_visit">
+					 <div id="vmap-world" class="vmap" style="width: 500px; height: 450px;"></div>
+				</div>
+			</div>
+		</div> 
+		',
+		'
+		<div class="col-md-6 dashclass span2" id="rcalendar" data-order="3">
+			<div class="panel panel-default panel-calendar">
+				<div class="panel-heading">
+					<h3 class="panel-title"><i class="fa fa-calendar"></i>Calendar</h3>
+				</div>
+				<div class="panel-body scroll maxheight  maxheight_calender">
+					<div class="col-md-12">
+							<div id="calendar-min" style="width:100%"></div>
+						</div>
+				</div>
+			</div>
+		</div>
+		',
+		'
+		<div class="col-md-12 dashclass span2" id="rvistspercountry" data-order="4">
+			<div class="panel panel-primary panel_tracking ">
+				<div class="panel-heading">
+					<div class="panel-title">Visits by Country</div>
+				</div>
+				<div class="panel-body maxheight_resouce remove-lpadding">
+					<div id="pie-visitsperc" style="height:500px" class="plot"></div>
+				</div>
+			</div>
+		</div>
+		',
+		'
+		<div class="col-md-12 dashclass span2" id="rprofilepercountry" data-order="5">
+			<div class="panel panel-primary panel_tracking ">
+				<div class="panel-heading">
+					<div class="panel-title">Profile Per Country</div>
+				</div>
+				<div class="panel-body maxheight_resouce remove-lpadding" >
+					<div id="pie-profileperc" style="height:500px" class="plot"></div>
+				</div>
+			</div>
+		</div>
+		',
+		'
+		<div class="col-md-12 dashclass span2" id="" data-order="6">
+			<div class="panel panel-primary panel_tracking ">
+				<div class="panel-heading">
+				<div class="panel-title">Website Visits</div>
+				</div>
+				<div class="panel-body maxheight_resouce">
+				<div id="demo-plot" style="height:500px" class="plot"></div>
+				</div>
+			</div>
+		</div>
+		'
+		];
+		if(empty($this->dashboard_order)){
+			$this->dashboard = implode('',$items);
+		}else{
+			$order = explode(',',$this->dashboard_order);
+			$this->dashboard = '';
+			foreach($order as $k => $v)
+			{
+				$x = (int) $v;
+				$this->dashboard .= isset($items[$x]) ? $items[$x] : '';
+			}
+		}
+	}
+	
+	public function getStats()
+	{
+		if(empty($this->stats)){
+			$this->buildStats();
+		}
+		return $this->stats;
+	}
+	
+	private function buildStats()
+	{
+		$items = [
+			'
+			<div class="col-md-6 span2 ui-sortable-handle" id="statsyearlywiseinfo" data-order="0">
+				<div class="panel panel-primary ">
+					<div class="panel-heading">
+						<div class="panel-title"> Yearly Hits</div>
+					</div>
+					<div class="panel-body maxheight">
+						<div id="pie-yearlydiv" style="height:500px" class="plot"></div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="col-md-6 span2 ui-sortable-handle" id="statsmonthlywiseinfo" data-order="1">
+				<div class="panel panel-primary ">
+					<div class="panel-heading">
+						<div class="panel-title"> Month (Oct) Hits</div>
+					</div>
+					<div class="panel-body maxheight">
+						<div id="pie-monthlydiv" style="height:500px" class="plot"></div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="col-md-6 span2 ui-sortable-handle" id="statsdaywiseinfo" data-order="2">
+				<div class="panel panel-primary ">
+					<div class="panel-heading">
+						<div class="panel-title"> Days Hits</div>
+					</div>
+					<div class="panel-body maxheight">
+						<div id="piedaysdiv" style="height:500px" class="plot"></div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="col-md-6 span2 ui-sortable-handle" id="statsvistsonmap" data-order="3">
+				<div class="panel panel-primary ">
+					<div class="panel-heading">
+						<div class="panel-title">Visits on Map</div>
+					</div>
+					<div class="panel-body maxheight">
+						<div id="vmap-world" class="vmap" style="width: 450px; height: 450px; position: relative; overflow: hidden;">
+						</div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="col-md-6 span2 ui-sortable-handle" id="statsnewsreturn" data-order="4">
+				<div class="panel panel-warning">
+					<div class="panel-heading ">
+						<div class="panel-title">&nbsp;New vs Returning</div>
+					</div>
+					<div class="panel-body maxheight">
+						<div id="pie-usertype1" class="plot" style="height:500px"></div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="col-md-6 span2 ui-sortable-handle" id="statstopcounterys" data-order="5">
+				<div class="panel panel-warning  ">
+					<div class="panel-heading ">
+						<div class="panel-title">&nbsp;Top Countries(Visits)</div>
+					</div>
+					<div style="overflow: hidden; width: auto; height: 500px;" class="panel-body maxheight">
+						<div id="pie-country" style="height:500px" class="plot"></div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="col-md-6 span2 ui-sortable-handle" id="statstopcitys" data-order="6">
+				<div class="panel panel-primary ">
+					<div class="panel-heading">
+						<div class="panel-title">Top Cities(Visits)</div>
+					</div>
+					<div class="panel-body maxheight">
+						<div class="plot" style="height:500px" id="pie-city"></div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="col-md-6 span2 ui-sortable-handle" id="statsvistbybrowser" data-order="7">
+				<div class="panel panel-warning  ">
+					<div class="panel-heading ">
+						<div class="panel-title">&nbsp; Visits by Browser</div>
+					</div>
+					<div class="panel-body maxheight">
+						<div id="pie-browser" style="height:500px" class="plot"></div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="col-md-6 span2 ui-sortable-handle" id="statsvistbyos" data-order="8">
+				<div class="panel panel-primary ">
+					<div class="panel-heading">
+						<div class="panel-title">Visits by Operating System</div>
+					</div>
+					<div class="panel-body maxheight">
+						<div class="plot" style="height:500px" id="pie-os"></div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="col-md-6 span2 ui-sortable-handle" id="statsvistbyscreenr" data-order="9">
+				<div class="panel panel-warning  ">
+					<div class="panel-heading ">
+						<div class="panel-title">&nbsp; Visits by Screen Regulation</div>
+					</div>
+					<div class="panel-body maxheight">
+						<div id="pie-screen" style="height:500px" class="plot"></div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="col-md-6 span2 ui-sortable-handle" id="statsvistbyservicepro" data-order="10">
+				<div class="panel panel-primary ">
+					<div class="panel-heading">
+						<div class="panel-title"> Visits by Service provider</div>
+					</div>
+					<div class="panel-body maxheight">
+						<div class="plot" style="height:500px" id="pie-isp"></div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="col-md-6 span2 ui-sortable-handle" id="statsreferralsoutracking" data-order="11">
+				<div class="panel panel-warning  ">
+					<div class="panel-heading ">
+						<div class="panel-title">&nbsp; Referral source Tracking</div>
+					</div>
+					<div class="panel-body maxheight">
+						<div id="pie-chart" style="height:500px" class="plot"></div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="col-md-6 span2 ui-sortable-handle" id="statssocialnetworkref" data-order="12">
+				<div class="panel panel-primary ">
+					<div class="panel-heading">
+						<div class="panel-title"> Social Network Referrals</div>
+					</div>
+					<div class="panel-body maxheight">
+						<div class="plot" style="height:500px" id="pie-social"></div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="col-md-6 span2 ui-sortable-handle" id="statspagetracking" data-order="13">
+				<div class="panel panel-warning  ">
+					<div class="panel-heading ">
+						<div class="panel-title">&nbsp; <i class="icon-bar-chart"></i> Page Tracking</div>
+					</div>
+					<div class="panel-body maxheight">
+						<div id="demo-plot" class="plot" style="height:500px"></div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="col-md-6 span2 ui-sortable-handle" id="statsdeviceinfo" data-order="14">
+				<div class="panel panel-primary ">
+					<div class="panel-heading">
+						<div class="panel-title"> Device Info</div>
+					</div>
+					<div class="panel-body maxheight">
+						<div id="pie-device" class="plot" style="height:500px"></div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="col-md-6 span2 ui-sortable-handle" id="statskeywords" data-order="15">
+				<div class="panel panel-warning  ">
+					<div class="panel-heading ">
+						<div class="panel-title">&nbsp; Keywords</div>
+					</div>
+					<div class="panel-body maxheight">
+						<div class="plot" style="height:500px" id="donut-chart"></div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="col-md-6 span2 ui-sortable-handle" id="statsmobilediveinfo" data-order="16">
+				<div class="panel panel-primary ">
+					<div class="panel-heading">
+						<div class="panel-title"> Mobile Device Info</div>
+					</div>
+					<div class="panel-body maxheight">
+						<div id="pie-mobdiv" style="height:500px" class="plot"></div>
+					</div>
+				</div>
+			</div>
+			'
+		];
+		if(empty($this->stats_order)){
+			$this->stats = implode('',$items);
+		}else{
+			$order = explode(',',$this->stats_order);
+			$this->stats = '';
+			foreach($order as $k => $v)
+			{
+				$x = (int) $v;
+				$this->stats .= isset($items[$x]) ? $items[$x] : '';
 			}
 		}
 	}

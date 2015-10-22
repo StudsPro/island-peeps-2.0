@@ -1,0 +1,41 @@
+{% for item in recent_profiles %}
+	{% if loop.first %}
+	<div class="row-fluid profile_each_row">
+	{% endif %}
+	
+	{% if loop.index0 %2 == 0 %}
+	</div>
+	<div class="row-fluid profile_each_row">
+	{% endif %}
+	<div class="col-md-6">
+		<div class="col-md-5 padding_left_right_zero pull-left">	
+		 <img src="{{item.img}}" alt="" style="width:68px;" class="feed-avatar profile_image img catch-e">
+		 </div> 
+		 <div class="col-md-7 pull-right padding_left_right_zero">
+			<div class="row-fluid">
+				<a href="{{base_url}}admin/edit?t=profile&id={{item.id}}"  class="userprofilename"><span>{{item.title}}</span></a>
+			</div>
+			<div class="row-fluid">
+				<small class="tag_userprofilename">Affiliates  - {{item.username}}</small>
+			</div>
+			<div class="row-fluid">
+				{% if item.status == 1 %}
+				<button class="profile_button btn btn-mini btn-success" type="button">Available</button>
+				{% endif %}
+				{% if item.status == 2 %}
+				<button class="profile_button btn btn-mini btn-warning" type="button">Pending</button>
+				{% endif %}
+				{% if item.status == 3 %}
+				<button class="profile_button btn btn-mini btn-ready" type="button">Ready</button>
+				{% endif %}
+				{% if item.status == 4 %}
+				<button class="profile_button btn btn-mini btn-danger" type="button">Published</button>
+				{% endif %}
+			</div>     
+		 </div>
+	 </div>
+	 
+	{% if loop.last %}
+	</div>
+	{% endif %}
+{% endfor %}

@@ -261,6 +261,11 @@ class DB
 		}else{
 			$data = \R::getAll($sql);	
 		}
+		foreach($data as &$row)
+		{
+			$tmp = \R::getAll('SELECT name FROM country WHERE FIND_IN_SET(id,:set)',[':set'=>$row['regions']]);
+			$row['regions'] = array_column($tmp,'name');
+		}
 		return $data;
 	}
 	
@@ -473,50 +478,48 @@ class DB
 		
 		$data = [
 			'regions'=>[],
+			'labels'=>[],
 			'chart'=>[
 				
-			],
-			'labels'=>[
+				'data'=>[],
+				'backgroundColor'=>[],
+				'borderColor'=>[]
 			],
 			'results'=>$d,
 		];
+		
+		$fails = [];
 
 		foreach($d as &$row)
 		{
-			$regions = explode(',',$row['regions']);
+			$regions = explode(' ',$row['regions']);
 			foreach($regions as $r)
 			{
 				if(!in_array($r,$tmp_regions)){
 					$tmp = \R::getRow('SELECT name,uri,id FROM country WHERE id=:id',[':id'=>$r]);
 					if(!empty($tmp) && !is_null($tmp)){
-						$data['chart'][$r] = [
-							'label'=>$tmp['name'],
-							'data'=>[1],
-							'fillColor'=>$this->randColor()
-						];
 						$data['labels'][$r] = $tmp['name'];
-						$data['chart'][$r]['strokeColor'] = $this->adjustColor($data['chart'][$r]['fillColor'],15);
+						$data['chart']['data'][$r] = 1;
+						$data['chart']['backgroundColor'][$r] = $this->randColor();
+						$data['chart']['borderColor'][$r] = $this->adjustColor($data['chart']['backgroundColor'][$r],15);
 						$data['regions'][] = $tmp;
 						$tmp_regions[] = $r;
 					}
 				}else{
-					if(isset($data['chart'][$r])){
-						$data['chart'][$r]['data'][0] += 1;
+					if(isset($data['chart']['data'][$r])){
+						$data['chart']['data'][$r] += 1;
 					}
 				}
 			}
-			$data['labels'] = array_values($data['labels']);
-			$data['chart'] = array_values($data['chart']);
+			
 		}
-		
+		foreach($data['chart'] as $k => $v)
+		{
+			$data['chart'][$k] = array_values($v);
+		}
+		$data['labels'] = array_values($data['labels']);
 		return $data;
 	}
-	
-	public function statSearch()
-	{
-		
-	}
-	
 	
 	public function socialSettings()
 	{
@@ -531,6 +534,381 @@ class DB
 		return $d;
 	}
 	
+	public function getSuggestions($email =false)
+	{
+		$sql = 'SELECT a.*,b.name AS type FROM suggestion a INNER JOIN type b ON a.type_id=b.id ';
+		$params = [];
+		if($email){
+			$sql .= ' WHERE email=:email';
+			$params[':email'] = $email;
+		}else{
+			$sql .= ' WHERE status="0"';
+		}
+		if(!empty($params)){
+			$data = \R::getAll($sql,$params);
+		}else{
+			$data = \R::getAll($sql);	
+		}
+		foreach($data as &$row)
+		{
+			$tmp = \R::getAll('SELECT name FROM country WHERE FIND_IN_SET(id,:set)',[':set'=>$row['regions']]);
+			$row['regions'] = array_column($tmp,'name');
+		}
+		return $data;
+	}
+	
+	public function dobCountAdded()
+	{
+		return \R::count('masterlist',' year<>"0000"
+		AND
+		year IS NOT NULL
+		AND
+		year<>"invalid"
+		AND
+		day<>"00"
+		AND
+		day IS NOT NULL
+		AND
+		day<>"invalid"
+		AND
+		month<>"00"
+		AND
+		month IS NOT NULL
+		AND
+		month<>"invalid" AND type_id="1" ');
+	}
+	
+	public function todayCountCalendar()
+	{
+		$date = explode('-',date('m-d'));
+		$m = $date[0];
+		$d = $date[1];
+		$x = \R::count('masterlist',' day=:d AND month=:m',[':m'=>$m,':d'=>$d]);
+		$y = \R::count('country',' day=:d AND month=:m',[':m'=>$m,':d'=>$d]);
+		return $x + $y;
+	}
+	
+	public function getCalendarFull($start,$end)
+	{
+		$x = (int)date('m',$start);
+		$z = (int)date('m',$end);
+		
+		if($x==11 && $z==1){
+			$y = 12;
+			$months = [$x,$y,$z];
+		}elseif($x==12 && $z==2){
+			$y = 1;
+			$months = [$x,$y,$z];
+		}else{
+			$months = range($x,$z);
+		}
+		$months = implode(',',$months);
+		
+		
+		$constrain = '
+		WHERE
+		year<>"0000"
+		AND
+		year IS NOT NULL
+		AND
+		year<>"invalid"
+		AND
+		day<>"00"
+		AND
+		day IS NOT NULL
+		AND
+		day<>"invalid"
+		AND
+		month<>"00"
+		AND
+		month IS NOT NULL
+		AND
+		month<>"invalid"
+		AND 
+		month IN('.$months.')
+		';
+		$d1 = \R::getAll('SELECT * FROM masterlist '.$constrain.' AND type_id="1"');
+		$d2 = \R::getAll('SELECT * FROM country '.$constrain);
+		$d = array_merge($d1,$d2);
+		
+		$data = [];
+		foreach($d as $row)
+		{
+			if(isset($row['name'])){
+				$t = 'inday';
+				$title = 'Independence day of '.$row['name'];
+				$color = '#F3FDAE';
+				$url= (\StarterKit\App::getInstance())->args['base_url'].'/edit?t=country&id='.$row['id'];
+			}else{
+				$t = 'pbday';
+				$title = 'Birthday of '.$row['title'];
+				$color = '#EBBBA8';
+				$url = (\StarterKit\App::getInstance())->args['base_url'].'/edit?t=profile&id='.$row['id'];
+			}
+			
+			$date =  date('Y',$start).'-'.$row['month'].'-'.$row['day'];
+			
+			$data[]= [
+				'title'=>$title,
+				'start'=>$date,
+				'end'=>$date,
+				'backgroundColor'=>$color.' !important',
+				'className'=>$t,
+				'allDay'=>'true',
+				'url'=>$url,
+			];
+		}
+		return $data;
+	}
+	
+	public function getCalendarMin($start,$end)
+	{
+		$x = (int)date('m',$start);
+		$z = (int)date('m',$end);
+		
+		if($x==11 && $z==1){
+			$y = 12;
+			$months = [$x,$y,$z];
+		}elseif($x==12 && $z==2){
+			$y = 1;
+			$months = [$x,$y,$z];
+		}else{
+			$months = range($x,$z);
+		}
+		$months = implode(',',$months);
+		
+		//print_r($params); die;
+		
+		$constrain = '
+		WHERE
+		year<>"0000"
+		AND
+		year IS NOT NULL
+		AND
+		year<>"invalid"
+		AND
+		day<>"00"
+		AND
+		day IS NOT NULL
+		AND
+		day<>"invalid"
+		AND
+		month<>"00"
+		AND
+		month IS NOT NULL
+		AND
+		month<>"invalid"
+		AND 
+		month IN('.$months.')
+		';
+		$d1 = \R::getAll('SELECT * FROM masterlist '.$constrain);
+		$d2 = \R::getAll('SELECT * FROM country '.$constrain);
+		$d = array_merge($d1,$d2);
+		
+		$data = [];
+		foreach($d as $row)
+		{
+			if(isset($row['name'])){
+				$t = 'inday';
+				$title = 'Independence Day';
+				$color = '#F3FDAE';
+			}else{
+				$t = 'abday';
+				$title = 'Birthday';
+				$color = '#C2DFF2';
+			}
+			
+			$date = date('Y',$start).'-'.$row['month'].'-'.$row['day'];
+			
+			$data[]= [
+				'title'=>$title,
+				'start'=>$date,
+				'end'=>$date,
+				'backgroundColor'=>$color.' !important',
+				'className'=>$t,
+				'allDay'=>'true',
+				'url'=>(\StarterKit\App::getInstance())->args['base_url'].'admin/calendar?month='.$row['month']
+			];
+		}
+		return $data;
+	}
+	
+	
+	public function callPrivate($fn,$args=[])
+	{
+		return call_user_func_array([$this,$fn],$args);
+	}
+	
+	public function countryPer()
+	{
+		$countries = \R::getAll('SELECT id,name FROM country ORDER BY name ASC');
+		$data = [];
+		foreach($countries as $c)
+		{
+			$data[] =[
+				'visits'=>\R::count('masterlist',' FIND_IN_SET(:id,regions) ',[':id'=>$c['id']]),
+				'country'=>$c['name'],
+				'color'=>$this->randColor()
+			];
+		}
+		return $data;
+	}
+	
+	public function getAnalytics($k=false)
+	{
+		require LIB_PATH . 'analytics/GAPI.php';
+		
+		$cache = \StarterKit\Cache::getInstance();
+		
+		$key = 'admin:analytics';
+		
+		$data = $cache->get($key);
+		
+		if($data === -1){
+			
+			$ga = new \GoogleAnalyticsAPI('service');
+			$ga->auth->setClientId('444232255351-jp55p2lohhfu4oao0bpm0lggo00sotuc.apps.googleusercontent.com'); // From the APIs console
+			$ga->auth->setEmail('444232255351-jp55p2lohhfu4oao0bpm0lggo00sotuc@developer.gserviceaccount.com'); // From the APIs console
+			$ga->auth->setPrivateKey( LIB_PATH . 'analytics/secret.p12');
+
+			$auth = $ga->auth->getAccessToken();
+
+			if ($auth['http_code'] != 200) {
+				throw new \exception('Fail to connect');
+			}   
+			 
+			$token = $auth['access_token'];
+			$expires = $auth['expires_in'];
+			$created = time();
+
+			$ga->setAccessToken($token);
+			$ga->setAccountId('ga:109638630');
+
+
+			//set some common dates
+			$now = date('Y-m-d',strtotime( date('Y-m-d') . '-1 day')); 
+
+			// $dates represents the start date parameter for each timespan. no need to specify end date, we already have it in $now
+			$dates = [
+				'year'=> date("Y-m-d", strtotime('first day of January '.date('Y') )),
+				'month'=> date('Y-m-01',strtotime('this month')),
+				'day'=> date('Y-m-d',strtotime( $now.' -1 day'))
+			];
+
+			$data = [];
+
+			//device 
+			$data['devices'] = $ga->getVisitsBySystemOs(['max-results' => 100])['rows'];
+
+			//visits by location
+			$data['locations'] = $ga->query([
+				'metrics' => 'ga:visits',
+				'dimensions' => 'ga:country',
+				'sort' => '-ga:visits',
+				'max-results' => 50,
+				'start-date' => $dates['year']
+			])['rows'];
+
+			//new vs returning
+			$data['new_vs_returning'] = $ga->query([
+				'metrics' => 'ga:sessions',
+				'dimensions' => 'ga:userType',
+			])['rows'];
+
+			//visits by city
+			$data['visits_by_city'] = $ga->query([
+				'metrics' => 'ga:sessions',
+				'dimensions' => 'ga:city',
+				'max-results'=> 10,
+			])['rows'];
+
+			//map view
+			$data['map_view'] = $ga->query([
+				'metrics' => 'ga:sessions',
+				'dimensions' => 'ga:city,ga:Latitude,ga:Longitude',
+			])['rows'];
+
+
+
+			//visitors by browser
+			$data['browser'] = $ga->query([
+				'metrics'=> 'ga:sessions',
+				'dimensions' => 'ga:browser'
+			])['rows'];
+
+
+			//visitors by screensize
+			$data['screen_sizes'] = $ga->query([
+				'metrics'=> 'ga:sessions',
+				'dimensions' => 'ga:screenResolution',
+			])['rows'];
+
+
+			//visits by service provider
+			$data['isp'] = $ga->query([
+				'metrics'=> 'ga:sessions',
+				'dimensions' => 'ga:networkDomain',
+				'max-results' => 50
+			])['rows'];
+
+			//most popular pages
+			$data['pages'] = $ga->query([
+				'metrics'=> 'ga:pageViews',
+				'dimensions' => 'ga:pagePath',
+				'max-results'=>10
+			])['rows'];
+
+			$data['hits_by_day'] = $ga->query([
+				'metrics'=> 'ga:pageviews,ga:visitors',
+				'dimensions' => 'ga:date',
+				'start-date' => $dates['month'],
+				'end-date'=> $now
+			])['rows'];
+			
+			$data['hits_by_country'] = $ga->query([
+				'metrics'=> 'ga:visitors',
+				'dimensions' => 'ga:country',
+				'start-date' => $dates['month'],
+				'end-date'=> $now
+			])['rows'];
+			
+			$data['hits_by_city'] = $ga->query([
+				'metrics'=> 'ga:visitors',
+				'dimensions' => 'ga:city',
+				'start-date' => $dates['month'],
+				'end-date'=> $now
+			])['rows'];
+
+			$data['this_month'] = [
+				'name'=>date('M'),
+				'data'=>$ga->query([
+					'metrics' => 'ga:visits',
+					'dimensions' => 'ga:date',
+					'start-date' => $dates['month'],
+					'end-date'=> $now
+				])['rows']
+			];
+
+			$data['this_year'] = [
+				'name'=>date('Y'),
+				'data'=>$ga->query([
+					'metrics' => 'ga:visits',
+					'dimensions' => 'ga:date',
+					'start-date' => $dates['year'],
+					'end-date'=> $now
+				])['rows']
+			];
+			if(!empty($data) && $data !== false && $data !== 0 && !is_null($data)){
+				$cache->set($key,$data,60*60); //never set empty arrays to cache cache!
+			}
+		}
+		if($k){
+			if(isset($data[$k])){
+				return $data[$k];
+			}
+		}
+		return $data;
+	}
 	//end app specific funcs
 	
 	//private utilities

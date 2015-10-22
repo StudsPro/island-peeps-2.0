@@ -1,4 +1,14 @@
 <?php
+
+define( 'LIB_PATH' , realpath( __DIR__ . '/../libs' ).'/'  );
+
+require_once LIB_PATH . 'cron_db_connection.php';
+
+$objRs = $db->model('social',1);
+
+$facebook = json_decode($objRs->facebook);
+
+die;
 // SET YOUR FACEBOOK API DETAILS HERE
 $app_id 	= 'INSERT APP ID HERE';
 $app_secret = 'INSERT APP SECRET HERE';

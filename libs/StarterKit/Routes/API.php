@@ -169,13 +169,6 @@ class API extends ViewController
 			return $input;
 		});
 		
-		/*
-		$accept_tos = (int) isset($post['tos_accept']) && $post['tos_accept'] == 1; // 1 or 0
-		if($accept_tos != 1){
-			throw new \exception('You must accept the agreement in order to register an account.');
-		}
-		*/
-		$accept_tos = 1;
 		$user = $db->model('user');
 		$filter->generate_model($user,$required,[],$post);
 		$user->registered = time();
@@ -403,7 +396,10 @@ class API extends ViewController
 		];
 		
 		$optional = [
-			'description'=>'min'
+			'description'=>'min',
+			'year'=>'min',
+			'day'=>'min',
+			'month'=>'min'
 		];
 		
 		$filter->custom_filter('region_fm',function($input) use($filter,$db){
@@ -433,7 +429,13 @@ class API extends ViewController
 			$t->img = $this->img_upload('uploaded_image',$app->files);
 		}
 		
+		$t->status = 0;
+		
 		$db->store($t);
+		
+		$t2 = $db->model('suggestionstats');
+		$t2->email = $t->email;
+		$db->store($t2);
 		
 		return ['error'=>0,'message'=>1];
 	}

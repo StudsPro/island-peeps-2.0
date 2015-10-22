@@ -14,9 +14,7 @@
 </div>
 <div class="large-10 columns chart active">
 	<div class="chart-wrap">
-		<!--
 		<canvas id="graph-results" height="400" width="700"></canvas>
-		-->
 	</div>
 </div>
 <div class="large-10 columns graph-results">
@@ -33,5 +31,5 @@
 {{data.chart|json_encode()}}
 </div>
 <div style="display:none" id="graph-labels">
-{{data.labels|json_encode()}}
+{{data.labels|raw|json_encode()}}
 </div>

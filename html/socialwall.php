@@ -1,5 +1,7 @@
 <?php
 
+error_reporting(-1);
+
 define( 'LIB_PATH' , realpath( __DIR__ . '/../libs' ).'/'  );
 
 require_once LIB_PATH . 'cron_db_connection.php';
@@ -23,55 +25,90 @@ $stumbleupon = json_decode($objRs->stumbleupon);
 $lastfm = json_decode($objRs->lastfm);
 $deviantart = json_decode($objRs->deviantart);
 
+if(isset($_GET['wall'])){
+	$wall = 'true';
+	$extra ='
+	<script type="text/javascript" src="static/front/socialwall/js/jquery.social.stream.wall.1.6.js"></script>
+	<link rel="stylesheet" type="text/css" href="static/front/socialwall/css/dcsns_wall.css" media="all" />
+	<style>
+	body{
+		padding:0;
+		margin:0;
+	}
+	
+	.dcsns-toolbar{
+		padding: 14px 0px;
+		position: fixed;
+		top: 0px;
+		left: 0px;
+		right: 0px;
+		z-index: 1;
+		width: 100%;
+		background: rgba(255,255,255,.3);
+	}
+	.dcsns{
+		margin-top: 92px;
+	}
+	</style>
+	';
+}else{
+	$wall = 'false';
+	$extra = '
+	<link rel="stylesheet" type="text/css" href="static/front/socialwall/css/dcsns_dark.css" media="all" />
+	<style>
+	body{
+		padding:0;
+		margin:0;
+	}
+	.wrapper{
+		padding:0!important;
+		margin:0 !important;
+		height:100vh !important;
+	}
+	.dcsns{
+		height: 100vh;
+		box-sizing: border-box;
+	}
+	.dcsns-content{
+		height: calc(100vh - 55px) !important;
+	}
+	</style>
+	';
+}
+
 ?>
 <!doctype html>
 <html>
 <head> 
 <meta charset="utf-8" />
 <title></title>
-<link rel="stylesheet" type="text/css" href="static/front/socialwall/css/dcsns_dark.css" media="all" />
+
+
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" src="static/front/socialwall/js/jquery.social.stream.1.5.14.min.js"></script>
-<style>
-body{
-	padding:0;
-	margin:0;
-}
-.wrapper{
-	padding:0!important;
-	margin:0 !important;
-	height:100vh !important;
-}
-.dcsns{
-	height: 100vh;
-	box-sizing: border-box;
-}
-.dcsns-content{
-	height: calc(100vh - 55px) !important;
-}
-</style>
+<?php echo $extra; ?>
 
 <script type="text/javascript">
 $(function(){
 	$('#social-stream1').dcSocialStream({
 		feeds: {
 			twitter: {
-				id: '<?php echo $twitter->twitterid;?>',
+				id: '<?php echo @$twitter->twitterid;?>',
 				thumb: true,
-				out: '<?php echo implode(",",$twitter->out);?>',
-				search: '<?php echo $twitter->search; ?>',
-				retweets: <?php echo $twitter->retweets;?>,
-				replies: <?php echo $twitter->replies;?>,
+				out: '<?php echo @implode(",",$twitter->out);?>',
+				search: '<?php echo @$twitter->search; ?>',
+				retweets: <?php echo @$twitter->retweets;?>,
+				replies: <?php echo @$twitter->replies;?>,
 			},
 			rss: {
-				id: '<?php echo $rss->rssid;?>',
-				out: '<?php echo implode(",",$rss->out);?>',
-				text: '<?php echo $rss->text;?>',
+				id: '<?php echo @$rss->rssid;?>',
+				out: '<?php echo @implode(",",$rss->out);?>',
+				text: '<?php echo @$rss->text;?>',
 			},
 			stumbleupon: {
-				id: '<?php echo $stumbleupon->stumbleuponid;?>',
-				out: '<?php echo implode(",",$stumbleupon->out);?>',
-				feed: '<?php echo implode(",",$stumbleupon->feed);?>',
+				id: '<?php echo @$stumbleupon->stumbleuponid;?>',
+				out: '<?php echo @implode(",",$stumbleupon->out);?>',
+				feed: '<?php echo @implode(",",$stumbleupon->feed);?>',
 			},
 			facebook: {
 				id: '<?php echo trim($facebook->fbid);?>',
@@ -146,14 +183,15 @@ $(function(){
 		twitterId: '<?php echo trim($twitter->twitterid);?>',
 		control: false,
 		filter: <?php echo trim($objRs->filter);?>,
-		wall: false,
+		wall: <?php echo $wall; ?>,
 		limit : <?php echo trim($objRs->limits);?>,
 		days: <?php echo trim($objRs->days);?>,
 		max: 'limit',
 		order: '<?php echo trim($objRs->forder);?>',
 		speed: <?php echo trim($objRs->speed);?>,
 		iconPath: 'static/front/socialwall/images/dcsns-dark/',
-		imagePath: 'static/front/socialwall/images/dcsns-dark/'
+		imagePath: 'static/front/socialwall/images/dcsns-dark/',
+		center: true
 	});/*HWD)$#k49eo*/ 
 				 
 });

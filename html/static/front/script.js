@@ -89,7 +89,7 @@ $.mapbox = {
 			html +='<li><strong>Population</strong> : ' + feature.properties.population + '</li>';
 			console.log(feature.properties.ethnic_data);
 			html +='<li><strong>Ethnic Data</strong> : <div class="large-12 columns"><div style="margin:0 auto; width:200px">';
-			html +='<canvas id="ethnic-data" width="200" height="200"></canvas></div></div></li>';
+			html +='<canvas id="ethnic-data" width="200" height="200"></canvas><span>Hover the chart to see details</span></div></div></li>';
 			html +='<li><a data-href="/explore/'+feature.properties.uri+'" class="btn btn-primary block">Explore '+feature.properties.title+'</a></li></ul></ul>';
 			$('.map-info').html(html).fadeIn(50);
 			$('.map-clickback').fadeIn(0);
@@ -229,7 +229,7 @@ function createBar(target,labels,data)
 	}
 	new Chart(target[0].getContext("2d")).Bar({
 		labels: labels,
-		datasets: data
+		datasets: [data]
 	});
 }
 
@@ -464,7 +464,7 @@ var slide = {
 			catch(e){}
 		}
 		if($('iframe:visible').length >0){
-			conole.log('lazy loading iframe');
+			console.log('lazy loading iframe');
 			$('iframe:visible').addClass('m-progress').on('load',function(e){
 				$(this).removeClass('m-progress');
 			}).attr('src',function(){
@@ -848,13 +848,8 @@ $(function(){
 					$('.searchgraph-results').html(data.message).addClass('active');
 					setTimeout(function(){
 						var dataset = JSON.parse($('#graph-dataset').html());
-						var base = 700;
-						var width = base/dataset.length;
-						$.each(dataset,function(i,v){
-							console.log(i,v);
-							$('<canvas id="c_'+i+'" width="'+width+'" height="400"></canvas>').appendTo('.chart-wrap');
-							createBar2($('#c_'+i),v);
-						});
+						var labels = JSON.parse($('#graph-labels').html());
+						createBar($('#graph-results'),labels,dataset);
 					},0);
 					$('.searchgraph-results .close').one('click',function(){
 						$('.searchgraph-results').html('').removeClass('active');

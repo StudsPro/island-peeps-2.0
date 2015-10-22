@@ -1,0 +1,110 @@
+{% include 'widgets/nav.twig' %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<ul class="breadcrumb breadcrumb-arrows breadcrumb-default">
+				<li><a href="{{base_url}}admin"><i class="fa fa-home fa-lg"></i></a></li>
+				<li><a href="{{base_url}}admin/suggestion">Suggestions</a></li>
+				<li><a href="#">{{action}}</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			 <div class="panel panel-default">  
+					<div class="panel-heading">
+							<h3 class="panel-title">{{action}}</h3>
+					</div>
+					<form method="post" class="contains-file form-horizontal" action="{{base_url}}admin/api/suggestion{%if item is defined %}?id={{item.id}}{%endif%}" data-callback="suggestionAE">
+						<div class="panel-body">  
+							<div class="form-group">
+								<label for="title" class="col-md-2 control-label"> Select Region <span class="require">*</span></label>
+								<div class="col-md-5">
+									<select class="form-control input-md multi-select-onload" name="regions[]" multiple data-selected="{{item.regions}}">
+										{% for item2 in regions %}
+											<option value="{{item2.id}}">{{item2.name}}</option>
+										{% endfor %}
+									</select>    
+								</div>
+							</div>
+							<div class="form-group" id="rejectblock">
+								<label for="title" class="col-md-2 control-label">Profile Type<span class="require">*</span></label>        
+								<div class="col-md-5">
+									<select name="type_id"  tabindex="1" class="form-control input-md select-onload">
+										<option value="1">People Profile</option>
+										<option value="2">Meme</option>
+										<option value="3">Fun Facts</option>
+									</select>
+								</div>
+							</div>			
+							<div class="form-group">
+								<label for="title" class="col-md-2 control-label">Name <span class="require">*</span></label>
+								<div class="col-md-5">
+									<input type="text" name="title" value="{{item.title}}" class="form-control input-md" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="title" class="col-md-2 control-label">Date of Birth</label>
+								{% include 'widgets/yearinput.twig' %}
+							</div>    	
+							<div class="form-group">
+								<label for="title" class="col-md-2 control-label"> Image</label>
+								<div class="col-md-5">
+									<input type="file" name="uploaded_image" class="form-control input-md" />
+									{% if item is defined %}
+									<div class="col-md-3 text-center  " id="raggionmapimg">
+										<img src="{{item.img}}" width="80" style="background:#000;">
+									</div>
+									{% endif %}
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="title" class="col-md-2 control-label"> Description</label>
+								<div class="col-md-5">
+									<textarea name="description" rows="8" cols="10" class="form-control input-md">{{item.description}}</textarea>   
+								</div>
+							</div>  
+							<div class="form-group" id="rejectblock">
+								<label for="title" class="col-md-2 control-label">On Update:<span class="require">*</span></label>        
+								<div class="col-md-5">
+									<select name="actionOnUpdate"  tabindex="1" class="form-control input-md select-onload">
+										<option value="1">Insert Into Masterlist and Open For Expanded Editing</option>
+										<option value="2">Insert Into Masterlist and Return to Suggestions</option>
+									</select>
+								</div>
+							</div>								
+					</div>  
+					<div class="panel-footer">
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-md-5">
+								<button type="submit" class="btn btn-primary btn-block">Save</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>		
+<script>
+function suggestionAE(data)
+{
+	if(data.error == 0){
+		var action = parseInt($('select[name="actionOnUpdate"]').val());
+		switch(action){
+			case 1:
+				window.location = window.location.origin + '/admin/edit?t='+data.message.type+'&id='+data.message.id;
+			break;
+			case 2:
+			default:
+				window.location = window.location.origin + '/admin/suggestion';
+			break;
+		}
+	}else{
+		sk.alert(data.message,'error');
+	}
+}
+</script>
+{% include 'widgets/footer.twig' %}

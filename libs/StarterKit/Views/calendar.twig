@@ -1,4 +1,21 @@
 {% include 'widgets/nav.twig' %}
+<style >
+.fc-view {
+margin-top:25px;
+}
+.pbday.fc-event {
+  color: #c95325;
+}
+.pastevent.fc-event {
+  color: #919192;
+}
+.inday.fc-event {
+  color: #a59505;
+}
+.evtday.fc-event {
+  color: #009100;
+}
+</style>
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
@@ -26,9 +43,12 @@
 					<div class="clearfix">&nbsp;</div>
 					<div class="col-md-6">
 						<a href="javascript:void(0)" class="btn btn-success hidden-xs">
-						<span class="fa fa-gift"></span>&nbsp;Date of Birth added &nbsp;(0)</a>
+						<span class="fa fa-gift"></span>&nbsp;Date of Birth added &nbsp;({{dob_count}})</a>
 					</div>
 					<div class="clearfix">&nbsp;</div>
+					<div class="panel-body">
+						 <div id="calendar-full" {% if start_month is defined %}data-month="{{start_month}}"{%endif%}></div>
+					 </div> 
 				</div>
 			</div>
 		</div>

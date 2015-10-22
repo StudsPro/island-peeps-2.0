@@ -1,0 +1,18 @@
+{% include 'widgets/nav.twig' %}
+<div class="container">
+	<div class="row-fluid">
+		<div class="col-md-12">
+			<ul class="breadcrumb breadcrumb-arrows breadcrumb-default">
+				<li><a href="{{base_url}}admin"><i class="fa fa-home fa-lg"></i></a></li>
+				<li><a href="{{base_url}}admin/dashboard">Dashboard</a></li>
+				<li><a href="#">Stats</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="col-md-12 new_col6 grid" id="stats_sort" style="padding:0;">
+		{{ include(template_from_string(admin.getStats()|raw))}}
+	</div>
+</div>
+{% include 'widgets/footer.twig' %}

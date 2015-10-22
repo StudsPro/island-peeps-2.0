@@ -1,0 +1,15 @@
+{% if counts|length > 0 %}
+{% for item in counts %}
+<tr>
+	<td>
+		{{loop.index}}
+	</td>
+	<td>
+		<a href="{{base_url}}admin/suggestion?by_email={{item.email}}">{{item.email}}</a>
+	</td>
+	<td>
+		{{item.num}}
+	</td>
+</tr>
+{%endfor%}
+{%endif%}

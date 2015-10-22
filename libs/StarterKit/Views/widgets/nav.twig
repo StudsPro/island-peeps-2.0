@@ -40,7 +40,7 @@
 				</div> 
 				<div class="menu">
 					<div class="menu-content" id="sort_items">
-						<ul id="social-sidebar-menu sidebar">
+						<ul id="social-sidebar-menu" data-calendar="{{sidebar_calendar_count}}">
 							{{ include(template_from_string(admin.getMenu()|raw))}}
 						</ul>
 					</div>
