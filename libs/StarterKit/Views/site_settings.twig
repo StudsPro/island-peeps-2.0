@@ -1,0 +1,73 @@
+{% include 'widgets/nav.twig' %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<ul class="breadcrumb breadcrumb-arrows breadcrumb-default">
+				<li><a href="{{base_url}}admin"><i class="fa fa-home fa-lg"></i></a></li>
+				<li><a href="#">Site Settings</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">  
+				<div class="panel-heading">
+					<h3 class="panel-title">Edit Site Settings</h3>
+				</div>
+				<form method="post" class="contains-file form-horizontal" action="{{base_url}}admin/api/site_settings" data-callback="siteEdit">
+					<div class="panel-body">  
+						
+						<div class="form-group">
+							<label for="title" class="col-md-2 control-label">Suggestion Box Message</label>
+							<div class="col-md-5">
+								<textarea name="suggestion_message" class="form-control input-md">{{item.suggestion_message|raw|default('')}}</textarea>
+							</div>
+						</div> 
+						
+						<div class="form-group">
+							<label for="title" class="col-md-2 control-label">Dashboard Notification</label>
+							<div class="col-md-7">
+								<textarea name="dashboard_notification" id="ck3" class="form-control input-md">{{item.dashboard_notification|raw|default('')}}</textarea>
+							</div>
+						</div> 
+						
+						<div class="form-group">
+							<label for="title" class="col-md-2 control-label">Masterlist Help</label>
+							<div class="col-md-7">
+								<textarea name="masterlist_help" id="ck2" class="form-control input-md">{{item.masterlist_help|raw|default('')}}</textarea>
+							</div>
+						</div> 
+						
+						<div class="form-group">
+							<label for="title" class="col-md-2 control-label">Help FAQ</label>
+							<div class="col-md-7">
+								<textarea  id="ckeditor" name="help_content" class="form-control input-md">{{item.help_content|raw|default('')}}</textarea>
+							</div>
+						</div> 
+						
+					</div>  
+					<div class="panel-footer">
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-md-5">
+								<button type="submit" class="btn btn-primary btn-block">Save</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+function siteEdit(data)
+{
+	if(data.error == 0){
+		sk.alert('The operation completed successfully.','success');
+	}else{
+		sk.alert(data.message,'error');
+	}
+}
+</script>
+{% include 'widgets/footer.twig' %}

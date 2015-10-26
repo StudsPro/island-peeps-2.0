@@ -24,6 +24,9 @@ class Admin
 	public $stats = '';
 	public $stats_order = '';
 	
+	public $mlist_stats = '';
+	public $mlist_order = '';
+	
 	function __construct($email,$pass,$remember=false)
 	{
 		$details = $this->fetch($email); //fetch user details. throws exception if email doesn't exist
@@ -105,7 +108,7 @@ class Admin
 		$db = (\StarterKit\App::getInstance())->db;
 		$t = $db->model('admin',$this->id);
 		$self = get_object_vars($this);
-		unset($self['id'],$self['menu'],$self['permissions'],$self['dashboard'],$self['stats']);
+		unset($self['id'],$self['menu'],$self['permissions'],$self['dashboard'],$self['stats'],$self['mlist_stats']);
 		foreach($self as $k=>$v){
 			$t->{$k} = $v;
 		}
@@ -113,6 +116,7 @@ class Admin
 		$this->buildMenu();
 		$this->buildDashboard();
 		$this->buildStats();
+		$this->buildMasterlistStats();
 	}
 	
 	public function keepalive($token)
@@ -162,7 +166,7 @@ class Admin
 			',
 			'
 			<li data-order="2" class="">
-				<a href="{{base_url}}admin/stats">
+				<a href="{{base_url}}admin/masterlist_stats">
 					<img alt="Master List stats" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/banner.png">
 					<span>Master List stats</span>
 					<span class="badge"></span>
@@ -638,6 +642,278 @@ class Admin
 			{
 				$x = (int) $v;
 				$this->stats .= isset($items[$x]) ? $items[$x] : '';
+			}
+		}
+	}
+	
+	public function getMasterlistStats()
+	{
+		if(empty($this->mlist_stats)){
+			$this->buildMasterlistStats();
+		}
+		return $this->mlist_stats;
+	}
+	
+	private function buildMasterlistStats()
+	{
+		$items = [
+			'
+			<div style="" class="row span2 ui-sortable-handle" id="mlistcategory" data-order="0">
+				<div class="col-md-12">
+					<div class="panel panel-default  ">
+						<div class="panel-heading ">
+							<div class="panel-title">&nbsp;Category</div>
+						</div>
+						<div class="panel-body maxheight">
+							<div class="col-md-4">
+								<select name="category" class="form-control input-md" id="mlist-category-select" style="margin-bottom: 30px;">
+								</select>
+							</div>
+							<div class="col-md-12">
+								<div id="pie-cat" class="plot" style="height: 300px; overflow: hidden;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="row span2 ui-sortable-handle" id="mlistactors" data-order="1">
+				<div class="col-md-12">
+					<div class="panel panel-primary  ">
+						<div class="panel-heading ">
+							<div class="panel-title">&nbsp;Actors</div>
+						</div>
+						<div class="panel-body maxheight">
+							<div class="col-md-12">
+								<div id="pie-actors" class="plot" style="height: 300px; overflow: hidden;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="row span2 ui-sortable-handle" id="mlistsinger" data-order="2">
+				<div class="col-md-12">
+					<div class="panel panel-primary  ">
+						<div class="panel-heading ">
+							<div class="panel-title">&nbsp;Singer</div>
+						</div>
+						<div class="panel-body maxheight">
+							<div class="col-md-12">
+								<div id="pie-singer" class="plot" style="height: 300px; overflow: hidden;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="row span2 ui-sortable-handle" id="mlistathletes" data-order="3">
+				<div class="col-md-12">
+					<div class="panel panel-primary  ">
+						<div class="panel-heading ">
+							<div class="panel-title">&nbsp;Athletes</div>
+						</div>
+						<div class="panel-body maxheight">
+							<div class="col-md-12">
+								<div id="pie-athletes" class="plot" style="height: 300px; overflow: hidden;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="row span2 ui-sortable-handle" id="mlistpoliticians" data-order="4">
+				<div class="col-md-12">
+					<div class="panel panel-primary  ">
+						<div class="panel-heading ">
+							<div class="panel-title">&nbsp;Politicians</div>
+						</div>
+						<div class="panel-body maxheight">
+							<div class="col-md-12">
+								<div id="pie-politicians" class="plot" style="height: 300px; overflow: hidden;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="row span2 ui-sortable-handle" id="mlistgangsters" data-order="5">
+				<div class="col-md-12">
+					<div class="panel panel-primary  ">
+						<div class="panel-heading ">
+							<div class="panel-title">&nbsp;Gangsters</div>
+						</div>
+						<div class="panel-body maxheight">
+							<div class="col-md-12">
+								<div id="pie-gangsters" class="plot" style="height: 300px; overflow: hidden;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="row span2 ui-sortable-handle" id="mlistauthors" data-order="6">
+				<div class="col-md-12">
+					<div class="panel panel-primary  ">
+						<div class="panel-heading ">
+							<div class="panel-title">&nbsp;Authors</div>
+						</div>
+						<div class="panel-body maxheight">
+							<div class="col-md-12">
+								<div id="pie-authors" class="plot" style="height: 300px; overflow: hidden;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="row span2 ui-sortable-handle" id="mlistprofilepercountry" data-order="7">
+				<div class="col-md-12">
+					<div class="panel panel-primary  ">
+						<div class="panel-heading ">
+							<div class="panel-title">&nbsp;Profiles Per Country</div>
+						</div>
+						<div class="panel-body propercmaxheight">
+							<div class="col-md-12">
+								<div id="pie-properc" class="plot" style="height: 600px; overflow: hidden;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="row span2 ui-sortable-handle" id="mlistprofilebyaffiliate" data-order="8">
+				<div class="col-md-12">
+					<div class="panel panel-primary  ">
+						<div class="panel-heading ">
+							<div class="panel-title">&nbsp;Profile upload by Affiliate</div>
+						</div>
+						<div class="panel-body maxheight">
+							<div class="col-md-12">
+								<div id="pie-profilebyadmin" class="plot" style="height: 300px; overflow: hidden;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="row span2 ui-sortable-handle" id="mlistmasterlistprofile" data-order="9">
+				<div class="col-md-12">
+					<div class="panel panel-primary  ">
+						<div class="panel-heading ">
+							<div class="panel-title">&nbsp;Master List Profiles</div>
+						</div>
+						<div class="panel-body maxheight">
+							<div class="col-md-12">
+								<div id="pie-masterlists" class="plot" style="height: 300px; overflow: hidden;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="row span2 ui-sortable-handle" id="mlistprofilestatus" data-order="10">
+				<div class="col-md-12">
+					<div class="panel panel-primary  ">
+						<div class="panel-heading ">
+							<div class="panel-title">&nbsp;Profile Status</div>
+						</div>
+						<div class="panel-body maxheight">
+							<div class="col-md-12">
+								<div id="pie-profilestatus" class="plot" style="height: 300px; overflow: hidden;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="row span2 ui-sortable-handle" id="mlistsuggestionkind" data-order="11">
+				<div class="col-md-12">
+					<div class="panel panel-primary  ">
+						<div class="panel-heading ">
+							<div class="panel-title">&nbsp;Suggestion Profile</div>
+						</div>
+						<div class="panel-body maxheight">
+							<div class="col-md-12">
+								<div id="pie-suggestionkind" class="plot" style="height: 300px; overflow: hidden;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="row span2 ui-sortable-handle" id="mlistsuggestionpercountry" data-order="12">
+				<div class="col-md-12">
+					<div class="panel panel-primary  ">
+						<div class="panel-heading ">
+							<div class="panel-title">&nbsp;Suggestion Per Country</div>
+						</div>
+						<div class="panel-body propercmaxheight">
+							<div class="col-md-12">
+								<div id="pie-suggestion" class="plot" style="height: 600px; overflow: hidden;">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="row span2 ui-sortable-handle" id="mlistbirthbymonth" data-order="13">
+				<div class="col-md-12">
+					<div class="panel panel-primary  ">
+						<div class="panel-heading ">
+							<div class="panel-title">&nbsp;Birth By Month</div>
+						</div>
+						<div class="panel-body maxheight">
+							<div class="col-md-12">
+								<div id="pie-profilebob" class="plot" style="height: 300px; overflow: hidden;">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			',
+			'
+			<div class="row span2 ui-sortable-handle" id="mlistsuggestiontopemail" data-order="14">
+				<div class="col-md-12">
+					<div class="panel panel-primary  ">
+						<div class="panel-heading ">
+							<div class="panel-title">&nbsp;Top 10 Suggestions</div>
+						</div>
+						<div class="panel-body maxheight">
+							<div class="col-md-12">
+								<div id="pie-suggestiontopemail" class="plot" style="height: 300px; overflow: hidden;">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			'
+		];
+		if(empty($this->mlist_order)){
+			$this->mlist_stats = implode('',$items);
+		}else{
+			$order = explode(',',$this->mlist_order);
+			$this->mlist_stats = '';
+			foreach($order as $k => $v)
+			{
+				$x = (int) $v;
+				$this->mlist_stats .= isset($items[$x]) ? $items[$x] : '';
 			}
 		}
 	}

@@ -21,7 +21,9 @@ class ViewController
 	
 	public function render($template,$args)
 	{
+		$args['notifications'] = $this->app->session['notifications'];
 		echo $this->twig->loadTemplate($template)->render($args);
+		$this->app->session['notifications'] = [];
 	}
 	
 	public function cachedRender($template,$args,$expiry=0)

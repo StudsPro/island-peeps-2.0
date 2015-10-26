@@ -122,4 +122,16 @@ class Debug extends ViewController
 			$this->app->db->getSuggestions()
 		);
 	}
+	
+	public function notify()
+	{
+		$this->app->notify('test');
+	}
+	
+	public function notifications()
+	{
+		$this->pretty(
+			$this->app->session['notifications']
+		);
+	}
 }

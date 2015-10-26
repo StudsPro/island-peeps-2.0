@@ -147,6 +147,25 @@ class AdminAPI
 				$app->session['admin']->stats_order = $v;
 				$app->session['admin']->update();
 			break;
+			case 'mlist_stats':
+				$v = isset($get['v']) ? $get['v'] : '';
+				if(!empty($v)){
+					//run diagnostic to ensure proper results.
+					if(strpos($v,',') === false){
+						throw new \exception('formatting error');
+					}
+					$tmp = array_map('intval',explode(',',$v));
+					if(count($tmp) !== 15){
+						throw new \exception('number of elements does not match specification.');
+					}
+					$all = range(0,14);
+					if(sort($all) !== sort($tmp)){
+						throw new \exception(json_encode([$all,$tmp]));
+					}
+				}
+				$app->session['admin']->mlist_order = $v;
+				$app->session['admin']->update();
+			break;
 			case 'theme':
 			
 				$v = isset($get['v']) ? $get['v'] : '';
@@ -1061,6 +1080,33 @@ class AdminAPI
 		return ['error'=>0,'message'=>1];
 	}
 	
+	public function site_settings()
+	{
+		$app = $this->app;
+		$filter = $app->filter;
+		$get = $app->get;
+		$post = $app->post; 
+		$db = $app->db;
+		
+		
+		$required = [
+			'suggestion_message'=>'min',
+			'dashboard_notification'=>'c_unsafe',
+			'masterlist_help'=>'c_unsafe',
+			'help_content'=>'c_unsafe'
+		];
+		
+		$filter->custom_filter('c_unsafe',function($input){ return $input; });
+		
+		$t = $db->model('sitesetting',1);
+		
+		$filter->generate_model($t,$required,[],$post);
+		
+		$db->store($t);
+		
+		return  ['error'=>0,'message'=>1];
+	}
+	
 	public function suggestion()
 	{
 		$app = $this->app;
@@ -1241,7 +1287,7 @@ class AdminAPI
 			$row = $tmp;
 		}
 		return [
-			'notification'=>'The aliens are watching me',
+			'notification'=>$db->getCell('SELECT dashboard_notification FROM sitesetting WHERE id="1"'),
 			'recent_profiles'=>$this->twig->loadTemplate('partials/recent_profiles.twig')->render($args),
 			'affiliate_log'=>$this->twig->loadTemplate('partials/affiliate_log.twig')->render($args),
 			'profile_per'=>$db->countryPer(),
@@ -1291,6 +1337,207 @@ class AdminAPI
 			$row = $tmp;
 		}
 		
+		foreach($data['hits_by_country'] as &$row)
+		{
+			$tmp = [
+				'k'=>$row[0],
+				'v'=>$row[1]
+			];
+			$row = $tmp;
+		}
+		
+		foreach($data['hits_by_city'] as &$row)
+		{
+			$tmp = [
+				'k'=>$row[0],
+				'v'=>$row[1]
+			];
+			$row = $tmp;
+		}
+		
+		foreach($data['devices'] as &$row)
+		{
+			$tmp = [
+				'k'=>$row[0],
+				'v'=>$row[1]
+			];
+			$row = $tmp;
+		}
+		
+		foreach($data['isp'] as &$row)
+		{
+			$tmp = [
+				'k'=>$row[0],
+				'v'=>$row[1]
+			];
+			$row = $tmp;
+		}
+	
+		foreach($data['pages'] as &$row)
+		{
+			$tmp = [
+				'k'=>$row[0],
+				'v'=>$row[1]
+			];
+			$row = $tmp;
+		}
+		
+		foreach($data['months_in_year'] as &$row)
+		{
+			$tmp = [
+				'k'=>Date('M y\'',strtotime('01-'.$row[0].'-'.date('Y'))),
+				'v'=>$row[1]
+			];
+			$row = $tmp;
+		}
+		
+		$i=0;
+		$tmpk = [
+			'4 weeks ago','3 weeks ago','2 weeks ago','last week','this week'
+		];
+		if(count($data['social']) > 5){
+			array_shift($data['social']);
+		}
+		foreach($data['social'] as &$row)
+		{
+			
+			$tmp = [
+				'k'=>$tmpk[$i],
+				'v'=>$row[1]
+			];
+			$row = $tmp;
+			$i++;
+		}
+		unset($i,$tmpk);
+		
+		foreach($data['referrals'] as &$row)
+		{
+			$tmp = [
+				'k'=>$row[0],
+				'v'=>$row[1]
+			];
+			$row = $tmp;
+		}
+		
+		foreach($data['device_type'] as &$row)
+		{
+			$tmp = [
+				'k'=>$row[0],
+				'v'=>$row[1]
+			];
+			$row = $tmp;
+		}
+		
+		foreach($data['mobile_devices'] as &$row)
+		{
+			$tmp = [
+				'k'=>$row[0],
+				'v'=>$row[1]
+			];
+			$row = $tmp;
+		}
+		
+		foreach($data['search_terms'] as &$row)
+		{
+			$tmp = [
+				'k'=>$row[0],
+				'v'=>$row[1]
+			];
+			$row = $tmp;
+		}
+		
+		$i=0;
+		$tmpk=[
+			'7 days ago',
+			'6 days ago',
+			'5 days ago',
+			'4 days ago',
+			'3 days ago',
+			'2 days ago',
+			'yesterday'
+		];
+		
+		foreach($data['last_seven'] as &$row)
+		{
+			$tmp = [
+				'k'=>$tmpk[$i],
+				'v'=>$row[1]
+			];
+			$row = $tmp;
+			$i++;
+		}
+		
+		return $data;
+	}
+	
+	public function getMasterListStats()
+	{
+		$app = $this->app;
+		$db = $app->db;
+		
+		$data = [];
+		
+		$data['category_list'] = $db->getAll('SELECT * FROM category ORDER BY name ASC');
+		
+		$data['selected_cat'] = $data['category_list'][0]['id'];
+		
+		$data['category_country'] = $db->getCountPerCountryByCategoryId($data['selected_cat']);
+		
+		//actors
+		$data['actors'] = $db->getCountPerCountryByCategoryId(4);
+		
+		//singers
+		$data['singers'] = $db->getCountPerCountryByCategoryId(2);
+		
+		//athletes
+		$data['athletes'] = $db->getCountPerCountryByCategoryId(3);
+		
+		//politicians
+		$data['politicians'] = $db->getCountPerCountryByCategoryId(5);
+		
+		//gangsters
+		$data['gangsters'] = $db->getCountPerCountryByCategoryId(6);
+		
+		//authors
+		$data['authors'] = $db->getCountPerCountryByCategoryId(7);
+		
+		//count profiles by country
+		$data['profiles_country'] = $db->countProfilesPerCountry();
+		
+		
+		//count profiles by affiliate
+		$data['profiles_affiliate'] = $db->countProfilesByAffiliate();
+		
+		//count profiles by type
+		$data['profiles_type'] = $db->countProfilesByType();
+		
+		//count profiles by status
+		$data['profiles_status'] = $db->countProfilesByStatus();
+		
+		//count suggestion by type
+		$data['suggestions_type'] = $db->countSuggestionsByType();
+		
+		//count suggestions by country
+		$data['suggestions_country'] = $db->countSuggestionsPerCountry();
+		
+		//count birthdays per month
+		$data['birthdays_month'] = $db->birthdaysByMonth();
+		
+		//top 10 suggesters
+		$data['suggestions_email'] = $db->getAll('SELECT COUNT(email) AS num,email FROM suggestionstats GROUP BY email ORDER BY num DESC LIMIT 0,10');
+		return $data;
+	}
+	
+	public function switchMStatCategory()
+	{
+		$app = $this->app;
+		$db = $app->db;
+		$get = $app->get;
+		
+		if(!isset($get['id'])){
+			throw new \exception('');
+		}
+		$data = $db->getCountPerCountryByCategoryId($get['id']);
 		return $data;
 	}
 } 

@@ -27,5 +27,14 @@
 	</div>
 </div>
 {% include 'widgets/script.twig' %}
+<div style="display:none" id="ntf-root">{{notifications|json_encode()}}</div>
+<script>
+$(function(){
+	var notifications = JSON.parse($('#ntf-root').html());
+	for(var i=0;i<notifications.length;i++){
+		sk.alert(notifications[i][0],notifications[i][1]);
+	}
+});
+</script>
 </body>
 </html>

@@ -898,6 +898,74 @@ class DB
 					'end-date'=> $now
 				])['rows']
 			];
+			
+			$data['months_in_year'] = $ga->query([
+				'metrics' => 'ga:pageviews',
+				'dimensions' => 'ga:month',
+				'sort' => 'ga:month',
+				'start-date' => $dates['year'],
+				'end-date'=> $now
+			])['rows'];
+			
+			$data['social'] = $ga->query([
+				'metrics' => 'ga:socialActivities',
+				'dimensions' => 'ga:week',
+				'sort' => 'ga:week',
+				'start-date' => '30daysAgo',
+				'end-date'=> 'yesterday',
+				'max-results'=>25,
+			])['rows'];
+			
+			$data['referrals'] = $ga->query([
+				'metrics' => 'ga:users',
+				'dimensions' => 'ga:referralPath',
+				'sort' => 'ga:referralPath',
+				'start-date' => '30daysAgo',
+				'end-date'=> 'yesterday',
+				'max-results'=>20
+			])['rows'];
+			
+			$data['device_type'] = $ga->query([
+				'metrics' => 'ga:sessions',
+				'dimensions' => 'ga:deviceCategory',
+				'sort' => 'ga:deviceCategory',
+				'start-date' => '30daysAgo',
+				'end-date'=> 'yesterday',
+				'max-results'=>20
+			])['rows'];
+			
+			$data['mobile_devices'] = $ga->query([
+				'metrics' => 'ga:sessions',
+				'dimensions' => 'ga:mobileDeviceInfo',
+				'sort' => 'ga:mobileDeviceInfo',
+				'start-date' => '30daysAgo',
+				'end-date'=> 'yesterday',
+				'max-results'=>20
+			])['rows'];
+			
+			try{
+				$data['search_terms'] = $ga->query([
+					'metrics' => 'ga:searchResultViews',
+					'dimensions' => 'ga:searchKeyword',
+					'sort' => 'ga:searchKeyword',
+					'start-date' => '30daysAgo',
+					'end-date'=> 'yesterday',
+					'max-results'=>50
+				])['rows'];	
+			}
+			catch(\exception $e){
+				$data['search_terms'] = [['None Yet',0]];
+			}
+			
+			$data['last_seven'] = $ga->query([
+				'metrics' => 'ga:pageviews',
+				'dimensions' => 'ga:dayOfWeek',
+				'sort' => 'ga:dayOfWeek',
+				'start-date' => '8daysAgo',
+				'end-date'=> 'yesterday',
+				'max-results'=>50
+			])['rows'];
+			
 			if(!empty($data) && $data !== false && $data !== 0 && !is_null($data)){
 				$cache->set($key,$data,60*60); //never set empty arrays to cache cache!
 			}
@@ -909,6 +977,95 @@ class DB
 		}
 		return $data;
 	}
+	
+	public function getCountPerCountryByCategoryId($id)
+	{
+		$c = \R::getAll('SELECT regions FROM masterlist WHERE category_id=:id',[':id'=>$id]);
+		$data = [];
+		foreach($c as $r)
+		{
+			$tmp = explode(',',$r['regions']);
+			foreach($tmp as $t)
+			{
+				$t = (int) trim($t);
+				if(!isset($data[$t])){
+					$data[$t] = [
+						'country'=>$this->getCell('SELECT name FROM country WHERE id=:id',[':id'=>$t]),
+						'count'=>1
+					];
+				}else{
+					$data[$t]['count'] += 1;
+				}
+			}
+		}
+		return array_values($data);
+	}
+	
+	public function countProfilesPerCountry()
+	{
+		$data = \R::getAll('SELECT id,name FROM country');
+		foreach($data as &$row){
+			$row['count'] = \R::count('masterlist', ' FIND_IN_SET(:id,regions) ',[':id'=>$row['id']]);
+		}
+		return $data;
+	}
+	
+	public function countProfilesByStatus()
+	{
+		$data = \R::getAll('select count(id) as num,`status` as `name` FROM masterlist GROUP BY `status`');
+		foreach($data as &$row){
+			switch($row['name']){
+				case 1:
+					$status = 'Available';
+				break;
+				case 2:
+					$status = 'Pending';
+				break;
+				case 3:
+					$status = 'Ready';
+				break;
+				case 4:
+					$status = 'Used';
+				break;
+				default:
+				case null:
+					$status = 'Not Set';
+				break;
+			}
+			$row['name'] = $status;
+		}
+		return $data;
+	}
+	
+	public function countProfilesByType()
+	{
+		return \R::getAll('SELECT count(a.id) AS num,b.name FROM masterlist a JOIN type b on a.type_id=b.id GROUP BY b.name');
+	}
+	
+	public function countProfilesByAffiliate()
+	{
+		return \R::getAll('SELECT count(a.id) AS num,b.name FROM masterlist a JOIN admin b on a.admin_id=b.id GROUP BY b.name');
+	}
+	
+	public function countSuggestionsByType()
+	{
+		return \R::getAll('SELECT count(a.id) AS num,b.name FROM suggestion a JOIN type b on a.type_id=b.id GROUP BY b.name');
+	}
+	
+	public function countSuggestionsPerCountry()
+	{
+		$data = \R::getAll('SELECT id,name FROM country');
+		foreach($data as &$row){
+			$row['count'] = \R::count('suggestion', ' FIND_IN_SET(:id,regions) ',[':id'=>$row['id']]);
+		}
+		return $data;
+	}
+	
+	public function birthdaysByMonth()
+	{
+		return \R::getAll('SELECT count(id) as num, MONTHNAME(STR_TO_DATE(month, "%m")) as month FROM masterlist WHERE type_id="1" and month<>"NULL" and month<>"00" and month<>"invalid" GROUP BY month');
+	}
+	
 	//end app specific funcs
 	
 	//private utilities

@@ -75,6 +75,9 @@
 					</div>
 					<div class="col-lg-7" style="padding:0">
 						<div class="btn-group pull-right">
+							<a data-toggle="modal" data-target="#masterlist-help" class="btn" style="margin-left: 30px;border-color:#ccc"><i class="fa fa-info-circle"></i> Help</a>
+						</div>
+						<div class="btn-group pull-right">
 							<a href="{{base_url}}admin/masterlist?type_id=1" class="btn btn-success">{{count.profile}} People Profile</a>
 							<a href="{{base_url}}admin/masterlist?type_id=2" class="btn btn-danger">{{count.meme}} Meme</a>
 							<a href="{{base_url}}admin/masterlist?type_id=3" class="btn btn-info">{{count.funfacts}} Fun Facts</a>
@@ -93,7 +96,7 @@
 								<th width="15%">Profile Title</th>
 								<th width="10%">User Kind</th>
 								<th width="20%">Region</th>
-								<th width="10%">Affilate</th>
+								<th width="10%">Affiliate</th>
 								<th width="5%">Status</th>  
 								<th width="10%" data-hide="phone" data-sort-initial="false">Edit</th>
 								<th data-hide="phone" width="10%">
@@ -131,6 +134,24 @@
       <div class="modal-body">
         <div class="container">
 				
+				</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="masterlist-help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel2">Help</h4>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+					{{masterlist_help|raw}}
 				</div>
       </div>
       <div class="modal-footer">

@@ -85,6 +85,7 @@ class API extends ViewController
 		$args['about'] = $db->getAll('SELECT * FROM about');
 		$args['memes'] = $db->getMemes();
 		$args['regions'] = $db->getAll('SELECT id,name FROM country');
+		$args['suggestion_message'] = $db->getCell('SELECT suggestion_message from sitesetting WHERE id="1"');
 		return [
 			'error'=>0,
 			'message'=>[

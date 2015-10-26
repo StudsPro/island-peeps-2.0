@@ -1,0 +1,452 @@
+{% include 'widgets/nav.twig' %}
+<style>
+.inline-check{
+	margin:0;
+	padding: 5px 0px 5px 12px;
+}
+.inline-check input{
+
+}
+.inline-check span{
+	position: relative;
+	top: -2px;
+}
+</style>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<ul class="breadcrumb breadcrumb-arrows breadcrumb-default">
+				<li><a href="{{base_url}}admin"><i class="fa fa-home fa-lg"></i></a></li>
+				<li><a href="{{base_url}}admin/about">Affiliates</a></li>
+				<li><a href="#">Create Affiliate</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">  
+				<div class="panel-heading">
+					<h3 class="panel-title">Create Affiliate</h3>
+				</div>
+				<form method="post" class="form-horizontal" action="{{base_url}}admin/api/affiliate{% if item is defined %}?id={{item.id}}{%endif%}" data-callback="affiliateAE" autocomplete="off">
+					<div class="panel-body">
+						<div class="form-group">
+							 <label for="title" class="col-md-2 control-label"> Username <span class="require">*</span></label>
+							 <div class="col-md-5">
+									<input name="name" value="" id="username" class="form-control input-md" type="text" autocomplete="off" style="color:#fff">      
+							 </div>
+						</div>
+						<div class="form-group">
+							 <label for="title" class="col-md-2 control-label">Password <span class="require">*</span></label>
+							 <div class="col-md-5">
+									<input name="password" value="" id="userpass" class="form-control input-md" type="password" autocomplete="off" style="color:#fff">      
+							 </div>
+						</div>
+						<div class="form-group">
+							 <label for="title" class="col-md-2 control-label"> E-mail<span class="require">*</span></label>
+							 <div class="col-md-5">
+									<input name="email" value="" id="email" class="form-control input-md" type="text">      
+							 </div>
+						</div>
+						<div class="form-group" id="setemailcontent">
+							 <label for="title" class="col-md-2 control-label"> Permissions <span class="require">*</span></label>
+						</div>
+						<div class="form-group">
+							<label for="title" class="col-md-2 control-label">&nbsp;</label>
+								<div class="col-md-8">
+									<table id="newtable" class="table table-striped table-bordered dataTable no-footer">
+										<thead>
+											<tr>
+											<th width="15%">
+												<label class="inline-check">
+													<input type="checkbox" class="chkall" value="1" />
+													<span>Check All</span>
+												</label>
+											</th>
+											<th width="25%">Module</th>
+											<th width="60%">Permissions</th>
+											</tr>
+										</thead>
+										<tbody>
+										<tr>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" class="chkallrow" value="1" />
+													<span>Check All</span>
+												</label>
+											</td>
+											<td>
+												About
+											</td>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" name="about.create" value="1" />
+													<span>Create</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="about.edit" value="1" />
+													<span>Edit</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="about.delete" value="1" />
+													<span>Delete</span>
+												</label>
+											</td>
+										</tr>
+										
+										<tr>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" class="chkallrow" value="1" />
+													<span>Check All</span>
+												</label>
+											</td>
+											<td>
+												Ads
+											</td>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" name="ads.create" value="1" />
+													<span>Create</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="ads.edit" value="1" />
+													<span>Edit</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="ads.delete" value="1" />
+													<span>Delete</span>
+												</label>
+											</td>
+										</tr>
+										
+										<tr>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" class="chkallrow" value="1" />
+													<span>Check All</span>
+												</label>
+											</td>
+											<td>
+												Affiliates
+											</td>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" name="affiliates.view" value="1" />
+													<span>View</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="affiliates.create" value="1" />
+													<span>Create</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="affiliates.info" value="1" />
+													<span>Edit Info</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="affiliates.permissions" value="1" />
+													<span>Edit Permissions</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="affiliates.delete" value="1" />
+													<span>Delete</span>
+												</label>
+											</td>
+										</tr>
+										
+										<tr>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" class="chkallrow" value="1" />
+													<span>Check All</span>
+												</label>
+											</td>
+											<td>
+												Banners
+											</td>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" name="banners.create" value="1" />
+													<span>Create</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="banners.edit" value="1" />
+													<span>Edit</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="banners.delete" value="1" />
+													<span>Delete</span>
+												</label>
+											</td>
+										</tr>
+										
+										<tr>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" class="chkallrow" value="1" />
+													<span>Check All</span>
+												</label>
+											</td>
+											<td>
+												Calendar
+											</td>
+											<td>	
+												<label class="inline-check">
+													<input type="checkbox" name="calendar.view" value="1" />
+													<span>View</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="calendar.create" value="1" />
+													<span>Create Event</span>
+												</label>
+											</td>
+										</tr>
+										
+										<tr>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" class="chkallrow" value="1" />
+													<span>Check All</span>
+												</label>
+											</td>
+											<td>
+												Chat
+											</td>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" name="chat.post" value="1" />
+													<span>Post</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="chat.delete" value="1" />
+													<span>Delete</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="chat.delete" value="1" />
+													<span>Delete Own</span>
+												</label>
+											</td>
+										</tr>
+										
+										<tr>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" class="chkallrow" value="1" />
+													<span>Check All</span>
+												</label>
+											</td>
+											<td>
+												Country Profiles
+											</td>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" name="country.create" value="1" />
+													<span>Create</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="country.edit" value="1" />
+													<span>Edit</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="country.delete" value="1" />
+													<span>Delete</span>
+												</label>
+											</td>
+										</tr>
+										
+										<tr>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" class="chkallrow" value="1" />
+													<span>Check All</span>
+												</label>
+											</td>
+											<td>
+												Dashboard
+											</td>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" name="dashboard.view" value="1" />
+													<span>View</span>
+												</label>
+											</td>
+										</tr>
+										
+										<tr>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" class="chkallrow" value="1" />
+													<span>Check All</span>
+												</label>
+											</td>
+											<td>
+												Mail Templates
+											</td>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" name="mail.create" value="1" />
+													<span>Create</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="mail.edit" value="1" />
+													<span>Edit</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="mail.delete" value="1" />
+													<span>Delete</span>
+												</label>
+											</td>
+										</tr>
+										
+										<tr>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" class="chkallrow" value="1" />
+													<span>Check All</span>
+												</label>
+											</td>
+											<td>
+												Masterlist
+											</td>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" name="masterlist.view" value="1" />
+													<span>Create</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="masterlist.edit" value="1" />
+													<span>Edit</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="masterlist.publish" value="1" />
+													<span>Publish</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="masterlist.view_stats" value="1" />
+													<span>View Stats</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="masterlist.delete" value="1" />
+													<span>Delete</span>
+												</label>
+											</td>
+										</tr>
+										
+										<tr>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" class="chkallrow" value="1" />
+													<span>Check All</span>
+												</label>
+											</td>
+											<td>
+												Site Settings
+											</td>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" name="site.view" value="1" />
+													<span>View</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="site.edit" value="1" />
+													<span>Edit</span>
+												</label>
+											</td>
+										</tr>
+										
+										<tr>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" class="chkallrow" value="1" />
+													<span>Check All</span>
+												</label>
+											</td>
+											<td>
+												Social Settings
+											</td>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" name="social.view" value="1" />
+													<span>View</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="social.edit" value="1" />
+													<span>Edit</span>
+												</label>
+											</td>
+										</tr>
+										
+										<tr>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" class="chkallrow" value="1" />
+													<span>Check All</span>
+												</label>
+											</td>
+											<td>
+												Stats / Analytics
+											</td>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" name="stats.view" value="1" />
+													<span>View</span>
+												</label>
+											</td>
+										</tr>
+										
+										<tr>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" class="chkallrow" value="1" />
+													<span>Check All</span>
+												</label>
+											</td>
+											<td>
+												Suggestions
+											</td>
+											<td>
+												<label class="inline-check">
+													<input type="checkbox" name="suggestions.view" value="1" />
+													<span>View</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="suggestions.edit" value="1" />
+													<span>Edit & Add To Masterlist</span>
+												</label>
+												<label class="inline-check">
+													<input type="checkbox" name="suggestions.delete" value="1" />
+													<span>Delete</span>
+												</label>
+											</td>
+										</tr>			
+										
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="panel-footer">
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-md-5">
+								<button type="submit" class="btn btn-primary btn-block">Save</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+function affiliateAE(data)
+{
+	if(data.error == 0){
+		window.location = window.location.origin + '/admin/affiliates';
+	}else{
+		sk.alert(data.message,'error');
+	}
+}
+</script>
+{% include 'widgets/footer.twig' %}

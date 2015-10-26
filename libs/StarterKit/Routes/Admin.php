@@ -98,6 +98,32 @@ class Admin extends ViewController
 		parent::render('stats.twig',$args);
 	}
 	
+	public function masterlist_stats()
+	{
+		$app  = $this->app;
+		$args = $app->args;
+		$get  = $app->get;
+		$db   = $app->db;
+		
+		
+		$args['scripts'] = [
+			'js/amcharts/raphael.js',
+			'js/amcharts/amcharts.js',
+			//'plugins/flot/jquery.flot.js',
+			//'plugins/flot/jquery.flot.selection.js',
+			'js/plugins/jqvmap/jquery.vmap.js',
+			'js/plugins/jqvmap/maps/jquery.vmap.world.js',
+			//'plugins/jqvmap/data/jquery.vmap.sampledata.js',
+			//'plugins/easy-pie-chart/jquery.easypiechart.min.js',
+			//'plugins/jquery.sparkline/jquery.sparkline.min.js',
+			'js/plugins/fullcalendar/fullcalendar.min.js',
+			//'plugins/justgage/lib/raphael.2.1.0.min.js',
+			'plugins/justgage/justgage.js',
+		];
+
+		parent::render('masterlist_stats.twig',$args);
+	}
+	
 	public function calendar()
 	{
 		$args = $this->app->args;
@@ -135,7 +161,28 @@ class Admin extends ViewController
 		$args = $app->args;
 		$get  = $app->get;
 		$db   = $app->db;
+		$args['item'] = $db->getRow('SELECT * FROM sitesetting WHERE id="1"');
+		$args['scripts'] = [
+			'js/plugins/wysihtml5/wysihtml5-0.3.0.min.js',
+			'js/plugins/bootstrap3-wysihtml5/bootstrap3-wysihtml5.all.min.js',
+			'js/plugins/ckeditor/ckeditor.js',
+			'js/plugins/marked/marked.js',
+			'js/plugins/to-markdown/to-markdown.js',
+			'js/plugins/bootstrap-markdown/bootstrap-markdown.js',
+			'js/demo/ui-elements.js',
+			'js/sitesettings.js'
+		];
 		parent::render('site_settings.twig',$args);
+	}
+	
+	public function help()
+	{
+		$app  = $this->app;
+		$args = $app->args;
+		$get  = $app->get;
+		$db   = $app->db;
+		$args['help_content'] = $db->getCell('SELECT help_content from sitesetting WHERE id="1"');
+		parent::render('help.twig',$args);
 	}
 	
 	public function social_settings()
@@ -173,6 +220,8 @@ class Admin extends ViewController
 		}else{
 			$args['sort'] = $sort = 'ABC';
 		}
+		
+		$args['masterlist_help'] = $db->getCell('SELECT masterlist_help FROM sitesetting WHERE id="1"');
 		
 		$args['scripts'] = [
 			'js/tooltip/tooltip.js',
@@ -245,6 +294,12 @@ class Admin extends ViewController
 					'js/plugins/bootstrap-markdown/bootstrap-markdown.js',
 					'js/demo/ui-elements.js',
 					'js/about.js'
+				];
+			break;
+			case 'affiliate':
+				$template = 'crud_affiliate.twig';
+				$args['scripts'] = [
+					'js/affiliate.js'
 				];
 			break;
 			case false:

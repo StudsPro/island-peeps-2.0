@@ -59,6 +59,9 @@ class App
 		$this->session = &$_SESSION;
 		$this->remote_addr = $this->slim->request->getIp();
 		
+		if(!isset($this->session['notifications'])){
+			$this->session['notifications'] = [];
+		}
 		//sometimes you might need to set additional args. you could allow middleware to add args here, or virtually anything else you want
 		$base_url = $config['scheme'].$_SERVER['SERVER_NAME'];
 
@@ -85,6 +88,14 @@ class App
 		$this->smtp  = \StarterKit\Email::getInstance($config['smtp_args']);
 		
 		self::$instance = &$this;
+	}
+	
+	public function notify($message,$type='error')
+	{
+		if(!isset($this->session['notifications'])){
+			$this->session['notifications'] = [];
+		}
+		array_push($this->session['notifications'],[$message,$type]);
 	}
 	
 	private function getUrl($base_url)

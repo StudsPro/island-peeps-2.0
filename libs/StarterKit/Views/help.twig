@@ -1,0 +1,35 @@
+{% include 'widgets/nav.twig' %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<ul class="breadcrumb breadcrumb-arrows breadcrumb-default">
+				<li><a href="{{base_url}}admin"><i class="fa fa-home fa-lg"></i></a></li>
+				<li><a href="#">Help</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<div class="col-lg-5" style="padding:0">
+						<h2>Help</h2>
+					</div>  
+					<div class="clearfix"></div>
+				</div>
+				<div class="panel-body">
+					<div class="container">
+						{{help_content|raw}}
+					</div>
+				</div>
+				<div class="clearfix">&nbsp;</div>   
+				<div class="panel-footer text-right">
+					&nbsp;
+				</div>	
+			</div>		
+		</div>
+	</div>
+</div>
+{% include 'widgets/footer.twig' %}

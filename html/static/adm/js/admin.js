@@ -850,6 +850,440 @@ $(function(){
 				// WRITE
 				upie.write("pie-usertype1");
 			})(data.new_vs_returning);
+			
+			(function(data){ 
+				var	countrypie = new AmCharts.AmPieChart();
+				countrypie.dataProvider = data;
+				countrypie.titleField = "k";
+				countrypie.valueField = "v";
+				countrypie.outlineColor = "#FFFFFF";
+				countrypie.outlineAlpha = 0.8;
+				countrypie.outlineThickness = 2;
+				countrypie.labelRadius = -30;
+				countrypie.labelText = "[[value]]";
+				countrypie.startDuration = 0;
+				// this makes the chart 3D
+				countrypie.depth3D = 15;
+				countrypie.angle = 30;
+				countrypie.colors = "#76ba35,#00AFF0,#C72C95,#F8FF01,#FF6600,#04D215,#2A0CD0,#FF0F00,#B0DE09,#0D52D1,#0D5221,#76b035,#06AFF0,#C70C95,#58FF01,#B05209,#44D215,#2A0C95,#2F0F0F,#B05E09".split(",");
+
+				var	countrylegend = new AmCharts.AmLegend();
+				countrylegend.position = "bottom";
+				countrylegend.borderAlpha = 0;
+				countrylegend.horizontalGap = 10;
+				countrylegend.switchType = "x"; // or v
+				countrylegend.valueText = "";
+				countrypie.addLegend(countrylegend);
+				// WRITE
+				countrypie.write("pie-country");
+			})(data.hits_by_country);
+			
+			(function(data){
+				var	city = new AmCharts.AmPieChart();
+				city.dataProvider = data;
+				city.titleField = "k";
+				city.valueField = "v";
+				city.outlineColor = "#FFFFFF";
+				city.outlineAlpha = 0.8;
+				city.outlineThickness = 2;
+				city.labelRadius = -30;
+				city.labelText = "[[value]]";
+				city.startDuration = 0;
+				// this makes the chart 3D
+				city.depth3D = 15;
+				city.angle = 30;
+				city.colors = "#76ba35,#00AFF0,#C72C95,#F8FF01,#FF6600,#04D215,#2A0CD0,#FF0F00,#B0DE09,#0D52D1,#0D5221,#76b035,#06AFF0,#C70C95,#58FF01,#B05209,#44D215,#2A0C95,#2F0F0F,#B05E09".split(",");
+
+				var	citylegend = new AmCharts.AmLegend();
+				citylegend.position = "bottom";
+				citylegend.borderAlpha = 0;
+				citylegend.horizontalGap = 10;
+				citylegend.switchType = "x"; // or v
+				citylegend.valueText = "";
+				city.addLegend(citylegend);
+				// WRITE
+				city.write("pie-city");
+			})(data.hits_by_city);
+			
+			(function(data){
+				var ospie = new AmCharts.AmPieChart();
+				ospie.dataProvider = data;
+				ospie.titleField = "k";
+				ospie.valueField = "v";
+				ospie.outlineColor = "#FFFFFF";
+				ospie.outlineAlpha = 0.8;
+				ospie.outlineThickness = 2;
+				ospie.labelRadius = -30;
+				ospie.labelText = "[[value]]";
+				ospie.startDuration = 0;
+				// this makes the chart 3D
+				ospie.depth3D = 15;
+				ospie.angle = 30;
+				ospie.colors = "#76ba35,#00AFF0,#C72C95,#F8FF01,#FF6600,#04D215,#2A0CD0,#FF0F00,#B0DE09,#0D52D1,#0D5221,#76b035,#06AFF0,#C70C95,#58FF01,#B05209,#44D215,#2A0C95,#2F0F0F,#B05E09".split(",");
+
+				var	oslegend = new AmCharts.AmLegend();
+				oslegend.position = "bottom";
+				oslegend.borderAlpha = 0;
+				oslegend.horizontalGap = 10;
+				oslegend.switchType = "x"; // or v
+				oslegend.valueText = "";
+				ospie.addLegend(oslegend);
+				// WRITE
+				ospie.write("pie-os");
+			})(data.devices);
+			
+			(function(data){
+				var	networkLpie = new AmCharts.AmPieChart();
+				networkLpie.dataProvider = data;
+				networkLpie.titleField = "k";
+				networkLpie.valueField = "v";
+				networkLpie.outlineColor = "#FFFFFF";
+				networkLpie.outlineAlpha = 0.8;
+				networkLpie.outlineThickness = 2;
+				networkLpie.labelRadius = -30;
+				networkLpie.labelText = "[[value]]";
+				networkLpie.startDuration = 0;
+				// this makes the chart 3D
+				networkLpie.depth3D = 15;
+				networkLpie.angle = 30;
+				networkLpie.colors = "#76ba35,#00AFF0,#C72C95,#F8FF01,#FF6600,#04D215,#2A0CD0,#FF0F00,#B0DE09,#0D52D1,#0D5221,#76b035,#06AFF0,#C70C95,#58FF01,#B05209,#44D215,#2A0C95,#2F0F0F,#B05E09".split(",");
+
+				var	networkLlegend = new AmCharts.AmLegend();
+				networkLlegend.position = "bottom";
+				networkLlegend.borderAlpha = 0;
+				networkLlegend.horizontalGap = 10;
+				networkLlegend.switchType = "x"; // or v
+				networkLlegend.valueText = "";
+				networkLpie.addLegend(networkLlegend);
+				// WRITE
+				networkLpie.write("pie-isp");
+			})(data.isp);
+			
+			(function(data){
+				var	networkLpie = new AmCharts.AmPieChart();
+				networkLpie.dataProvider = data;
+				networkLpie.titleField = "k";
+				networkLpie.valueField = "v";
+				networkLpie.outlineColor = "#FFFFFF";
+				networkLpie.outlineAlpha = 0.8;
+				networkLpie.outlineThickness = 2;
+				networkLpie.labelRadius = -30;
+				networkLpie.labelText = "[[value]]";
+				networkLpie.startDuration = 0;
+				// this makes the chart 3D
+				networkLpie.depth3D = 15;
+				networkLpie.angle = 30;
+				networkLpie.colors = "#76ba35,#00AFF0,#C72C95,#F8FF01,#FF6600,#04D215,#2A0CD0,#FF0F00,#B0DE09,#0D52D1,#0D5221,#76b035,#06AFF0,#C70C95,#58FF01,#B05209,#44D215,#2A0C95,#2F0F0F,#B05E09".split(",");
+
+				var	networkLlegend = new AmCharts.AmLegend();
+				networkLlegend.position = "bottom";
+				networkLlegend.borderAlpha = 0;
+				networkLlegend.horizontalGap = 10;
+				networkLlegend.switchType = "x"; // or v
+				networkLlegend.valueText = "";
+				networkLpie.addLegend(networkLlegend);
+				// WRITE
+				networkLpie.write("demo-plot");
+			})(data.pages);
+			
+			(function(data){
+				var chart = new AmCharts.AmSerialChart();
+				chart.dataProvider = data;
+				chart.categoryField = "k";
+				chart.marginRight = 0;chart.marginTop = 0; 
+				//chart.autoMarginOffset = 0;
+				// the following two lines makes chart 3D
+				chart.depth3D = 20;chart.angle = 30;
+				// AXES // category
+				var categoryAxis = chart.categoryAxis;categoryAxis.labelRotation = 90;categoryAxis.gridPosition = "start";
+				categoryAxis.inside = true;categoryAxis.gridCount = data.length;categoryAxis.autoGridCount = false;
+				// value
+				var valueAxis = new AmCharts.ValueAxis();valueAxis.title = "Result";chart.addValueAxis(valueAxis);
+				// GRAPH            
+				var graph = new AmCharts.AmGraph();
+				graph.valueField = "v";
+				graph.colors = "#76ba35,#00AFF0,#C72C95,#F8FF01,#FF6600,#04D215,#2A0CD0,#FF0F00,#B0DE09,#0D52D1,#0D5221,#76b035,#06AFF0,#C70C95,#58FF01,#B05209,#44D215,#2A0C95,#2F0F0F,#B05E09".split(",");
+				graph.balloonText = "[[category]]: [[value]]";graph.type = "column";graph.lineAlpha = 0;graph.fillAlphas = 1;
+				chart.addGraph(graph);
+				// WRITE
+				chart.write("pie-yearlydiv");   
+			})(data.months_in_year);
+			
+			(function(data){
+				var chart = new AmCharts.AmSerialChart();
+				chart.dataProvider = data;
+				chart.categoryField = "k";
+				chart.marginRight = 0;chart.marginTop = 0; 
+				//chart.autoMarginOffset = 0;
+				// the following two lines makes chart 3D
+				chart.depth3D = 20;chart.angle = 30;
+				// AXES // category
+				var categoryAxis = chart.categoryAxis;categoryAxis.labelRotation = 90;categoryAxis.gridPosition = "start";
+				categoryAxis.inside = true;categoryAxis.gridCount = data.length;categoryAxis.autoGridCount = false;
+				// value
+				var valueAxis = new AmCharts.ValueAxis();valueAxis.title = "Result";chart.addValueAxis(valueAxis);
+				// GRAPH            
+				var graph = new AmCharts.AmGraph();
+				graph.valueField = "v";
+				graph.colors = "#76ba35,#00AFF0,#C72C95,#F8FF01,#FF6600,#04D215,#2A0CD0,#FF0F00,#B0DE09,#0D52D1,#0D5221,#76b035,#06AFF0,#C70C95,#58FF01,#B05209,#44D215,#2A0C95,#2F0F0F,#B05E09".split(",");
+				graph.balloonText = "[[category]]: [[value]]";graph.type = "column";graph.lineAlpha = 0;graph.fillAlphas = 1;
+				chart.addGraph(graph);
+				// WRITE
+				chart.write("pie-social");   
+			})(data.social);
+			
+			(function(data){
+				var	networkLpie = new AmCharts.AmPieChart();
+				networkLpie.dataProvider = data;
+				networkLpie.titleField = "k";
+				networkLpie.valueField = "v";
+				networkLpie.outlineColor = "#FFFFFF";
+				networkLpie.outlineAlpha = 0.8;
+				networkLpie.outlineThickness = 2;
+				networkLpie.labelRadius = -30;
+				networkLpie.labelText = "[[value]]";
+				networkLpie.startDuration = 0;
+				// this makes the chart 3D
+				networkLpie.depth3D = 15;
+				networkLpie.angle = 30;
+				networkLpie.colors = "#76ba35,#00AFF0,#C72C95,#F8FF01,#FF6600,#04D215,#2A0CD0,#FF0F00,#B0DE09,#0D52D1,#0D5221,#76b035,#06AFF0,#C70C95,#58FF01,#B05209,#44D215,#2A0C95,#2F0F0F,#B05E09".split(",");
+
+				var	networkLlegend = new AmCharts.AmLegend();
+				networkLlegend.position = "bottom";
+				networkLlegend.borderAlpha = 0;
+				networkLlegend.horizontalGap = 10;
+				networkLlegend.switchType = "x"; // or v
+				networkLlegend.valueText = "";
+				networkLpie.addLegend(networkLlegend);
+				// WRITE
+				networkLpie.write("pie-chart");
+			})(data.pages);
+			
+			(function(data){
+				var	networkLpie = new AmCharts.AmPieChart();
+				networkLpie.dataProvider = data;
+				networkLpie.titleField = "k";
+				networkLpie.valueField = "v";
+				networkLpie.outlineColor = "#FFFFFF";
+				networkLpie.outlineAlpha = 0.8;
+				networkLpie.outlineThickness = 2;
+				networkLpie.labelRadius = -30;
+				networkLpie.labelText = "[[value]]";
+				networkLpie.startDuration = 0;
+				// this makes the chart 3D
+				networkLpie.depth3D = 15;
+				networkLpie.angle = 30;
+				networkLpie.colors = "#76ba35,#00AFF0,#C72C95,#F8FF01,#FF6600,#04D215,#2A0CD0,#FF0F00,#B0DE09,#0D52D1,#0D5221,#76b035,#06AFF0,#C70C95,#58FF01,#B05209,#44D215,#2A0C95,#2F0F0F,#B05E09".split(",");
+
+				var	networkLlegend = new AmCharts.AmLegend();
+				networkLlegend.position = "bottom";
+				networkLlegend.borderAlpha = 0;
+				networkLlegend.horizontalGap = 10;
+				networkLlegend.switchType = "x"; // or v
+				networkLlegend.valueText = "";
+				networkLpie.addLegend(networkLlegend);
+				// WRITE
+				networkLpie.write("pie-device");
+			})(data.device_type);
+			
+			(function(data){
+				var	networkLpie = new AmCharts.AmPieChart();
+				networkLpie.dataProvider = data;
+				networkLpie.titleField = "k";
+				networkLpie.valueField = "v";
+				networkLpie.outlineColor = "#FFFFFF";
+				networkLpie.outlineAlpha = 0.8;
+				networkLpie.outlineThickness = 2;
+				networkLpie.labelRadius = -30;
+				networkLpie.labelText = "[[value]]";
+				networkLpie.startDuration = 0;
+				// this makes the chart 3D
+				networkLpie.depth3D = 15;
+				networkLpie.angle = 30;
+				networkLpie.colors = "#76ba35,#00AFF0,#C72C95,#F8FF01,#FF6600,#04D215,#2A0CD0,#FF0F00,#B0DE09,#0D52D1,#0D5221,#76b035,#06AFF0,#C70C95,#58FF01,#B05209,#44D215,#2A0C95,#2F0F0F,#B05E09".split(",");
+
+				var	networkLlegend = new AmCharts.AmLegend();
+				networkLlegend.position = "bottom";
+				networkLlegend.borderAlpha = 0;
+				networkLlegend.horizontalGap = 10;
+				networkLlegend.switchType = "x"; // or v
+				networkLlegend.valueText = "";
+				networkLpie.addLegend(networkLlegend);
+				// WRITE
+				networkLpie.write("pie-mobdiv");
+			})(data.mobile_devices);
+			
+			(function(data){
+				var	networkLpie = new AmCharts.AmPieChart();
+				networkLpie.dataProvider = data;
+				networkLpie.titleField = "k";
+				networkLpie.valueField = "v";
+				networkLpie.outlineColor = "#FFFFFF";
+				networkLpie.outlineAlpha = 0.8;
+				networkLpie.outlineThickness = 2;
+				networkLpie.labelRadius = -30;
+				networkLpie.labelText = "[[value]]";
+				networkLpie.startDuration = 0;
+				// this makes the chart 3D
+				networkLpie.depth3D = 15;
+				networkLpie.angle = 30;
+				networkLpie.colors = "#76ba35,#00AFF0,#C72C95,#F8FF01,#FF6600,#04D215,#2A0CD0,#FF0F00,#B0DE09,#0D52D1,#0D5221,#76b035,#06AFF0,#C70C95,#58FF01,#B05209,#44D215,#2A0C95,#2F0F0F,#B05E09".split(",");
+
+				var	networkLlegend = new AmCharts.AmLegend();
+				networkLlegend.position = "bottom";
+				networkLlegend.borderAlpha = 0;
+				networkLlegend.horizontalGap = 10;
+				networkLlegend.switchType = "x"; // or v
+				networkLlegend.valueText = "";
+				networkLpie.addLegend(networkLlegend);
+				// WRITE
+				networkLpie.write("donut-chart");
+			})(data.search_terms);
+			
+			(function(data){
+				var chart = new AmCharts.AmSerialChart();
+				chart.dataProvider = data;
+				chart.categoryField = "k";
+				chart.marginRight = 0;chart.marginTop = 0; 
+				//chart.autoMarginOffset = 0;
+				// the following two lines makes chart 3D
+				chart.depth3D = 20;chart.angle = 30;
+				// AXES // category
+				var categoryAxis = chart.categoryAxis;categoryAxis.labelRotation = 90;categoryAxis.gridPosition = "start";
+				categoryAxis.inside = true;categoryAxis.gridCount = data.length;categoryAxis.autoGridCount = false;
+				// value
+				var valueAxis = new AmCharts.ValueAxis();valueAxis.title = "Result";chart.addValueAxis(valueAxis);
+				// GRAPH            
+				var graph = new AmCharts.AmGraph();
+				graph.valueField = "v";
+				graph.colors = "#76ba35,#00AFF0,#C72C95,#F8FF01,#FF6600,#04D215,#2A0CD0,#FF0F00,#B0DE09,#0D52D1,#0D5221,#76b035,#06AFF0,#C70C95,#58FF01,#B05209,#44D215,#2A0C95,#2F0F0F,#B05E09".split(",");
+				graph.balloonText = "[[category]]: [[value]]";graph.type = "column";graph.lineAlpha = 0;graph.fillAlphas = 1;
+				chart.addGraph(graph);
+				// WRITE
+				chart.write("piedaysdiv");   
+			})(data.last_seven);
+		});
+	}
+	
+	if($('#mliststats_sort').length > 0){
+		
+		$('#mliststats_sort').sortable({
+			//tolerance: 'pointer',
+			//revert: 'invalid',
+			//placeholder: 'span2 well placeholder tile',
+			//forceHelperSize: true,
+			update: function() {
+				var v = '',ul = $('#mliststats_sort > div[data-order]');
+				for(var i=0;i<ul.length;i++){
+					v += ul.eq(i).data('order')+',';
+					if(i == ul.length - 1){
+						$.getJSON(window.location.origin + '/admin/api/update_setting?x=mlist_stats&v='+v.slice(0,-1),function(data){
+							if(data.error != 0 ){
+								sk.alert(data.message);
+							}
+						});
+					}
+				}
+			}					
+		}).disableSelection();
+		
+		$.getJSON(window.location.origin+'/admin/api/getMasterlistStats',function(data){
+			(function(data,categories,selected){
+				
+				var html = '';
+				for(var i=0;i<categories.length;i++){
+					html+='<option value="'+categories[i].id+'">'+categories[i].name+'</option>';
+					if(i== categories.length-1){
+						$('#mlist-category-select').html(html).val(selected);
+					}
+				}
+				barChart("pie-cat",data,'country','count');
+			})(data.category_country,data.category_list,data.selected_cat);
+			
+			barChart('pie-actors',data.actors,'country','count');
+			barChart('pie-singer',data.singers,'country','count');
+			barChart('pie-athletes',data.athletes,'country','count');
+			barChart('pie-politicians',data.politicians,'country','count');
+			barChart('pie-gangsters',data.gangsters,'country','count');
+			barChart('pie-authors',data.authors,'country','count');
+			barChart('pie-properc',data.profiles_country,'name','count');
+			barChart('pie-profilebyadmin',data.profiles_affiliate,'name','num');
+			pieChart('pie-masterlists',data.profiles_type,'name','num');
+			pieChart('pie-profilestatus',data.profiles_status,'name','num');
+			pieChart('pie-suggestionkind',data.suggestions_type,'name','num');
+			barChart('pie-suggestion',data.suggestions_country,'name','count');
+			barChart('pie-profilebyadmin',data.profiles_affiliate,'name','num');
+			barChart('pie-profilebob',data.birthdays_month,'month','num');
+			barChart('pie-suggestiontopemail',data.suggestions_email,'email','num');
+		});
+		
+		
+		$(document).on('change','#mlist-category-select',function(e){
+			$.getJSON(window.location.origin+'/admin/api/switchMStatCategory?id='+$(this).val(),function(data){
+				$('#pie-cat').html('');
+				barChart("pie-cat",data,'country','count');
+			});
 		});
 	}
 });
+
+
+function pieChart(element,data,cat_field,count_field)
+{
+	var	upie = new AmCharts.AmPieChart();
+	upie.dataProvider = data;
+	upie.titleField = cat_field;
+	upie.valueField = count_field;
+upie.outlineColor = "#FFFFFF";
+	upie.outlineAlpha = 0.8;
+	upie.outlineThickness = 2;
+	upie.labelRadius = -30;
+	upie.labelText = "[[value]]";
+	upie.startDuration = 0;
+	// this makes the chart 3D
+	upie.depth3D = 15;
+	upie.angle = 30;
+	upie.colors = "#76ba35,#00AFF0,#C72C95,#F8FF01,#FF6600,#04D215,#2A0CD0,#FF0F00,#B0DE09,#0D52D1,#0D5221,#76b035,#06AFF0,#C70C95,#58FF01,#B05209,#44D215,#2A0C95,#2F0F0F,#B05E09".split(",");
+	
+var	ulegend = new AmCharts.AmLegend();
+	ulegend.position = "bottom";
+	ulegend.borderAlpha = 0;
+	ulegend.horizontalGap = 10;
+	ulegend.switchType = "x"; // or v
+	ulegend.valueText = "";
+	upie.addLegend(ulegend);
+	// WRITE
+	upie.write(element);
+}
+
+
+function barChart(element,data,cat_field,count_field,color_field)
+{
+	chart = new AmCharts.AmSerialChart();
+	chart.dataProvider = data;
+	chart.categoryField = cat_field;
+	chart.marginRight = 0;
+	chart.marginTop = 0; 
+	chart.depth3D = 20;chart.angle = 30;
+	// AXES // category
+	var categoryAxis = chart.categoryAxis;categoryAxis.labelRotation = 90;categoryAxis.gridPosition = "start";
+	categoryAxis.inside = true;categoryAxis.gridCount = data.length;categoryAxis.autoGridCount = false;
+	// value
+	var valueAxis = new AmCharts.ValueAxis();valueAxis.title = "Result";chart.addValueAxis(valueAxis);
+	// GRAPH            
+	var graph = new AmCharts.AmGraph();
+	graph.valueField = count_field;
+	if(color_field){
+		graph.colorField = color_field;
+	}else{
+		graph.colorField = "color";
+		var tmp = "#76ba35,#00AFF0,#C72C95,#F8FF01,#FF6600,#04D215,#2A0CD0,#FF0F00,#B0DE09,#0D52D1,#0D5221,#76b035,#06AFF0,#C70C95,#58FF01,#B05209,#44D215,#2A0C95,#2F0F0F,#B05E09".split(",");
+		for(var i=0;i<data.length;i++){
+			data[i].color = tmp[i];
+		}
+	}
+	graph.balloonText = "[[category]]: [[value]]";graph.type = "column";graph.lineAlpha = 0;graph.fillAlphas = 1;
+	chart.addGraph(graph);
+	// WRITE
+	chart.write(element); 
+}
