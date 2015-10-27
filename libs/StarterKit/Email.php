@@ -24,19 +24,16 @@ class Email
 		return $this->twig->loadTemplate($template)->render($args);
 	}
 	
-	public function send($html,$subject,$recipient,$replyto = false)
+	public function send($html,$subject,$from,$recipient)
 	{
 		$transport = \Swift_SmtpTransport::newInstance($this->cfg['host'], $this->cfg['port']);
 		$transport->setUsername($this->cfg['user']);
 		$transport->setPassword($this->cfg['pass']);
 		$swift = \Swift_Mailer::newInstance($transport);
 		$message = new \Swift_Message($subject);
-		$message->setFrom($this->cfg['send_from']);
+		$message->setFrom($from);
 		$message->setBody($html, 'text/html');
 		$message->setTo($recipient);
-		if($replyto){
-			$message->setReplyTo($replyto); 
-		}
 		
 		if ($recipients = $swift->send($message, $failures))
 		{
@@ -44,5 +41,17 @@ class Email
 		} else {
 			Throw new \exception('Unable to send email');
 		}
+	}
+	
+	public function sendEmail($recipient,$template,$data)
+	{
+		$db = \StarterKit\App::getInstance->db;
+		$template_info = $db->getRow('SELECT * FROM mailtemplate WHERE title=:title',[':title'=>$template]);
+		if(empty($template_info)){
+			throw new \exception('mail template doesnt exist');
+		}
+		$data['inner_html'] = preg_replace('\[#(\w+)\]',"{{$1}}",$template_info['html']);
+		$html = $this->create_html('mail_template.twig',$data);
+		$this->send($html,$template_info['subject'],$template_info['from'],$recipient)''
 	}
 }

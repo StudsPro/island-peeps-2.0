@@ -58,10 +58,8 @@ $config = [
 		'enabled'=>false,
         'host'=>'smtp.sendgrid.net',
         'port'=>587,
-        'user'=>'',
-        'pass'=>'',
-        'send_from'=>'',
-        'admin'=>'',
+        'user'=>'islandpeeps',
+        'pass'=>'hEdge8niner47Ktwen',
 		'template_path'=>__DIR__ .'/StarterKit/Emails/',
     ],
 
