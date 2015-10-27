@@ -298,6 +298,7 @@ class Admin extends ViewController
 			break;
 			case 'affiliate':
 				$template = 'crud_affiliate.twig';
+				$args['action'] = 'Create';
 				$args['scripts'] = [
 					'js/affiliate.js'
 				];
@@ -380,6 +381,29 @@ class Admin extends ViewController
 				$args['action'] = 'Edit Suggestion';
 				$args['regions'] = $db->getAll('SELECT * FROM country ORDER BY name ASC');
 				$args['item'] = $db->getRow('SELECT * FROM suggestion WHERE id=:id',[':id'=>$id]);
+			break;
+			case 'mail_template':
+				$template = 'crud_email.twig';
+				$args['action'] = 'Edit Email Template';
+				$args['item'] = $db->getRow('SELECT * FROM mailtemplate WHERE id=:id',[':id'=>$id]);
+				$args['scripts'] = [
+					'js/plugins/wysihtml5/wysihtml5-0.3.0.min.js',
+					'js/plugins/bootstrap3-wysihtml5/bootstrap3-wysihtml5.all.min.js',
+					'js/plugins/ckeditor/ckeditor.js',
+					'js/plugins/marked/marked.js',
+					'js/plugins/to-markdown/to-markdown.js',
+					'js/plugins/bootstrap-markdown/bootstrap-markdown.js',
+					'js/demo/ui-elements.js',
+					'js/about.js'
+				];
+			break;
+			case 'affiliate':
+				$template = 'crud_affiliate.twig';
+				$args['action'] = 'Edit';
+				$args['scripts'] = [
+					'js/affiliate.js'
+				];
+				$args['item'] = \R::getRow('SELECT * FROM admin WHERE id=:id',[':id'=>$id]);
 			break;
 			case false:
 			default:
@@ -570,6 +594,23 @@ class Admin extends ViewController
 		}
 		
 		
+	}
+	
+	public function mail_templates()
+	{
+		$app  = $this->app;
+		$args = $app->args;
+		$get  = $app->get;
+		$db   = $app->db;
+		$args['scripts'] = [
+			'js/plugins/datatables/jquery.dataTables.min.js',
+			'js/demo/dataTables.bootstrap.js',
+			'js/demo/tables.js',
+			'js/masterlist.js'
+		];
+
+		$args['mail'] = $db->getAll('SELECT * FROM mailtemplate');
+		parent::render('mail_templates.twig',$args);
 	}
 	
 	public function login()

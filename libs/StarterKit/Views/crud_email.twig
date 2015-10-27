@@ -1,0 +1,68 @@
+{% include 'widgets/nav.twig' %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<ul class="breadcrumb breadcrumb-arrows breadcrumb-default">
+				<li><a href="{{base_url}}admin"><i class="fa fa-home fa-lg"></i></a></li>
+				<li><a href="{{base_url}}admin/mail_templates">Mail Templates</a></li>
+				<li><a href="#">{{action}}</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			 <div class="panel panel-default">  
+					<div class="panel-heading">
+							<h3 class="panel-title">{{action}} - {{item.title}}</h3>
+					</div>
+					<form method="post" class="form-horizontal" action="{{base_url}}admin/api/mail_template{%if item is defined %}?id={{item.id}}{%endif%}" data-callback="mailEdit">
+						<div class="panel-body">  
+							<div class="form-group">
+								<label for="subject" class="col-md-2 control-label">Subject <span class="require">*</span></label>
+								<div class="col-md-5">
+									<input type="text" name="subject" value="{{item.subject}}" class="form-control input-md" />
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label for="subject" class="col-md-2 control-label">From Email <span class="require">*</span></label>
+								<div class="col-md-5">
+									<input type="text" name="from_email" value="{{item.from_email}}" class="form-control input-md" />
+								</div>
+							</div>
+							   	
+							<div class="form-group">
+							<label for="title" class="col-md-2 control-label">Email Body</label>
+							<div class="col-md-10">
+								<textarea  id="ckeditor" name="html" class="form-control input-md">
+								{{item.html|raw}}
+								</textarea>
+							</div>
+						</div> 						
+					</div>  
+					<div class="panel-footer">
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-md-5">
+								<button type="submit" class="btn btn-primary btn-block">Save</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>		
+<script>
+function mailEdit(data)
+{
+	if(data.error == 0){
+		window.location = window.location.origin + '/admin/mail_templates';
+
+	}else{
+		sk.alert(data.message,'error');
+	}
+}
+</script>
+{% include 'widgets/footer.twig' %}

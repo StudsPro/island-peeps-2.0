@@ -1540,4 +1540,104 @@ class AdminAPI
 		$data = $db->getCountPerCountryByCategoryId($get['id']);
 		return $data;
 	}
+	
+	public function mail_template()
+	{
+		$app = $this->app;
+		$filter = $app->filter;
+		$get = $app->get;
+		$post = $app->post; 
+		$db = $app->db;
+		$admin = $app->session['admin'];
+		
+		$id = isset($get['id']) ? $filter->cast_int($get['id']) : false;
+		
+		if($id){
+			$t = $db->model('mailtemplate',$id);
+			if( (int) $t->id !== $id){
+				throw new \exception('a 1 ');
+			}
+		}else{
+			$t = $db->model('mailtemplate');
+		}
+		
+		$required = [
+			'subject'=>['min','rmnl'],
+			'html'=>'c_unsafe',
+			'from_email'=>'email'
+		];
+		
+		$filter->custom_filter('c_unsafe',function($input){return $input;});
+		
+		$filter->generate_model($t,$required,[],$post);
+		
+		$db->store($t);
+		
+		return ['error'=>0,'message'=>1];
+	}
+	
+	public function affiliate()
+	{
+		$app = $this->app;
+		$filter = $app->filter;
+		$get = $app->get;
+		$post = $app->post; 
+		$db = $app->db;
+		$admin = $app->session['admin'];
+		
+		$id = isset($get['id']) ? $filter->cast_int($get['id']) : false;
+		
+		if($id){
+			$t = $db->model('admin',$id);
+			if( (int) $t->id !== $id){
+				throw new \exception('a 1 ');
+			}
+		}else{
+			$t = $db->model('admin');
+		}
+		
+		$required = [
+			'name'=>'min',
+			'email'=>'email',
+		];
+		
+		$optional = [
+			'password'=>'password_hash'
+		];
+		
+		$filter->generate_model($t,$required,$optional,$post);
+		
+		$permissions = isset($_POST['permissions']) ? $_POST['permissions'] : [];
+		
+		$default = json_decode(
+			'{"about":{"create":"0","edit":"0","delete":"0"},"ads":{"create":"0","edit":"0","delete":"0"},"affiliates":{"view":"0","create":"0","info":"0","permissions":"0","delete":"0"},"banners":{"create":"0","edit":"0","delete":"0"},"calendar":{"view":"0","create":"0"},"chat":{"post":"0","delete":"0","delete_own":"0"},"country":{"create":"0","edit":"0","delete":"0"},"dashboard":{"view":"0"},"mail":{"create":"0","edit":"0","delete":"0"},"masterlist":{"view":"0","edit":"0","publish":"0","view_stats":"0","delete":"0"},"site":{"view":"0","edit":"0"},"social":{"view":"0","edit":"0"},"stats":{"view":"0"},"suggestions":{"view":"0","edit":"0","delete":"0"}}'
+			,true
+		);
+		
+		if(!is_array($permissions)){
+			throw new \exception('malformed data 1');
+		}
+		
+		foreach($permissions as $k=>$v)
+		{
+			if(!is_array($v)){
+				throw new \exception('malformed data 2');
+			}
+			if(!isset($default[$k])){
+				throw new \exception('malformed data 3');
+			}
+			foreach($v as $k2=>$v2){
+				if(!isset($default[$k][$k2])){
+					throw new \exception('malformed data 4 : '.$k);
+				}
+				$default[$k][$k2] = 1;
+			}
+		}
+		
+		$t->permissions = json_encode($default);
+		
+		$db->store($t);
+		
+		return ['error'=>0,'message'=>1];
+	}
 } 

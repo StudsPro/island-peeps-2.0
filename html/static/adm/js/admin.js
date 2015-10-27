@@ -721,6 +721,7 @@ $(function(){
 	
 	if($('#stats_sort').length > 0){
 		$('#stats_sort').sortable({
+			handle: '.panel-heading',
 			tolerance: 'pointer',
 			revert: 'invalid',
 			placeholder: 'span2 well placeholder tile',
@@ -1168,10 +1169,8 @@ $(function(){
 	if($('#mliststats_sort').length > 0){
 		
 		$('#mliststats_sort').sortable({
-			//tolerance: 'pointer',
-			//revert: 'invalid',
-			//placeholder: 'span2 well placeholder tile',
-			//forceHelperSize: true,
+			handle: '.panel-heading',
+			placeholder: 'span2 well placeholder tile',
 			update: function() {
 				var v = '',ul = $('#mliststats_sort > div[data-order]');
 				for(var i=0;i<ul.length;i++){
@@ -1185,7 +1184,7 @@ $(function(){
 					}
 				}
 			}					
-		}).disableSelection();
+		});
 		
 		$.getJSON(window.location.origin+'/admin/api/getMasterlistStats',function(data){
 			(function(data,categories,selected){

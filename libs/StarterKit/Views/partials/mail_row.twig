@@ -1,0 +1,29 @@
+{% if mail|length > 0 %}
+{% for item in mail %}
+<tr data-id="{{item.id}}">
+	<td>
+		{{loop.index}}
+	</td>
+	<td>
+		{{item.title}}
+	</td>
+	<td>
+		{{item.subject}}
+	</td>
+	<td>
+		{{item.from_email}}
+	</td>
+	<td>
+		<a href="{{base_url}}admin/edit?t=mail_template&id={{item.id}}">
+			<img src="{{base_url}}static/adm/img/editicon.gif">
+		</a> 
+	</td>
+</tr>
+{% endfor %}
+{% else %}
+<tr>
+	<td width="100%" colspan="100%">
+		<h3 style="text-align:center;">No Records Available.</h3>
+	</td>
+</tr>
+{% endif %}
