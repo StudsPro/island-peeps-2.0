@@ -78,7 +78,7 @@
 		</div>
 		<div class="btn-icon col-xs-6 col-sm-6 col-md-2 ">
 			<a class="btn btn-success button_calender" role="button" href="{{base_url}}admin/calendar"><i class="fa fa-calendar fa-lg"></i>
-				<span class="label label-success label-calender">1</span>
+				<span class="label label-success label-calender">{{sidebar_calendar_count|default('0')}}</span>
 				<div class="title">Calendar</div>
 			</a>
 		</div>
@@ -90,9 +90,27 @@
 	</div>
 </div>
 <div class="container">
+	{% if unauthorized==true %}
+	<div class="col-md-12 new_col6 grid">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="col-md-12" style="padding-top: 2px;">  
+					<div class="col-md-12 text-center"> 
+						<h4 style="margin-top:6px">Unable to Display Dashboard</h4>
+					</div>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+			<div class="panel-body" style="height: 300px">
+				<p>Looks Like the Admin Has disabled you from viewing this page. :/</p>
+			</div>
+		</div>
+	</div>
+	{%else%}
 	<div class="col-md-12 new_col6 grid" id="dashboard_sort">
 		{{ include(template_from_string(admin.getDashboard()|raw))}}
 	</div>
+	{%endif%}
 </div>
    
 

@@ -1,6 +1,6 @@
 {% if about|length > 0 %}
 {% for item in about %}
-<tr>
+<tr data-id="{{item.id}}">
 	<td>{{loop.index}}</td>
 	<td>{{item.title}}</td>
 	<td>

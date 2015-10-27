@@ -34,40 +34,50 @@ class Admin extends ViewController
 		}
 	}
 	
+	public function unauthorized()
+	{
+		parent::render('unauthorized.twig',$this->app->args);
+	}
+	
 	public function dashboard()
 	{
 		$app  = $this->app;
 		$args = $app->args;
-		$get  = $app->get;
-		$db   = $app->db;
+		$admin = $app->session['admin'];
 		
 		
-		$args['scripts'] = [
-			'js/amcharts/raphael.js',
-			'js/amcharts/amcharts.js',
-			//'plugins/flot/jquery.flot.js',
-			//'plugins/flot/jquery.flot.selection.js',
-			'js/plugins/jqvmap/jquery.vmap.js',
-			'js/plugins/jqvmap/maps/jquery.vmap.world.js',
-			//'plugins/jqvmap/data/jquery.vmap.sampledata.js',
-			//'plugins/easy-pie-chart/jquery.easypiechart.min.js',
-			//'plugins/jquery.sparkline/jquery.sparkline.min.js',
-			'js/plugins/fullcalendar/fullcalendar.min.js',
-			//'plugins/justgage/lib/raphael.2.1.0.min.js',
-			'plugins/justgage/justgage.js',
-			'plugins/gmaps/gmaps.js',
-			'js/dashboard.js',
-			'js/calendar.js'
-		];
+		if($admin->can('dashboard','view')){
+			
+			$args['scripts'] = [
+				'js/amcharts/raphael.js',
+				'js/amcharts/amcharts.js',
+				//'plugins/flot/jquery.flot.js',
+				//'plugins/flot/jquery.flot.selection.js',
+				'js/plugins/jqvmap/jquery.vmap.js',
+				'js/plugins/jqvmap/maps/jquery.vmap.world.js',
+				//'plugins/jqvmap/data/jquery.vmap.sampledata.js',
+				//'plugins/easy-pie-chart/jquery.easypiechart.min.js',
+				//'plugins/jquery.sparkline/jquery.sparkline.min.js',
+				'js/plugins/fullcalendar/fullcalendar.min.js',
+				//'plugins/justgage/lib/raphael.2.1.0.min.js',
+				'plugins/justgage/justgage.js',
+				'plugins/gmaps/gmaps.js',
+				'js/dashboard.js',
+				'js/calendar.js'
+			];
+			
+			$args['scripts_external'] = [
+				'//maps.google.com/maps/api/js?sensor=true'
+			];
+			
+			$args['styles'] = [
+				'js/plugins/jqvmap/jqvmap.css',
+				'css/plugins/fullcalendar/fullcalendar.css'
+			];
 		
-		$args['scripts_external'] = [
-			'//maps.google.com/maps/api/js?sensor=true'
-		];
-		
-		$args['styles'] = [
-			'js/plugins/jqvmap/jqvmap.css',
-			'css/plugins/fullcalendar/fullcalendar.css'
-		];
+		}else{
+			$args['unauthorized'] =  true;
+		}
 
 		parent::render('dashboard.twig',$args);
 	}
@@ -161,6 +171,9 @@ class Admin extends ViewController
 		$args = $app->args;
 		$get  = $app->get;
 		$db   = $app->db;
+		if(!$app->session['admin']->can('site','view')){
+			$app->redirect('/admin/unauthorized');
+		}
 		$args['item'] = $db->getRow('SELECT * FROM sitesetting WHERE id="1"');
 		$args['scripts'] = [
 			'js/plugins/wysihtml5/wysihtml5-0.3.0.min.js',
@@ -223,15 +236,15 @@ class Admin extends ViewController
 		
 		$args['masterlist_help'] = $db->getCell('SELECT masterlist_help FROM sitesetting WHERE id="1"');
 		
+		
 		$args['scripts'] = [
 			'js/tooltip/tooltip.js',
-			'js/plugins/datatables/jquery.dataTables.min.js',
-			'js/demo/dataTables.bootstrap.js',
-			'js/demo/tables.js',
+			'js/plugins/datatables/datatables.min.js',
 			'js/masterlist.js'
 		];
 		
 		$args['styles'] = [
+			'css/datatable/dataTables.responsive.css',
 			'js/tooltip/tooltip.css'
 		];
 		
@@ -254,6 +267,8 @@ class Admin extends ViewController
 		$args = $app->args;
 		$get  = $app->get;
 		$db   = $app->db;
+		$admin = $app->session['admin'];
+		
 		$t = isset($get['t']) ? $get['t'] : false;
 		switch($t){
 			case 'profile':
@@ -261,24 +276,29 @@ class Admin extends ViewController
 				$args['action'] = 'Create People Profile';
 				$args['categories'] = $db->getAll('SELECT * FROM category ORDER BY name ASC');
 				$args['regions'] = $db->getAll('SELECT * FROM country ORDER BY name ASC');
+				$module = 'masterlist';
 			break;
 			case 'meme':
 				$template = 'crud_meme.twig';
 				$args['action'] = 'Create Meme';
+				$module = 'masterlist';
 			break;
 			case 'funfact':
 				$template = 'crud_funfact.twig';
 				$args['action'] = 'Create Fun Fact';
 				$args['categories'] = $db->getAll('SELECT * FROM category ORDER BY name ASC');
 				$args['regions'] = $db->getAll('SELECT * FROM country ORDER BY name ASC');
+				$module = 'masterlist';
 			break;
 			case 'country':
 				$template = 'crud_country.twig';
 				$args['action'] = 'Create Country';
+				$module = 'country';
 			break;
 			case 'advertisement':
 				$template = 'crud_ad.twig';
 				$args['action'] = 'Create Ad';
+				$module = 'ads';
 				$args['regions'] = $db->getAll('SELECT * FROM country ORDER BY name ASC');
 			
 			break;
@@ -295,8 +315,10 @@ class Admin extends ViewController
 					'js/demo/ui-elements.js',
 					'js/about.js'
 				];
+				$module = 'about';
 			break;
 			case 'affiliate':
+				$module = 'affiliates';
 				$template = 'crud_affiliate.twig';
 				$args['action'] = 'Create';
 				$args['scripts'] = [
@@ -308,6 +330,9 @@ class Admin extends ViewController
 				$app->pass();
 			break;
 		}
+		if(!$admin->can($module,'create')){
+			$app->redirect('/admin/unauthorized');
+		}
 		parent::render($template,$args);
 	}
 	
@@ -317,6 +342,7 @@ class Admin extends ViewController
 		$args = $app->args;
 		$get  = $app->get;
 		$db   = $app->db;
+		$admin = $app->session['admin'];
 		$t = isset($get['t']) ? $get['t'] : false;
 		$id = isset($get['id']) ? $get['id'] : false;
 		if(empty($id)){
@@ -329,11 +355,13 @@ class Admin extends ViewController
 				$args['categories'] = $db->getAll('SELECT * FROM category ORDER BY name ASC');
 				$args['regions'] = $db->getAll('SELECT * FROM country ORDER BY name ASC');
 				$args['item'] = $db->getPeopleProfile($id);
+				$module = 'masterlist';
 			break;
 			case 'meme':
 				$template = 'crud_meme.twig';
 				$args['action'] = 'Edit Meme';
 				$args['item'] = $db->getRow('SELECT * FROM masterlist WHERE type_id="2" AND id=:id',[':id'=>$id]);
+				$module = 'masterlist';
 			break;
 			case 'funfact':
 				$template = 'crud_funfact.twig';
@@ -341,11 +369,13 @@ class Admin extends ViewController
 				$args['categories'] = $db->getAll('SELECT * FROM category ORDER BY name ASC');
 				$args['regions'] = $db->getAll('SELECT * FROM country ORDER BY name ASC');
 				$args['item'] = $db->getPeopleProfile($id);
+				$module = 'masterlist';
 			break;
 			case 'country':
 				$template = 'crud_country.twig';
 				$args['action'] = 'Edit Country';
 				$args['item'] = $db->getRow('SELECT * FROM country WHERE id=:id',[':id'=>$id]);
+				$module = 'country';
 			break;
 			case 'advertisement':
 				$template = 'crud_ad.twig';
@@ -355,11 +385,13 @@ class Admin extends ViewController
 				if($args['item']['type'] == 'image'){
 					$args['item']['images'] = json_decode($args['item']['images'],true);
 				}
+				$module = 'ads';
 			break;
 			case 'banner':
 				$template = 'crud_banner.twig';
 				$args['action'] = 'Edit Banner';
 				$args['item'] = $db->getRow('SELECT * FROM slide WHERE id=:id',[':id'=>$id]);
+				$module = 'banners';
 			break;
 			case 'about-page':
 				$template = 'crud_about.twig';
@@ -375,12 +407,14 @@ class Admin extends ViewController
 					'js/demo/ui-elements.js',
 					'js/about.js'
 				];
+				$module = 'about';
 			break;
 			case 'suggestion':
 				$template = 'crud_suggestion.twig';
 				$args['action'] = 'Edit Suggestion';
 				$args['regions'] = $db->getAll('SELECT * FROM country ORDER BY name ASC');
 				$args['item'] = $db->getRow('SELECT * FROM suggestion WHERE id=:id',[':id'=>$id]);
+				$module = 'suggestions';
 			break;
 			case 'mail_template':
 				$template = 'crud_email.twig';
@@ -396,6 +430,7 @@ class Admin extends ViewController
 					'js/demo/ui-elements.js',
 					'js/about.js'
 				];
+				$module = 'mail';
 			break;
 			case 'affiliate':
 				$template = 'crud_affiliate.twig';
@@ -404,12 +439,31 @@ class Admin extends ViewController
 					'js/affiliate.js'
 				];
 				$args['item'] = \R::getRow('SELECT * FROM admin WHERE id=:id',[':id'=>$id]);
+				$module = 'affiliates';
+				$params = ['info','permissions'];
 			break;
 			case false:
 			default:
 				$app->pass();
 			break;
 		}
+		
+		if(isset($params)){
+			$allowed = false;
+			foreach($params as $param){
+				if($admin->can($module,$param)){
+					$allowed = true;
+				}
+			}
+			if($allowed == false){
+				$app->redirect('/admin/unauthorized');
+			}
+		}else{
+			if(!$admin->can($module,'edit')){
+				$app->redirect('/admin/unauthorized');
+			}
+		}
+		
 		parent::render($template,$args);
 	}
 	
@@ -420,17 +474,13 @@ class Admin extends ViewController
 		$get  = $app->get;
 		$db   = $app->db;
 		
-		
 		$args['scripts'] = [
-			'js/tooltip/tooltip.js',
-			'js/plugins/datatables/jquery.dataTables.min.js',
-			'js/demo/dataTables.bootstrap.js',
-			'js/demo/tables.js',
+			'js/plugins/datatables/datatables.min.js',
 			'js/masterlist.js'
 		];
 		
 		$args['styles'] = [
-			'js/tooltip/tooltip.css'
+			'css/datatable/dataTables.responsive.css',
 		];
 		
 		$args['countries'] = $db->getAll('SELECT * FROM country ORDER BY name ASC');
@@ -445,17 +495,13 @@ class Admin extends ViewController
 		$get  = $app->get;
 		$db   = $app->db;
 		
-		
 		$args['scripts'] = [
-			'js/tooltip/tooltip.js',
-			'js/plugins/datatables/jquery.dataTables.min.js',
-			'js/demo/dataTables.bootstrap.js',
-			'js/demo/tables.js',
+			'js/plugins/datatables/datatables.min.js',
 			'js/masterlist.js'
 		];
 		
 		$args['styles'] = [
-			'js/tooltip/tooltip.css'
+			'css/datatable/dataTables.responsive.css',
 		];
 		
 		$args['about'] = $db->getAll('SELECT * FROM about WHERE 1');
@@ -502,17 +548,17 @@ class Admin extends ViewController
 		$args = $app->args;
 		$get  = $app->get;
 		$db   = $app->db;
+		
 		$args['scripts'] = [
-			'js/tooltip/tooltip.js',
-			'js/plugins/datatables/jquery.dataTables.min.js',
-			'js/demo/dataTables.bootstrap.js',
-			'js/demo/tables.js',
+			'js/plugins/datatables/datatables.min.js',
 			'js/masterlist.js'
 		];
 		
 		$args['styles'] = [
-			'js/tooltip/tooltip.css'
+			'css/datatable/dataTables.responsive.css',
 		];
+		
+		
 		$args['affiliates'] = $db->getAll('SELECT * FROM admin WHERE 1');
 		parent::render('affiliates.twig',$args);
 	}
@@ -523,17 +569,16 @@ class Admin extends ViewController
 		$args = $app->args;
 		$get  = $app->get;
 		$db   = $app->db;
+		
 		$args['scripts'] = [
-			'js/tooltip/tooltip.js',
-			'js/plugins/datatables/jquery.dataTables.min.js',
-			'js/demo/dataTables.bootstrap.js',
-			'js/demo/tables.js',
+			'js/plugins/datatables/datatables.min.js',
 			'js/masterlist.js'
 		];
 		
 		$args['styles'] = [
-			'js/tooltip/tooltip.css'
+			'css/datatable/dataTables.responsive.css',
 		];
+		
 		$args['ads'] = $db->getAll('SELECT * FROM ad WHERE 1');
 		parent::render('ads.twig',$args);
 	}
@@ -544,17 +589,16 @@ class Admin extends ViewController
 		$args = $app->args;
 		$get  = $app->get;
 		$db   = $app->db;
+		
 		$args['scripts'] = [
-			'js/tooltip/tooltip.js',
-			'js/plugins/datatables/jquery.dataTables.min.js',
-			'js/demo/dataTables.bootstrap.js',
-			'js/demo/tables.js',
+			'js/plugins/datatables/datatables.min.js',
 			'js/masterlist.js'
 		];
 		
 		$args['styles'] = [
-			'js/tooltip/tooltip.css'
+			'css/datatable/dataTables.responsive.css',
 		];
+		
 		$args['banners'] = $db->getAll('SELECT * FROM slide WHERE 1');
 		parent::render('banners.twig',$args);
 	}
@@ -565,17 +609,16 @@ class Admin extends ViewController
 		$args = $app->args;
 		$get  = $app->get;
 		$db   = $app->db;
+		
 		$args['scripts'] = [
-			'js/tooltip/tooltip.js',
-			'js/plugins/datatables/jquery.dataTables.min.js',
-			'js/demo/dataTables.bootstrap.js',
-			'js/demo/tables.js',
+			'js/plugins/datatables/datatables.min.js',
 			'js/masterlist.js'
 		];
 		
 		$args['styles'] = [
-			'js/tooltip/tooltip.css'
+			'css/datatable/dataTables.responsive.css',
 		];
+		
 		$args['banners'] = $db->getAll('SELECT * FROM slide WHERE 1');
 		
 		if(isset($get['by_email'])){
@@ -602,13 +645,16 @@ class Admin extends ViewController
 		$args = $app->args;
 		$get  = $app->get;
 		$db   = $app->db;
+		
 		$args['scripts'] = [
-			'js/plugins/datatables/jquery.dataTables.min.js',
-			'js/demo/dataTables.bootstrap.js',
-			'js/demo/tables.js',
+			'js/plugins/datatables/datatables.min.js',
 			'js/masterlist.js'
 		];
-
+		
+		$args['styles'] = [
+			'css/datatable/dataTables.responsive.css',
+		];
+		
 		$args['mail'] = $db->getAll('SELECT * FROM mailtemplate');
 		parent::render('mail_templates.twig',$args);
 	}

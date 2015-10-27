@@ -28,7 +28,9 @@ $config = [
     ],
 
     'twig_args' => [
-		'template_path'=>__DIR__ .'/StarterKit/Views/' //path to the template directory
+		'template_path'=>__DIR__ .'/StarterKit/Views/', //path to the template directory
+		'cache'=>__DIR__ .'/cache/',
+		'auto_reload'=>true
     ],
 
     'timezone' => 'America/New_York',

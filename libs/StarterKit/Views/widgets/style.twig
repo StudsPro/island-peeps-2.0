@@ -1,21 +1,13 @@
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300italic,400italic,700italic,300,700' rel='stylesheet' type='text/css'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" >
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.4.0/animate.min.css" rel="stylesheet" type="text/css">
 <link href="{{base_url}}static/adm/css/social1.core.css" rel="stylesheet" type="text/css">
 <link href="{{base_url}}static/adm/css/social1.admin.css" rel="stylesheet" type="text/css"> 
-<link href="{{base_url}}static/adm/css/glyphicons_free/glyphicons.css" rel="stylesheet" type="text/css">
-<link href="{{base_url}}static/adm/css/glyphicons_pro/glyphicons.css" rel="stylesheet" type="text/css">
-<link href="{{base_url}}static/adm/css/glyphicons_pro/glyphicons.halflings.css" rel="stylesheet" type="text/css">
-<link href="{{base_url}}static/adm/css/jquery-ui/social/jquery.ui.css" rel="stylesheet" type="text/css">
-<link id="current-theme" href="{{base_url}}static/adm/css/themes/admin/facebook.css" rel="stylesheet" type="text/css">
-<link href="{{base_url}}static/adm/css/demo.css" rel="stylesheet">
-<link href="{{base_url}}static/adm/js/plugins/jquery-simplecolorpicker/jquery.simplecolorpicker.css" rel="stylesheet" type="text/css">
-<link href="{{base_url}}static/adm/css/plugins/jquery.uipro/style.css" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" >
-<link href="{{base_url}}static/adm/css/datatable/dataTables.responsive.css" rel="stylesheet" type="text/css" />	
+<link href="{{base_url}}static/adm/css/themes/admin/facebook.css" rel="stylesheet" type="text/css">
 <link href="{{base_url}}static/adm/css/stylecustom.css" rel="stylesheet" type="text/css" />
 <link id="theme" rel="stylesheet" href="{{base_url}}static/adm/css/themes/social.theme-{{admin.theme|default('blue')}}.css" type="text/css">
-<link href="{{base_url}}static/adm/css/d.css" rel="stylesheet" type="text/css">
 <link href="{{base_url}}static/shared.css" rel="stylesheet" type="text/css">
-<link href="{{base_url}}static/adm/css/admin.css" rel="stylesheet" type="text/css">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.4.0/animate.min.css" rel="stylesheet" type="text/css">
+
 {% if styles is iterable %}
 	{%for href in styles %}
 		<link rel="stylesheet" type="text/css" href="{{base_url}}static/adm/{{href}}" />

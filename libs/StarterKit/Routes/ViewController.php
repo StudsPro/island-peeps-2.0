@@ -10,7 +10,14 @@ class ViewController
 	{
 		$this->app = \StarterKit\App::getInstance();
 		$template_path = ($template_path) ? $template_path : $this->app->twig_config['template_path'];
-		$this->twig = new \Twig_Environment( new \Twig_Loader_Filesystem( $template_path ) );
+		$this->twig = new \Twig_Environment( 
+			new \Twig_Loader_Filesystem( $template_path,
+				[
+					'cache'=>$this->app->twig_config['cache'],
+					'auto_reload'=>$this->app->twig_config['auto_reload']
+				]
+			)
+		);
 		$this->twig->addExtension(new \Twig_Extension_StringLoader());
 	}
 	

@@ -31,7 +31,11 @@ class Admin
 	{
 		$details = $this->fetch($email); //fetch user details. throws exception if email doesn't exist
 		foreach($details as $k => $v){
-			$this->{$k} = $v;
+			if($k=='permissions'){
+				$this->{$k} = json_decode($v,true);
+			}else{
+				$this->{$k} = $v;
+			}
 		}
 		if($pass !== false && !$this->verify($pass)) { //passing false as the password allows bypassing the password check.
 			throw new \exception('invalid username or password');
@@ -79,7 +83,7 @@ class Admin
 	public function fetch($email)
 	{
 		$db = \StarterKit\DB::getInstance();
-		$details = $db->fetchAdmin($email);
+		$details = $db->cachedCall('fetchAdmin',[$email]);
 		if(empty($details)){
 			throw new \exception('invalid username or password');
 		}else{
@@ -103,14 +107,31 @@ class Admin
 		return $success;
 	}
 	
+	public function refresh()
+	{
+		$details = $this->fetch($this->email); //fetch user details. throws exception if email doesn't exist
+		foreach($details as $k => $v){
+			if($k=='permissions'){
+				$this->{$k} = json_decode($v,true);
+			}else{
+				$this->{$k} = $v;
+			}
+		}
+	}
+	
 	public function update()
 	{
 		$db = (\StarterKit\App::getInstance())->db;
+		$this->refresh();
 		$t = $db->model('admin',$this->id);
 		$self = get_object_vars($this);
 		unset($self['id'],$self['menu'],$self['permissions'],$self['dashboard'],$self['stats'],$self['mlist_stats']);
 		foreach($self as $k=>$v){
-			$t->{$k} = $v;
+			if($k=='permissions'){
+				$t->{$k} = json_encode($v);
+			}else{
+				$t->{$k} = $v;
+			}
 		}
 		$db->store($t);
 		$this->buildMenu();
@@ -124,9 +145,9 @@ class Admin
 		session_regenerate_id(true);
 	}
 	
-	public function can($table,$action)
+	public function can($module,$action)
 	{
-		return $this->permissions[$table][$action] === 1;
+		return $this->permissions[$module][$action] === 1;
 	}
 	
 	public function getMenu()
@@ -213,20 +234,11 @@ class Admin
 			',
 			'
 			<li data-order="7" class="">
-				<a href="#affiliate-ui" data-toggle="collapse" data-parent="#social-sidebar-menu">
+				<a href="{{base_url}}admin/affiliates">
 					<img alt="Affiliates" src="{{base_url}}static/adm/stuttgart-icon-pack/32x32/customers.png">
 					<span>Affiliates</span>
 					<span class="badge"></span>
-					<i class="fa arrow"></i>
 				</a>
-				<ul id="affiliate-ui" class="collapse">
-					<li id="">
-						<a href="{{base_url}}admin/affiliates">Affiliate</a>
-					</li>
-					<li id="">
-						<a href="{{base_url}}admin/permissions">Permissions</a>
-					</li>
-				</ul>
 			</li>
 			',
 			'

@@ -55,4 +55,54 @@ $(function(){
 	  var modal = $(this);
 	  modal.find('.modal-body').find('.container').load(href);
 	});
+	
+	$(document).on('click','.bulk-update',function(e){
+		var checked = $('table tbody').find(':input:checked');
+		if(checked.length > 0){
+			$('.bulk-update').prop('disabled',true);
+			var tbl = $(this).data('table');
+			var col = $(this).data('column');
+			var val = $(this).data('val');
+			var callback = $(this).data('callback');
+			var ids = '';
+			for(var i =0;i<checked.length;i++){
+				ids += checked.eq(i).val()+',';
+				if(i == checked.length - 1){
+					ids = ids.slice(0,-1);
+					$.getJSON(window.location.origin+'/admin/api/bulk_update?table='+tbl+'&column='+col+'&value='+val+'&ids='+ids,function(data){
+						window[callback].call(window,data,tbl,col,val,ids);
+					}).always(function(){
+						$('.bulk-update').prop('disabled',false);
+					});
+				}
+			}
+		}
+	});
+	
+	$(document).on('click','.bulk-delete',function(e){
+		var checked = $('table tbody').find(':input:checked');
+		if(checked.length > 0){
+			$('.bulk-delete').prop('disabled',true);
+			var tbl = $(this).data('table');
+			var callback = $(this).data('callback');
+			var ids = '';
+			for(var i =0;i<checked.length;i++){
+				ids += checked.eq(i).val()+',';
+				if(i == checked.length - 1){
+					ids = ids.slice(0,-1);
+					$.getJSON(window.location.origin+'/admin/api/bulk_delete?table='+tbl+'&ids='+ids,function(data){
+						if(data.error==0){
+							for(var j=0;j<ids.length;j++){
+								tbl.row( $('table tbody tr[data-id="'+ids[j]+'"]') ).remove();
+							}
+						}else{
+							sk.alert('You are not allowed to delete from this table (Permission Denied)','error');
+						}
+					}).always(function(){
+						$('.bulk-delete').prop('disabled',false);
+					});
+				}
+			}
+		}
+	});
 });

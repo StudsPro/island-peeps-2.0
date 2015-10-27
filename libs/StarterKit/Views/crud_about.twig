@@ -61,7 +61,7 @@
 function aboutAE(data)
 {
 	if(data.error == 0){
-		sk.alert('The operation completed successfully.','success');
+		window.location = window.location.origin+'/admin/about';
 	}else{
 		sk.alert(data.message,'error');
 	}

@@ -45,13 +45,13 @@ class Email
 	
 	public function sendEmail($recipient,$template,$data)
 	{
-		$db = \StarterKit\App::getInstance->db;
+		$db = \StarterKit\App::getInstance()->db;
 		$template_info = $db->getRow('SELECT * FROM mailtemplate WHERE title=:title',[':title'=>$template]);
 		if(empty($template_info)){
 			throw new \exception('mail template doesnt exist');
 		}
-		$data['inner_html'] = preg_replace('\[#(\w+)\]',"{{$1}}",$template_info['html']);
+		$data['inner_html'] = preg_replace('\[#(\w+)\]','{{$1}}',$template_info['html']);
 		$html = $this->create_html('mail_template.twig',$data);
-		$this->send($html,$template_info['subject'],$template_info['from'],$recipient)''
+		$this->send($html,$template_info['subject'],$template_info['from'],$recipient);
 	}
 }

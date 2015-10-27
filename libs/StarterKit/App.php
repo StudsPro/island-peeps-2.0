@@ -117,6 +117,7 @@ class App
 	
 	public function __before()
 	{		
+		/*
 		if(isset($_COOKIE['sk_restore'])){
 			if(!$this->is_user()){
 				if(\StarterKit\User::restore($_COOKIE['sk_restore']) === true){
@@ -129,6 +130,10 @@ class App
 		
 		if($this->is_user()){
 			$this->session['user']->refresh();
+		}
+		*/
+		if($this->is_admin()){
+			$this->session['admin']->refresh();
 		}
 	}
 	

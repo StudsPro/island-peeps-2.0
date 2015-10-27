@@ -301,6 +301,48 @@ class AdminAPI
 		return ['error'=>0,'message'=>1];
 	}
 	
+	
+	public function bulk_delete()
+	{
+		$app = $this->app;
+		$filter = $app->filter;
+		$get = $app->get; 
+		$db = $app->db;
+		$admin = $app->session['admin'];
+		
+		$required = ['table','ids'];
+		
+		foreach($required as $r)
+		{
+			if(!isset($get[$r]) || (isset($get[$r]) && empty($get[$r]))){
+				throw new \exception('Missing required parameter '.$r);
+			}
+		}
+		
+		$tbl = $get['table'];
+		$ids = $get['ids'];
+		
+		$allowed = ['masterlist','about'];
+		
+		if(!in_array($tbl,$allowed)){
+			throw new \exception('You are not allowed to modify this table');
+		}
+		
+		if(!$admin->can($tbl,'delete')){
+			throw new \exception('You are not allowed to delete from this table');
+		}
+		
+		$ids = explode(',',$ids);
+		
+		if(!is_array($ids)){
+			$ids = [$ids];
+		}
+		
+		$db->exec('DELETE FROM '.$tbl.' WHERE id IN('.implode(',',$ids).')');
+		
+		return ['error'=>0,'message'=>1];
+	}
+	
 	public function bulk_suggest()
 	{
 		$app = $this->app;
@@ -868,7 +910,7 @@ class AdminAPI
 		$filter->generate_model($t,$required,[],$post);
 		
 		$db->store($t);
-		
+		$app->notify('Your changes were saved','success');
 		return ['error'=>0,'message'=>1];
 	}
 	
@@ -1088,6 +1130,10 @@ class AdminAPI
 		$post = $app->post; 
 		$db = $app->db;
 		
+		
+		if(!$app->session['admin']->can('site','edit')){
+			throw new \exception('You are not authorized to edit the site settings (Permission Denied)');
+		}
 		
 		$required = [
 			'suggestion_message'=>'min',
@@ -1594,6 +1640,9 @@ class AdminAPI
 			}
 		}else{
 			$t = $db->model('admin');
+			if(!$admin->can('affiliates','create')){
+				throw new \exception('You may not create an affiliate');
+			}
 		}
 		
 		$required = [
@@ -1605,38 +1654,55 @@ class AdminAPI
 			'password'=>'password_hash'
 		];
 		
-		$filter->generate_model($t,$required,$optional,$post);
+		if($id && $admin->can('affiliates','info')){
+			$filter->generate_model($t,$required,$optional,$post);
+			$app->notify('Affiliate Info updated','success');
+		}else{
+			$app->notify('Affiliate Info not updated (Permission Denied)','error');
+		}
 		
-		$permissions = isset($_POST['permissions']) ? $_POST['permissions'] : [];
 		
 		$default = json_decode(
-			'{"about":{"create":"0","edit":"0","delete":"0"},"ads":{"create":"0","edit":"0","delete":"0"},"affiliates":{"view":"0","create":"0","info":"0","permissions":"0","delete":"0"},"banners":{"create":"0","edit":"0","delete":"0"},"calendar":{"view":"0","create":"0"},"chat":{"post":"0","delete":"0","delete_own":"0"},"country":{"create":"0","edit":"0","delete":"0"},"dashboard":{"view":"0"},"mail":{"create":"0","edit":"0","delete":"0"},"masterlist":{"view":"0","edit":"0","publish":"0","view_stats":"0","delete":"0"},"site":{"view":"0","edit":"0"},"social":{"view":"0","edit":"0"},"stats":{"view":"0"},"suggestions":{"view":"0","edit":"0","delete":"0"}}'
+			'{"about":{"create":"0","edit":"0","delete":"0"},"ads":{"create":"0","edit":"0","delete":"0"},"affiliates":{"view":"0","create":"0","info":"0","permissions":"0","delete":"0"},"banners":{"create":"0","edit":"0","delete":"0"},"calendar":{"view":"0","create":"0"},"chat":{"post":"0","delete":"0","delete_own":"0"},"country":{"create":"0","edit":"0","delete":"0"},"dashboard":{"view":"0"},"mail":{"create":"0","edit":"0","delete":"0"},"masterlist":{"create":"0","edit":"0","publish":"0","view_stats":"0","delete":"0"},"site":{"view":"0","edit":"0"},"social":{"view":"0","edit":"0"},"stats":{"view":"0"},"suggestions":{"view":"0","edit":"0","delete":"0"}}'
 			,true
 		);
-		
-		if(!is_array($permissions)){
-			throw new \exception('malformed data 1');
-		}
-		
-		foreach($permissions as $k=>$v)
-		{
-			if(!is_array($v)){
-				throw new \exception('malformed data 2');
+			
+		if($admin->can('affiliates','permissions')){
+			$permissions = isset($_POST['permissions']) ? $_POST['permissions'] : [];
+			
+			
+			if(!is_array($permissions)){
+				throw new \exception('malformed data 1');
 			}
-			if(!isset($default[$k])){
-				throw new \exception('malformed data 3');
-			}
-			foreach($v as $k2=>$v2){
-				if(!isset($default[$k][$k2])){
-					throw new \exception('malformed data 4 : '.$k);
+			
+			foreach($permissions as $k=>$v)
+			{
+				if(!is_array($v)){
+					throw new \exception('malformed data 2');
 				}
-				$default[$k][$k2] = 1;
+				if(!isset($default[$k])){
+					throw new \exception('malformed data 3');
+				}
+				foreach($v as $k2=>$v2){
+					if(!isset($default[$k][$k2])){
+						throw new \exception('malformed data 4 : '.$k);
+					}
+					$default[$k][$k2] = 1;
+				}
+			}
+			
+			$t->permissions = json_encode($default);
+			$app->notify('Affiliate Permissions Updated','success');
+		}else{
+			if(!$id){
+				$t->permissions = json_encode($default);
+			}else{
+				$app->notify('Affiliate Permissions not updated (Permission Denied)','error');
 			}
 		}
-		
-		$t->permissions = json_encode($default);
 		
 		$db->store($t);
+		$db->cachedCall('fetchAdmin',[$t->email],0,true);//force update of the users cache so theyre session will be in sync with database
 		
 		return ['error'=>0,'message'=>1];
 	}
