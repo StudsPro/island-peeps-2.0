@@ -24,12 +24,18 @@ class Admin extends ViewController
 				if(\StarterKit\Admin::restore($_COOKIE['__restore']) === true){
 					$this->app->session['admin'] = $this->app->args['admin'] = $_SESSION['admin'];
 				}
+				
 			}
 		}
+		
 		$this->app->args['sidebar_calendar_count'] = $this->app->db->todayCountCalendar();
+		$this->app->args['marquee_message'] = $this->app->db->getCell('SELECT marquee_message FROM sitesetting WHERE id="1"');
 		if(!$this->app->is_admin() && $fn !== 'login' ){
 			$this->app->redirect('/admin/login',302);
 		}else{
+			if($this->app->is_admin()){
+				$this->app->args['nfeed'] = $this->app->db->getNfeed($this->app->session['admin']->id);
+			}
 			call_user_func([$this,$fn]);
 		}
 	}
@@ -89,6 +95,9 @@ class Admin extends ViewController
 		$get  = $app->get;
 		$db   = $app->db;
 		
+		if(!$app->session['admin']->can('stats','view')){
+			$app->redirect('/admin/unauthorized');
+		}
 		
 		$args['scripts'] = [
 			'js/amcharts/raphael.js',
@@ -115,6 +124,9 @@ class Admin extends ViewController
 		$get  = $app->get;
 		$db   = $app->db;
 		
+		if(!$app->session['admin']->can('masterlist','view_stats')){
+			$app->redirect('/admin/unauthorized');
+		}
 		
 		$args['scripts'] = [
 			'js/amcharts/raphael.js',
@@ -136,8 +148,13 @@ class Admin extends ViewController
 	
 	public function calendar()
 	{
+		$app = $this->app;
 		$args = $this->app->args;
 		$get = $this->app->get;
+		
+		if(!$app->session['admin']->can('calendar','view')){
+			$app->redirect('/admin/unauthorized');
+		}
 		$args['scripts'] = [
 			'js/plugins/fullcalendar/fullcalendar.min.js',
 			'js/calendar.js'
@@ -149,6 +166,8 @@ class Admin extends ViewController
 		
 		if(isset($get['month'])){
 			$args['start_month'] = (int) $get['month'];
+		}else{
+			$args['start_month'] = (int) date('m');
 		}
 		
 		$args['dob_count'] = $this->app->db->dobCountAdded();
@@ -204,6 +223,11 @@ class Admin extends ViewController
 		$args = $app->args;
 		$get  = $app->get;
 		$db   = $app->db;
+		
+		if(!$app->session['admin']->can('social','view')){
+			$app->redirect('/admin/unauthorized');
+		}
+		
 		$args['styles'] = 'css/socialfeed.css';
 		$args['settings'] = $db->socialSettings();
 		parent::render('social_settings.twig',$args);
@@ -558,6 +582,9 @@ class Admin extends ViewController
 			'css/datatable/dataTables.responsive.css',
 		];
 		
+		if(!$app->session['admin']->can('affiliates','view')){
+			$app->redirect('/admin/unauthorized');
+		}
 		
 		$args['affiliates'] = $db->getAll('SELECT * FROM admin WHERE 1');
 		parent::render('affiliates.twig',$args);
@@ -609,6 +636,10 @@ class Admin extends ViewController
 		$args = $app->args;
 		$get  = $app->get;
 		$db   = $app->db;
+		
+		if(!$app->session['admin']->can('suggestions','view')){
+			$app->redirect('/admin/unauthorized');
+		}
 		
 		$args['scripts'] = [
 			'js/plugins/datatables/datatables.min.js',

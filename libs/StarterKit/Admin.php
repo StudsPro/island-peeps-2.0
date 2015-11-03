@@ -10,11 +10,17 @@ class Admin
 	public $password; //no we aren't storing it in plaintext; its a hash
 	public $avatar;
 	
+	//birthday
+	public $day;
+	public $month;
+	public $year;
+	
 	//app specific thingies
 	public $sidebar;
 	public $order = '';
 	public $menu = '';
 	public $permissions = [];
+	public $super;
 	public $theme = '';
 	public $perpage = 100;
 	
@@ -27,9 +33,9 @@ class Admin
 	public $mlist_stats = '';
 	public $mlist_order = '';
 	
-	function __construct($email,$pass,$remember=false)
+	function __construct($name,$pass,$remember=false)
 	{
-		$details = $this->fetch($email); //fetch user details. throws exception if email doesn't exist
+		$details = $this->fetch($name); //fetch user details. throws exception if email doesn't exist
 		foreach($details as $k => $v){
 			if($k=='permissions'){
 				$this->{$k} = json_decode($v,true);
@@ -53,8 +59,8 @@ class Admin
 		$db = $app->db;
 		$restore = $db->model('adminrestore');
 		$restore->admin_id = $this->id;
-		$restore->email = $this->email;
-		$data = $this->id . '//' . md5(time() . openssl_random_pseudo_bytes(16)) . '//' . $this->email;
+		$restore->name = $this->name;
+		$data = $this->id . '//' . md5(time() . openssl_random_pseudo_bytes(16)) . '//' . $this->name;
 		$restore->remote_addr = $secret = $app->remote_addr; //only allow session restore from same ip address. limit probability of exploit.
 		$restore->hash = $hash = hash_hmac('sha512',$data,$secret);
 		$db->store($restore);
@@ -80,10 +86,10 @@ class Admin
 		setcookie('__restore','blank',time() - (30 * 86400) ,'/',$_SERVER['SERVER_NAME'],false,false);
 	}
 	
-	public function fetch($email)
+	public function fetch($name)
 	{
 		$db = \StarterKit\DB::getInstance();
-		$details = $db->cachedCall('fetchAdmin',[$email]);
+		$details = $db->cachedCall('fetchAdmin',[$name]);
 		if(empty($details)){
 			throw new \exception('invalid username or password');
 		}else{
@@ -99,7 +105,10 @@ class Admin
 		$details = $db->fetchAdminRestore($token);
 		if(!empty($details)){
 			if($app->remote_addr == $details['remote_addr']){
-				new self($details['email'],false,true);
+				if(!isset($details['name'])){
+					return false;
+				}
+				new self($details['name'],false,true);
 				$db->trash('adminrestore',$details['id']);
 				$success = true;
 			}
@@ -109,7 +118,7 @@ class Admin
 	
 	public function refresh()
 	{
-		$details = $this->fetch($this->email); //fetch user details. throws exception if email doesn't exist
+		$details = $this->fetch($this->name); //fetch user details. throws exception if email doesn't exist
 		foreach($details as $k => $v){
 			if($k=='permissions'){
 				$this->{$k} = json_decode($v,true);
@@ -122,13 +131,12 @@ class Admin
 	public function update()
 	{
 		$db = (\StarterKit\App::getInstance())->db;
-		$this->refresh();
 		$t = $db->model('admin',$this->id);
 		$self = get_object_vars($this);
 		unset($self['id'],$self['menu'],$self['permissions'],$self['dashboard'],$self['stats'],$self['mlist_stats']);
 		foreach($self as $k=>$v){
 			if($k=='permissions'){
-				$t->{$k} = json_encode($v);
+				//do nothing, we cant allow stale permissions to overwrite what the admin may have changed
 			}else{
 				$t->{$k} = $v;
 			}
@@ -138,6 +146,7 @@ class Admin
 		$this->buildDashboard();
 		$this->buildStats();
 		$this->buildMasterlistStats();
+		$db->cachedCall('fetchAdmin',[$this->email],0,true);
 	}
 	
 	public function keepalive($token)
@@ -147,7 +156,11 @@ class Admin
 	
 	public function can($module,$action)
 	{
-		return $this->permissions[$module][$action] === 1;
+		if($this->super === 1){
+			return true;
+		}else{
+			return $this->permissions[$module][$action] === 1;
+		}
 	}
 	
 	public function getMenu()
@@ -915,7 +928,30 @@ class Admin
 					</div>
 				</div>
 			</div>
+			',
 			'
+			<div style="" class="row span2 ui-sortable-handle" id="mlistpublished" data-order="15">
+				<div class="col-md-12">
+					<div class="panel panel-default  ">
+						<div class="panel-heading ">
+							<div class="panel-title">&nbsp;Published By Type By Country</div>
+						</div>
+						<div class="panel-body maxheight">
+							<div class="col-md-4">
+								<select name="mlist_type_id" class="form-control input-md" id="mlist-published-select" style="margin-bottom: 30px;">
+									<option value="1" selected>People Profiles</option>
+									<option value="2">Memes</option>
+									<option value="3">Fun Facts</option>
+								</select>
+							</div>
+							<div class="col-md-12">
+								<div id="pie-publish" class="plot" style="height: 300px; overflow: hidden;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			',
 		];
 		if(empty($this->mlist_order)){
 			$this->mlist_stats = implode('',$items);

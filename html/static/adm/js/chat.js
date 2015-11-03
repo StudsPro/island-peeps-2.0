@@ -10,6 +10,17 @@ $.fn.scrollDiv = function()
 	});
 }
 
+function openChatClearNote(it)
+{
+	var id = $(it).data('id');
+	$.getJSON(window.location.origin+'/admin/api/clear_notification?id='+id);
+	$('.chat .panel-heading').trigger('click');
+	$(it).parents('li').hide().remove();
+	$('.nf-count').html( $('.nav-notification-body').length || 0 );
+	//call ajax to clear notification
+
+}
+
 $(function(){
 	
 	$(".maxheightt").slimScroll({
@@ -47,7 +58,7 @@ $(function(){
 			html += '<li class="left clearfix" data-id="'+m.id+'">'
 			html += '<span class="chat-avatar pull-left"><img src="'+m.avatar+'" alt=""></span>'
 			html += '<div class="chat-body clearfix">'       
-			html += '<div class="header"><strong class="primary-font">'+m.username+' </strong></div>'
+			html += '<div class="header"><strong class="primary-font mention">'+m.username+'</strong></div>'
 			html += '<p class="chat-body-content">'+m.message+'</p></div>'
 			html += '<div><small class="text-muted time-div"><span class="fa fa-clock-o fa2 time-icon"></span><span data-livestamp="'+m.timestamp+'"></span></small><button class="btn btn-mini btn-danger chat-delete pull-right" type="button">Delete</button></div></li>'
 			if(i == msgs.length -1){
@@ -129,4 +140,17 @@ $(function(){
 			chatUpdate();
 		}
 	});
+	
+	$(document).on('click','.chat .mention',function(e){
+		var text = '@'+$(this).html()+''.trim()+': ';
+		var input = $('#chat-input');
+		input.focus();
+		if(input.val()==''){
+			input.val(text);
+		}
+		else if(input.val().indexOf(text) == -1){
+			var current = input.val();
+			input.val(text+current);
+		}
+	})
 });

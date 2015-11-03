@@ -4,6 +4,7 @@
         "twig/twig": "~1.18",
         "swiftmailer/swiftmailer": "~5.4",
         "redbean-fvm/redbean-fvm": "~1.0",
-        "gabordemooij/redbean": "~4.2"
+        "gabordemooij/redbean": "~4.2",
+		"itbz/fpdf":"*"
     }
 }

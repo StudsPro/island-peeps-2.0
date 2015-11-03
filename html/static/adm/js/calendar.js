@@ -23,7 +23,7 @@ $(function(){
 			month = date.getMonth();
 		}
 		
-		$('#calendar-full').fullCalendar({
+		var calendar = $('#calendar-full').fullCalendar({
 			header: {
 				left: 'prev,next today',
 				center: 'title',
@@ -40,7 +40,34 @@ $(function(){
 				} else {
 					event.allDay = false;
 				}
-		   }
+			},
+			selectable: true,
+			selectHelper: true,
+			select: function(start, end, allDay) { 
+				var title = prompt('Event Title:');
+				if (title) 
+				{
+					var start = $.fullCalendar.formatDate(start, "yyyy-MM-dd HH:mm:ss");
+					var end = $.fullCalendar.formatDate(end, "yyyy-MM-dd HH:mm:ss");
+					$.ajax({
+						url: window.location.origin+"/admin/api/custom_event",
+						data: 'title='+ title+'&start='+ start +'&end='+ end  ,
+						type: "POST",
+						success: function(json){
+							var data = JSON.parse(json);
+							if(data.error == 1){
+								sk.alert(data.message,'error');
+							}else{
+								calendar.fullCalendar('renderEvent', { title: title, start: start, end: end, allDay: true, className:'custday', backgroundColor: '#BBE2AE !important' },true );
+								sk.alert('The event was successfully created','success');
+							}
+							calendar.fullCalendar('unselect');
+						}
+					});     
+				}else{
+					calendar.fullCalendar('unselect');
+				}
+			},
 		});
 		$(document).on('click','.fc-button-agendaDay,.fc-button-prev,.fc-button-next,.fc-button-today',function(){
 			var div = $('.fc-view > div > div');

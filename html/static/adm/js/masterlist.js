@@ -6,29 +6,57 @@ $(function(){
 	var tbl = $('#newtable');
 	if(tbl.find('tbody > tr').length > 1){
 		var per = tbl.data('perpage');
-		if(typeof per === undefined || per === false){
+		if(typeof per === undefined || per === false || location.pathname == '/admin/countries'){
 			per = 100;
 		}
 		var table = tbl.DataTable({
 			"sDom": "<'row' <'col-xs-3'l><'col-xs-6'f>r>t<'row'<'col-xs-4'i><'col-xs-7'p> >",
-			"aaSorting": [[0, "asc"]],
+			"aaSorting": [[1, "asc"]],
 			"iDisplayLength": per,
 			"responsive": true,
 			"language": {
 				"lengthMenu": "_MENU_ <span class='hidden-xs'>records per page </span>"
 			},
-			"pageLength": 5,
+			"bProcessing": true,
+			"bLengthChange": true
 		});	
 	}
 	
 	$('select[name="sort"]').on('change',function(e){
-		if(this.value == 'invalid') return false;
-		queryMasterList();
+		if(this.value == 'invalid'){
+			var qs = '?';
+			if($('table').hasAttr('data-type')){
+				qs += 'type_id='+$('table').data('type')+'&';
+			}
+			if($('select[name="cat_id"]').val() !== 'invalid'){
+				qs += 'cat_id='+$('select[name="cat_id"]').val()+'&';
+			}
+			if(qs.slice(-1) == '&'){
+				qs = qs.slice(0,-1);
+			}
+			window.location = window.location.origin+'/admin/masterlist'+qs;
+			
+		}else{
+			queryMasterList();
+		};
 	});
 	
 	$('select[name="cat_id"]').on('change',function(e){
-		if(this.value == 'invalid') return false;
-		queryMasterList();
+		if(this.value == 'invalid'){
+			var qs = '?';
+			if($('table').hasAttr('data-type')){
+				qs += 'type_id='+$('table').data('type')+'&';
+			}
+			if($('select[name="sort"]').val() !== 'invalid'){
+				qs += 'sort='+$('select[name="sort"]').val()+'&';
+			}
+			if(qs.slice(-1) == '&'){
+				qs = qs.slice(0,-1);
+			}
+			window.location = window.location.origin+'/admin/masterlist'+qs;
+		}else{
+			queryMasterList();
+		};
 	});
 	
 	function queryMasterList()
@@ -92,8 +120,10 @@ $(function(){
 					ids = ids.slice(0,-1);
 					$.getJSON(window.location.origin+'/admin/api/bulk_delete?table='+tbl+'&ids='+ids,function(data){
 						if(data.error==0){
+							ids = ids.split(',');
 							for(var j=0;j<ids.length;j++){
-								tbl.row( $('table tbody tr[data-id="'+ids[j]+'"]') ).remove();
+								table.row( $('tr[data-id="'+ids[j]+'"]') ).remove().draw();
+								sk.alert('The items were deleted','information');
 							}
 						}else{
 							sk.alert('You are not allowed to delete from this table (Permission Denied)','error');
@@ -105,4 +135,31 @@ $(function(){
 			}
 		}
 	});
+	
+	$(document).on('click','.bulk-suggest',function(e){
+		var checked = $('table tbody').find(':input:checked');
+		if(checked.length > 0){
+			var cmd = $(this).data('cmd');
+			var ids = '';
+			for(var i =0;i<checked.length;i++){
+				ids += checked.eq(i).val()+',';
+				if(i == checked.length - 1){
+					ids = ids.slice(0,-1);
+					$.getJSON(window.location.origin+'/admin/api/bulk_suggest?cmd='+cmd+'&ids='+ids,function(data){
+						if(data.error==0){
+							ids = ids.split(',');
+							for(var j=0;j<ids.length;j++){
+								table.row( $('tr[data-id="'+ids[j]+'"]') ).remove().draw();
+								sk.alert('The changes were saved','information');
+							}
+						}else{
+							sk.alert(data.message,'error');
+						}
+					});
+				}
+			}
+		}
+	});
+	
+	
 });

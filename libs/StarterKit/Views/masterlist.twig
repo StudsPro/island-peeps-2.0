@@ -116,9 +116,10 @@
 					<button type="button" class="btn btn-warning bulk-update" data-callback="msStatus" data-table="masterlist" data-column="status" data-val="2">Pending</button>
 					<button type="button" class="btn btn-ready bulk-update" data-callback="msStatus" data-table="masterlist" data-column="status" data-val="3">Ready</button>
 					<button type="button" class="btn btn-danger bulk-update" data-callback="msStatus" data-table="masterlist" data-column="status" data-val="4">Publish</button>
-					<!--
-					<button type="button" class="btn btn-danger bulk-delete">Delete</button>
-					-->
+					{% if admin.can('masterlist','delete') %}
+					|
+					<button type="button" class="btn btn-danger bulk-delete" data-table="masterlist">Delete</button>
+					{% endif %}
 				</div>	
 			</div>		
 		</div>

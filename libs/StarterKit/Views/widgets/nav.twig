@@ -76,8 +76,11 @@
 				</ul>
 				<ul class=" navbar-nav marquee top_panel_third hidden-xs hidden-sm ">
 					<li>
-						<a>Launch Day May 27th  2015!!! ***WWW.ISLANDPEEPS.COM***</a>
-					</li> 
+						<a>{{marquee_message|raw}}</a>
+					</li>
+				</ul>
+				<ul class=" navbar-nav clock-panel">
+					<li class="clock-div" data-time="{{""|date('U')}}"></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right top_panel_last">
 					<li class="divider-vertical"></li>
@@ -167,39 +170,45 @@
 				</li>
 				<li class="dropdown nav-notifications anotifilog profile">
 					<a href="{{base_url}}admin/setting/calendar" data-toggle="dropdown" data-hover="dropdown" data-delay="0" class="dropdown-toggle">
-						<span class="badge">15</span><i class="fa fa-warning"></i>
+						{% if nfeed|length > 0 %}
+						<span class="badge nf-count">{{nfeed|length}}</span>
+						{% endif %}
+						<i class="fa fa-warning"></i>
 					</a>
 					<ul class="dropdown-menu">
 						<li class="nav-notifications-header">
 							<a tabindex="-1" href="{{base_url}}admin/setting/calendar">
-								You have <strong>1</strong> new notifications
+								You have <strong class="nf-count">{% if nfeed|length > 0 %}{{nfeed|length}}{%else%}no{%endif%}</strong> new notifications
 							</a>
 						</li>
-						<li class="nav-notification-body  text-info">
-							<a href="{{base_url}}admin/peopleprofile/edit/215">
-								<i class="fa fa-user"></i>
-								Ace Hood profile Ready to Publish
+						{% for item in nfeed %}
+						<li class="nav-notification-body  text-{{item.type}}">
+							<a data-id="{{item.id}}" {% if('javascript:') in item.url %}href="#" onclick="{{item.url|raw|replace({'javascript:':''})}}"{%else%}href="{{base_url}}{{item.url}}{%endif%}">
+								<i class="fa {{item.icon}}"></i>
+								{{item.message}}
 							</a>
 						</li>
-						<input type="hidden" name="notifiids" id="notifiids" value=""/>
+						{%endfor%}
 					</ul>
 				</li>
 				<li class="dropdown nav-notifications nav-task">
 					<a href="#" data-toggle="dropdown" data-hover="dropdown" data-delay="0" class="dropdown-toggle">
-					<span class="badge">1</span><i class="fa fa-tasks"></i>
+					<span class="badge">0</span><i class="fa fa-tasks"></i>
 					</a>
 					<ul class="dropdown-menu">
 						<li class="nav-notifications-header">
 							<a tabindex="-1" href="#">
-								You have <strong>1</strong> new messages
+								You have <strong>no</strong> new messages
 							</a>
 						</li>
+						<!--
 						<li class="nav-notification-body alert-success text-success">
 							<a href="{{base_url}}admin/dashboard/givetask">
 							<i class="fa fa-user"></i>
 							Task (Add Birthdays f...)  <small class="pull-right ">Completed</small>	
 							</a>
 						</li>
+						-->
 					</ul>
 				</li>
 				</a>

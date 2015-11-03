@@ -11,12 +11,13 @@
 		<link id="current-theme" href="{{base_url}}static/adm/css/themes/admin/facebook.css" rel="stylesheet">
 		<link href="{{base_url}}static/adm/css/layouts/login1.css" rel="stylesheet">
 		<link href="{{base_url}}static/shared.css" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.4.0/animate.min.css" rel="stylesheet" type="text/css">
 	</head>
 	<body>
     <div class="container">
       <form role="form" class="form-signin form-horizontal" action="{{base_url}}admin/api/auth" method="post" data-callback="login">
         <h2 class="form-heading text-center">Please sign in</h2>
-        <input type="email" placeholder="Email Address" required="" autofocus="" class="form-control" name="email">
+        <input type="text" placeholder="Username" required="" autofocus="" class="form-control" name="name">
         <input type="password" placeholder="Password" required="" class="form-control" name="password" >
         <div class="row">
           <div class="col-xs-6">

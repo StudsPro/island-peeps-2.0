@@ -144,6 +144,12 @@
 							</div>
 						</div>
 						<div class="form-group">
+							<label for="title" class="col-md-2 control-label">Custom CSS</label>
+							<div class="col-md-5">
+								<textarea name="custom_css" rows="8" cols="10" class="form-control input-md">{{item.custom_css|raw}}</textarea>   
+							</div>
+						</div>
+						<div class="form-group">
 							<label for="name" class="col-md-2 control-label"> Capital <span class="require">*</span></label>
 							<div class="col-md-5">
 								<input type="text" name="capital" value="{{item.capital}}" class="form-control input-md" />
@@ -196,7 +202,7 @@
 function countryAE(data)
 {
 	if(data.error == 0){
-		sk.alert('The operation completed successfully.','success');
+		window.location = window.location.origin + '/admin/countries';
 	}else{
 		sk.alert(data.message,'error');
 	}

@@ -2,7 +2,7 @@
 {% for item in banners %}
 <tr>
 	<td>{{loop.index}}</td>
-	<td>{{item.title}}</td>
+	<td>{{item.title|title}}</td>
 	<td>
 		<a href="{{base_url}}admin/edit?t=banner&id={{item.id}}">
 		<img src="{{base_url}}static/adm/img/editicon.gif">

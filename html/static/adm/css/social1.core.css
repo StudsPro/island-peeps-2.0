@@ -557,22 +557,22 @@ a.text-primary:hover {
 a.text-success:hover {
   color: #356635;
 }
-.text-info {
+.text-info, .text-info * {
   color: #3a87ad;
 }
-a.text-info:hover {
+a.text-info:hover, a.text-info:hover *{
   color: #2d6987;
 }
-.text-warning {
+.text-warning, .text-warning * {
   color: #c09853;
 }
-a.text-warning:hover {
+a.text-warning:hover, a.text-warning:hover *  {
   color: #a47e3c;
 }
-.text-danger {
+.text-danger, .text-danger * {
   color: #b94a48;
 }
-a.text-danger:hover {
+a.text-danger:hover, a.text-danger:hover * {
   color: #953b39;
 }
 .bg-primary {

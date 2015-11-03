@@ -17,8 +17,9 @@
 	{% elseif item.kind == 'delete' %}
 	<div class="label label-danger">
 	<i class="fa fa-remove"></i>
-	{% else %}
-	
+	{% elseif item.kind == 'publish' %}
+	<div class="label label-primary">
+	<i class="fa fa-list"></i>
 	{% endif %}
 	</div>
 	<span>{{item.msg}} by {{item.username}}</span>

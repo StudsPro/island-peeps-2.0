@@ -18,56 +18,50 @@ $.mapbox = {
 		}).setView([15, -74], 5);
 		$.mapbox.quiet();
 	},
-	quiet: function(){
+	draw: function(){
 		var myLayer = L.mapbox.featureLayer().addTo(window.map);
-		$.mapbox.active = true;
-		
-		$.getJSON(window.location.origin+'/api/v1/getMapData',function(data){
-			var geoJson = [
-				{type: 'Feature',
-					geometry: {type: 'Point',coordinates: [-77.387695,15.284185 ]},
-					properties: {
-						title: 'Bermuda',
-						'change' : '7','lat' : '32.307800','long': '-64.750500',
-						"icon": {
-							"iconSize": [43, 22],
-							"iconAnchor": [50, 50],
-							"popupAnchor": [0, -55],
-							"className": "dot",
-						}
-				}
-				},
-				{
-					type: 'Feature',
-					geometry: {
-						type: 'Point',coordinates: [-77.629394,12.033948 ]
-					},
-					properties: {
-						title: 'Hawaii',
-						'change' : '7',
-						'lat' : '19.896766',
-						'long': '-155.582782',
-						"icon": {
-							"iconSize": [43, 22],
-							"iconAnchor": [50, 50],
-							"popupAnchor": [0, -55],
-							"className": "dot"
-						}
+		var data = $.mapbox.data;
+		var geoJson = [
+			{type: 'Feature',
+				geometry: {type: 'Point',coordinates: [-77.387695,15.284185 ]},
+				properties: {
+					title: 'Bermuda',
+					'change' : '7','lat' : '32.307800','long': '-64.750500',
+					"icon": {
+						"iconSize": [43, 22],
+						"iconAnchor": [50, 50],
+						"popupAnchor": [0, -55],
+						"className": "dot",
 					}
-				},
-
-			];
-			for(var i=0;i<data.message.length;i++){
-				geoJson.push(data.message[i]);
-				if(i == data.message.length-1){
-					console.log(geoJson);
-					myLayer.setGeoJSON(geoJson);
-				}
 			}
-		});
-		
-		
-		
+			},
+			{
+				type: 'Feature',
+				geometry: {
+					type: 'Point',coordinates: [-77.629394,12.033948 ]
+				},
+				properties: {
+					title: 'Hawaii',
+					'change' : '7',
+					'lat' : '19.896766',
+					'long': '-155.582782',
+					"icon": {
+						"iconSize": [43, 22],
+						"iconAnchor": [50, 50],
+						"popupAnchor": [0, -55],
+						"className": "dot"
+					}
+				}
+			},
+
+		];
+		for(var i=0;i<data.message.length;i++){
+			geoJson.push(data.message[i]);
+			if(i == data.message.length-1){
+				console.log(geoJson);
+				myLayer.setGeoJSON(geoJson);
+			}
+		}
 		myLayer.on('click', function(e) { 
 			e.layer.closePopup();
 			showInfo(e);
@@ -139,10 +133,6 @@ $.mapbox = {
 		// Create a marker and add it to the map.
 		var marker = L.marker([0, 0], {icon: L.mapbox.marker.icon({'marker-color': '#f86767'})}).addTo(map);
 		var marker2 = L.marker([0, 0], {icon: L.mapbox.marker.icon({'marker-color': '#f86767'})}).addTo(map);
-		
-		$.mapbox.interval = setInterval(function(){
-			j = 0;tick();}, 2000
-		);
 
 		function tick() {
 			// Set the marker to be at the same point as one
@@ -156,6 +146,25 @@ $.mapbox = {
 			if (++j < geojson.coordinates.length){
 				setTimeout(tick, 100)
 			}
+		}
+		
+		setTimeout(function(){
+			$.mapbox.interval = setInterval(function(){
+				j = 0;tick();}, 2000
+			);	
+		},500);
+		
+	},
+	quiet: function(){
+		$.mapbox.active = true;
+		
+		if($.mapbox.data === null){
+			$.getJSON(window.location.origin+'/api/v1/getMapData',function(data){
+				$.mapbox.data = data;
+				$.mapbox.draw();
+			});	
+		}else{
+			$.mapbox.draw();
 		}
 	}
 };
@@ -306,6 +315,38 @@ $.fn.ensureInview = function(repeat){
 		scroll_last = this.offset().top;
 		scroll_lock = true;
 		var $el = this;
+		setTimeout(function(){
+			$('html, body').animate({
+				scrollTop: scroll_last
+			},500,'swing',function(){
+				console.log('done');
+				setTimeout(function(){
+					scroll_lock = false;
+					enableScroll();
+					var scroll = window.pageYOffset || this.scrollTop;
+					if( scroll+1 >= $(window).height() && !$('body').hasClass('has-menu')){
+						$('body').addClass('has-menu');
+					}
+					if($('[data-slider]').inView() && $('body').hasClass('has-menu')){
+						$('body').removeClass('has-menu');
+					}
+					if($('.menu').is(':visible')){
+						slide.cleanup();
+						if($('[data-slider]').find('video').length > 0){
+							slide.hideVideos();
+						}
+						var el2 = $('.menu').find('[data-href="'+location.pathname+'"]');
+						if(el2.length > 0){
+							$('.menu li').removeClass('active');
+							el2.parent('li').addClass('active');
+						}
+					}
+				},0);
+			});	
+		},0);
+		
+		
+		/*
 		$('html, body').animate({
 			scrollTop: scroll_last
 		}, 100,'swing',function(){
@@ -346,6 +387,7 @@ $.fn.ensureInview = function(repeat){
 				},0);
 			}
 		});
+		*/
 	}
 };
 
@@ -424,9 +466,7 @@ function playvideo(el,timeout)
 
 function mapRun()
 {
-	setTimeout(function(){
-		$.mapbox.load();	
-	},1000);
+	$.mapbox.load();	
 }
 
 var slide = {
@@ -447,7 +487,7 @@ var slide = {
 				target.siblings('.video-slideup').append('<video src="'+video+'?cache-buster='+ (new Date().getTime() / 1000) +'" loop style="display:none;" preload="auto"></video>');
 				setTimeout(function(){
 					var el = target.siblings('.video-slideup').children('video');
-					playvideo(el,1000);
+					playvideo(el,200);
 				},0);
 			}	
 		}
@@ -463,9 +503,8 @@ var slide = {
 			}
 			catch(e){}
 		}
-		if($('iframe:visible').length >0){
-			console.log('lazy loading iframe');
-			$('iframe:visible').addClass('m-progress').on('load',function(e){
+		if($('iframe:visible').length >0 && $('iframe').inView()){
+			$('iframe:visible:not([src])').addClass('m-progress').on('load',function(e){
 				$(this).removeClass('m-progress');
 			}).attr('src',function(){
 				return $(this).data('src');
@@ -538,6 +577,60 @@ function slideIt( b )
 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 ga('create', 'UA-68535823-1', 'auto');
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+function moveDisqusDiv(personeId){
+$( "#disqus_thread" ).remove();
+document.getElementById(personeId).innerHTML = "<div id='disqus_thread'></div>";
+return true;
+}
+
+
+
+/* * * Disqus Reset Function * * */
+function disqus(e) {
+	e.preventDefault();
+	
+	var div = $(this).parent().parent().siblings('.disqus-append');
+	
+	if(div.children('#disqus_thread').length == 0){
+		$('#disqus_thread').remove();
+		div.html('<div id="disqus_thread"></div>');	
+		
+		setTimeout(function(){
+			$('#disqus_thread').ensureInview();
+			disableScroll();
+			if(typeof DISQUS === 'undefined' || DISQUS === false){
+				var disqus_shortname = 'islandpeeps2015'; //
+				var disqus_identifier = window.location.pathname.replace('/','-');
+				var disqus_url = window.location.href;
+				var disqus_config = function () {
+					this.language = "en";
+				};
+				(function() {
+					var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+					dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+					(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+				})();
+			}else{
+				DISQUS.reset({
+				config: function () 
+					{
+						this.page.identifier = window.location.pathname;
+						this.page.url = window.location.href;
+						this.page.title = document.title;
+						this.language = 'en';
+					},
+					reload: true
+				});
+				setTimeout(function(){
+					enableScroll();
+				},500);
+			}	
+		},0);	
+	}
+	return false;
+};
   
 $(function(){
 	var emit = {};
@@ -589,7 +682,7 @@ $(function(){
 			if(typeof callback === 'function'){
 				callback.apply(this,[]);
 			}else{
-				$.app.done()
+				$.app.done();
 			}
 		});
 	}
@@ -687,16 +780,13 @@ $(function(){
 		}
 	});
 	
-	$(document).foundation();
-	
 	var t_load = null;
-	$(window).load(function(){
+	$(window).on('start.loading',function(){
 		t_load = setInterval(function(){
 			console.log('waiting..');
 			if(slide.created && skel_created){
 				clearInterval(t_load);	
 				setTimeout(function(){
-					// $('body').removeClass('preload');
 					setTimeout(function(){
 						$.app.go(location.pathname);
 					},1000);
@@ -761,6 +851,14 @@ $(function(){
 		});
 	});
 	
+	$(window).on('menuin',function(){
+		
+	});
+	
+	$(window).on('menuout',function(){
+		
+	});
+	
 	//handle click event
 	$(document).on('click','[data-href]',function(e){
 		var href = $(this).data('href');
@@ -769,14 +867,35 @@ $(function(){
 		}
 	});
 	
+	$(document).foundation();
+	
+	$(window).trigger('start.loading');
+	
 	$(window).on('scroll',function(e){
 		if(scroll_lock){
+			e.stopImmediatePropagation();
 			disableScroll();
-			setTimeout(enableScroll,50);
 		}else{
 			if(scroll_int != null) clearTimeout(scroll_int);
 			scroll_int = setTimeout(function(){
 				var scroll = window.pageYOffset || this.scrollTop;
+				if( scroll+1 >= $(window).height() && !$('body').hasClass('has-menu')){
+					$('body').addClass('has-menu');
+				}
+				if($('[data-slider]').inView() && $('body').hasClass('has-menu')){
+					$('body').removeClass('has-menu');
+				}
+				if($('.menu').is(':visible')){
+					slide.cleanup();
+					if($('[data-slider]').find('video').length > 0){
+						slide.hideVideos();
+					}
+					var el2 = $('.menu').find('[data-href="'+location.pathname+'"]');
+					if(el2.length > 0){
+						$('.menu li').removeClass('active');
+						el2.parent('li').addClass('active');
+					}
+				}
 				if(!scroll_lock){
 					if(scroll > scroll_last){
 						scrollDown();
@@ -799,7 +918,6 @@ $(function(){
 	function scrollTo(el)
 	{
 		if(el.length > 0 && !scroll_lock){
-			el.ensureInview();
 			$.app.go(el.data('slug'));	
 		}
 	}
@@ -902,7 +1020,8 @@ $(function(){
 		$('.goog-te-menu-frame:first').contents().find('.goog-te-menu2-item span.text:contains('+language+')').get(0).click();
 		return false;
 	});
-
+	
+	$(document).on('click','.disqus-btn button',disqus);
 });
 
 

@@ -780,3 +780,41 @@ line-height: 1.4em;
 .chat.minimized .panel-title{
 	line-height: 1;
 }
+
+.chat .mention{
+	cursor: pointer;
+}
+
+
+.clock-panel{
+	display: block;
+	padding: 0px;
+	margin: 0px;
+	list-style: outside none none;
+	line-height: 1;
+	position: relative;
+	overflow: hidden;
+	width: 8.5%;
+	height: 43px;
+}
+
+.clock-panel li{
+	width: 100%;
+}
+
+.clock-panel .clock-div .clockdate{
+	display: block;
+	width: 100%;
+	text-align: center;
+	padding: 5px 0px 1px;
+	font-size: 0.95rem;
+}
+
+.clock-panel .clock-div .clocktime{
+	font-size: 1.5rem;
+	color: #fff;
+	padding: 3px 5px 5px;
+	display: block;
+	width: 100%;
+	text-align: center;
+}

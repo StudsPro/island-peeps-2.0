@@ -514,23 +514,6 @@ $(function(){
 		});
 	}
 	
-	$(document).on('click','.bulk-suggest',function(e){
-		var checked = $('table tbody').find(':input:checked');
-		if(checked.length > 0){
-			var cmd = $(this).data('cmd');
-			var ids = '';
-			for(var i =0;i<checked.length;i++){
-				ids += checked.eq(i).val()+',';
-				if(i == checked.length - 1){
-					ids = ids.slice(0,-1);
-					$.getJSON(window.location.origin+'/admin/api/bulk_suggest?cmd='+cmd+'&ids='+ids,function(data){
-						window.location.reload();
-					});
-				}
-			}
-		}
-	});
-	
 	$(document).on('click','.themechange',function(e){
 		var v = this.id;
 		$('.themechange').removeClass('selected');
@@ -1191,6 +1174,7 @@ $(function(){
 			barChart('pie-profilebyadmin',data.profiles_affiliate,'name','num');
 			barChart('pie-profilebob',data.birthdays_month,'month','num');
 			barChart('pie-suggestiontopemail',data.suggestions_email,'email','num');
+			barChart('pie-publish',data.profiles_published_type_country,'name','count');
 		});
 		
 		
@@ -1200,7 +1184,34 @@ $(function(){
 				barChart("pie-cat",data,'country','count');
 			});
 		});
+		
+		$(document).on('change','#mlist-published-select',function(e){
+			$.getJSON(window.location.origin+'/admin/api/switchMStatType?type_id='+$(this).val(),function(data){
+				$('#pie-publish').html('');
+				barChart("pie-publish",data,'name','count');
+			});
+		});
 	}
+	
+	setTimeout(function(){
+		$('.marquee').marquee({
+			showSpeed:1000, //speed of drop down animation
+			scrollSpeed: 10, //lower is faster
+			yScroll: 'bottom',  // scroll direction on y-axis 'top' for down or 'bottom' for up
+			direction: 'left', //scroll direction 'left' or 'right'
+			pauseSpeed: 1000, // pause before scroll start in milliseconds
+			pauseOnHover: true,
+			duplicated: true  //continuous true or false
+		});	
+	},500);
+	
+	$('.clock-div').clock({
+		'timestamp': parseFloat( $('.clock-div').data('time') ) * 1000,
+		//'calendar': "false",
+		"seconds":"false"
+	});
+	
+	
 });
 
 

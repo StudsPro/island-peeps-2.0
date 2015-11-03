@@ -1,0 +1,31 @@
+{% include 'widgets/nav.twig' %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<ul class="breadcrumb breadcrumb-arrows breadcrumb-default">
+				<li><a href="{{base_url}}admin"><i class="fa fa-home fa-lg"></i></a></li>
+				<li><a href="#">Access Denied</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12 new_col6 grid">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<div class="col-md-12" style="padding-top: 2px;">  
+						<div class="col-md-12 text-center"> 
+							<h4 style="margin-top:6px">I'm sorry {{admin.name}}, you are not allowed to access this page.</h4>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+				<div class="panel-body" style="height: 300px">
+					<p>Contact the Admin for more information.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% include 'widgets/footer.twig' %}

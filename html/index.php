@@ -16,6 +16,7 @@
 		<link href="https://api.tiles.mapbox.com/mapbox.js/v1.6.4/mapbox.css" rel="stylesheet" />
 		<link href="http://islandpeeps.openex.info/static/shared.css" rel="stylesheet" type="text/css" />
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.4.0/animate.min.css">
+		<link rel="icon" href="http://islandpeeps.openex.info/static/favicon.ico" />
 	</head>
 	<body class="preload">
 		<div class="menu columns">
@@ -49,6 +50,16 @@
 		</div>
 		<div class="clearfix" data-viewpoint>
 			<div class="row below-fold" data-slug="/extras/memes" data-memes>
+			</div>
+		</div>
+		<div class="clearfix">
+			<div class="row footer">
+				<div class="large-4 columns small-12">
+					<img src="http://islandpeeps.openex.info/static/front/img/slider/logo.png"/>
+				</div>
+				<div class="large-8 columns small-12">
+					<small style="float:right">&copy;2015 Island Peeps. All rights reserved</small>
+				</div>
 			</div>
 		</div>
 		<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>

@@ -311,10 +311,17 @@ slider .owl-carousel {
 .country > div{
 	padding: 80px 4%;
 }
-.country > div:first-child{
+.country > div:not(.special-right):first-child{
 	padding-right: 2%;
 }
-.country > div:last-child{
+.country > div:not(.special-right):last-child{
+	padding-left: 2%;
+}
+
+.country > div.special-right:last-child{
+	padding-right: 2%;
+}
+.country > div.special-right:first-child{
 	padding-left: 2%;
 }
 
@@ -1175,7 +1182,8 @@ label {
 }
 
 select,input:not([type]), input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], input[type="color"], textarea {
-    appearance: none;
+    -webkit-appearance: none;
+	appearance: none;
     border-radius: 0px;
     background-color: #FFF;
     border-style: solid;
@@ -1195,6 +1203,7 @@ select,input:not([type]), input[type="text"], input[type="password"], input[type
 }
 
 select{
+	-webkit-appearance: none;
 	-moz-appearance: none !important;
 	background-color: #FAFAFA;
 	border-style: solid;
@@ -1590,4 +1599,23 @@ body{
 	border: none;
 	height: 100%;
 	width: 100%;
+}
+
+.footer{
+	padding: 50px 30px;
+}
+
+.footer img{
+	width: 300px;
+	padding: 10px;
+	height: 152px;
+}
+.footer small{
+	font-size: 0.93rem;
+	padding-top: 65px;
+}
+
+#disqus_thread{
+	margin-top: -120px;
+	padding-top: 125px;
 }

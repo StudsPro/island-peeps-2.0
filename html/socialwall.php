@@ -31,6 +31,9 @@ if(isset($_GET['wall'])){
 	<script type="text/javascript" src="static/front/socialwall/js/jquery.social.stream.wall.1.6.js"></script>
 	<link rel="stylesheet" type="text/css" href="static/front/socialwall/css/dcsns_wall.css" media="all" />
 	<style>
+	html {
+		overflow: scroll;
+	}
 	body{
 		padding:0;
 		margin:0;
@@ -56,6 +59,9 @@ if(isset($_GET['wall'])){
 	$extra = '
 	<link rel="stylesheet" type="text/css" href="static/front/socialwall/css/dcsns_dark.css" media="all" />
 	<style>
+	html {
+		overflow:scroll;
+	}
 	body{
 		padding:0;
 		margin:0;
@@ -92,14 +98,25 @@ if(isset($_GET['wall'])){
 $(function(){
 	$('#social-stream1').dcSocialStream({
 		feeds: {
+
+
 			twitter: {
 				id: '<?php echo @$twitter->twitterid;?>',
 				thumb: true,
-				out: '<?php echo @implode(",",$twitter->out);?>',
-				search: '<?php echo @$twitter->search; ?>',
-				retweets: <?php echo @$twitter->retweets;?>,
-				replies: <?php echo @$twitter->replies;?>,
+				out: 'intro,text',
+				search: '',
+				retweets: true,
+				replies: true,
 			},
+
+			facebook: {
+				id: '<?php echo trim($facebook->fbid);?>',
+				out: 'intro,thumb,user,text,share',
+				text: 'content',
+				comments: '',
+				image_width: '<?php echo $facebook->image_width;?>',
+			},
+
 			rss: {
 				id: '<?php echo @$rss->rssid;?>',
 				out: '<?php echo @implode(",",$rss->out);?>',
@@ -109,13 +126,6 @@ $(function(){
 				id: '<?php echo @$stumbleupon->stumbleuponid;?>',
 				out: '<?php echo @implode(",",$stumbleupon->out);?>',
 				feed: '<?php echo @implode(",",$stumbleupon->feed);?>',
-			},
-			facebook: {
-				id: '<?php echo trim($facebook->fbid);?>',
-				out: '<?php echo implode(",",$facebook->out);?>',
-				text: '<?php  echo $facebook->text;?>',
-				comments: '<?php echo $facebook->comments;?>',
-				image_width: '<?php echo $facebook->image_width;?>',
 			},
 			google: {
 				id: '<?php echo $google->googleid;?>',

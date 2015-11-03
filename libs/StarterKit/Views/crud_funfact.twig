@@ -39,6 +39,11 @@
 								<label for="title" class="col-md-2 control-label"> Image</label>
 								<div class="col-md-5">
 									<input type="file" name="uploaded_image" class="form-control input-md" />
+									{% if item is defined %}
+									<div class="col-md-3 text-center  " id="raggionmapimg">
+										<img src="{{item.img}}" width="80" style="background:#000;">
+									</div>
+									{% endif %}
 									<h3 style="text-align: center">OR</h3>
 								</div>
 							</div>
@@ -104,7 +109,7 @@
 function funfactAE(data)
 {
 	if(data.error == 0){
-		sk.alert('The operation completed successfully.','success');
+		window.location = window.location.origin + '/admin/masterlist?type_id=3';
 	}else{
 		sk.alert(data.message,'error');
 	}

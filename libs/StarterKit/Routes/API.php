@@ -86,6 +86,8 @@ class API extends ViewController
 		$args['memes'] = $db->getMemes();
 		$args['regions'] = $db->getAll('SELECT id,name FROM country');
 		$args['suggestion_message'] = $db->getCell('SELECT suggestion_message from sitesetting WHERE id="1"');
+		$args['landing'] = $db->getRow('SELECT landing_body as body ,landing_title as title FROM sitesetting WHERE id="1"');
+		
 		return [
 			'error'=>0,
 			'message'=>[
@@ -312,8 +314,24 @@ class API extends ViewController
 		if(!$app->db->exists('country','uri',$uri)){
 			throw new \exception('that country doesn\'t exist');
 		}
+		
+		
 		$args = $app->args;
+		
+		
+		$c = array_column($app->db->getAll('SELECT id FROM country ORDER BY name ASC'),'id');
+		
 		$args['country'] = $app->db->cachedCall('getCountry',[$uri],60 * 5); //cache data for 5 minutes.
+		
+		
+		$pos = array_search($args['country']['id'],$c) + 1;
+		
+		if($pos%2==0){
+			$args['float_item'] = 'right';
+		}else{
+			$args['float_item'] = 'left';
+		}
+		
 		$args['ad_top'] = $app->db->getAd($args['country']['id'],'video');
 		$args['ad_bottom'] = $app->db->getAd($args['country']['id'],'image');
 		$html= $this->twig->loadTemplate('frontend/country.twig')->render($args);

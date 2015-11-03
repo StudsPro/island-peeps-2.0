@@ -10,7 +10,9 @@
 {% else %}
 <div class="country columns">
 {% endif %}
-
+		
+		{% if float_item == 'right' %}
+		
 		<div class="large-4 columns">
 			<div class="country-heading columns">
 				<h1>{{country.name}}</h1>
@@ -46,6 +48,7 @@
 					<button></button>
 				</div>
 			</div>
+			<div class="large-12 columns disqus-append"></div>
 		</div>
 		<div class="large-8 columns">
 			<div class="large-7 columns" >
@@ -77,7 +80,7 @@
 										</p> 
 										</div>
 								<div class="coloredcircle st_ap stat-1">
-										<div class="cover-image" style="background-image:url('{{country.cover_img}}');">
+										<div class="cover-image" style="background-image:url('{{country.cover_img}}');{{country.custom_css|raw}}">
 										</div> 
 								</div>
 							</div>
@@ -86,6 +89,86 @@
 				</div>
 			</div>
 		</div>
+		
+		{% else %}
+		<div class="large-8 columns special-right">
+			<div class="large-5 columns end" style="padding-right:4%">
+				<div class="large-12 columns">
+					<a class="ptv">
+						<img alt="" src="{{country.flag_img}}" height="210" width="350">
+						<span class="ctr_detail">
+							Motto: {{country.motto}} <br>
+							Anthem: {{country.anthem}}<br>                                                    
+							National Dish: {{country.national_dish}}
+						</span>
+					</a>
+				</div>
+				<div class="large-12 columns">
+					<ul class="statGrid clearfix">
+						<li class="twist">
+							<div class="statItem">
+									<div class="statInfo" style="background:#4DCBF4">
+										<h3>
+											Capital: {{country.capital}}<br>                                                                        
+											Language: {{country.language}}<br>                                                                        
+											Population: {{country.population}}
+										</h3>
+										<p>
+											{{country.ethnic_data|nl2br}}
+										</p> 
+										</div>
+								<div class="coloredcircle st_ap stat-1">
+										<div class="cover-image" style="background-image:url('{{country.cover_img}}');{{country.custom_css|raw}}">
+										</div> 
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="large-7 columns" >
+				<img src="{{country.img}}" class="g-frame"></img>
+			</div>
+		</div>
+		<div class="large-4 columns special-right">
+			<div class="country-heading columns">
+				<h1>{{country.name}}</h1>
+			</div>
+			<div class="country-sub columns">
+				<h2>{{country.title}}</h2>
+			</div>
+			<div class="country-desc columns">
+				<p>{{country.description}}</p>
+			</div>
+			<div class="large-8 columns paddress-left0">
+				<div id="menu-wrap" class="row">
+					<div class="menu-item">
+						<span id="active" class="icon fa fa-facebook"></span>
+						<a style="outline: medium none;" hidefocus="true" id="hover" class="text share_fb"  href="javascript:void(0);"><i class="fa fa-facebook"></i></a>
+					</div>
+					<div class="menu-item">
+						<span id="active" class="icon fa fa-twitter"></span>
+						<a style="outline: medium none;" hidefocus="true" id="hover" target="_blank" href="http://twitter.com/share?text={{description}}&url={{url}}&hashtags=<{{profile.tags}}" class="text share_t"><i class="fa fa-twitter"></i></a>
+					</div>
+					<div class="menu-item">
+						<span id="active" class="icon fa fa-pinterest-square"></span>
+						<a href="http://www.pinterest.com/pin/create/button/?url={{url}}&media={{profile.image}}&description={{profile.description}}" target="_blank" class="text share_pinte" id="hover"><i class="fa fa-pinterest-square"></i></a>
+					</div> 
+					<div class="menu-item">
+						<span id="active" class="icon fa fa-tumblr"></span>
+						<a style="outline: medium none;" hidefocus="true" href="http://www.tumblr.com/share/photo?source={{profile.image}}&caption={{profile.description}}&click_thru={{url}}" id="hover" class="text share_tumblr" target="_blank"><i class="fa fa-tumblr"></i></a>
+					</div> 
+				</div>
+			</div>
+			<div class="large-4 columns">
+				<div class="disqus-btn">
+					<button></button>
+				</div>
+			</div>
+			<div class="large-12 columns disqus-append"></div>
+		</div>
+		
+		{% endif %}
 </div>
 <div class="large-12 columns" style="padding:0;">
 <div class="row below-fold" data-viewpoint>

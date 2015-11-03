@@ -165,9 +165,9 @@ class DB
 	// end user funcs
 	
 	//admin functions
-	public function fetchAdmin($email)
+	public function fetchAdmin($name)
 	{
-		return \R::getRow('SELECT * FROM admin WHERE email=:email LIMIT 1',[':email'=>$email]);
+		return \R::getRow('SELECT * FROM admin WHERE name=:name LIMIT 1',[':name'=>$name]);
 	}
 	
 	public function fetchAdminRestore($token)
@@ -294,9 +294,7 @@ class DB
 	public function slugs()
 	{
 		$data = [
-			'countries'=>[
-			
-			],
+			'countries'=>[],
 		];
 		$countries = \R::getAll('SELECT uri,id FROM country ORDER BY name ASC');
 		foreach($countries as $m){
@@ -307,7 +305,7 @@ class DB
 
 	public function getRecent()
 	{
-		$data = \R::getAll('SELECT * FROM masterlist WHERE type_id IN (1,3) AND status="4" ORDER BY id DESC LIMIT 0,12');
+		$data = \R::getAll('SELECT * FROM masterlist WHERE type_id IN (1,3) AND status="4" ORDER BY updated DESC LIMIT 0,12');
 		foreach($data as &$row){
 			$row['regions'] = \R::getAll('SELECT name,map_img,uri FROM country WHERE id IN ('.$row['regions'].')');
 		}
@@ -318,7 +316,7 @@ class DB
 	{
 		$per_page = 20;
 		$data = \R::getRow('SELECT * FROM country WHERE uri=:uri',[':uri'=>$uri]);
-		$data['profiles'] = \R::getAll('SELECT a.*,b.name as category FROM masterlist a JOIN category b on b.id=a.category_id WHERE a.type_id IN(1,3) AND FIND_IN_SET(:id,a.regions) LIMIT 0,20',[':id'=>$data['id']]);
+		$data['profiles'] = \R::getAll('SELECT a.*,b.name as category FROM masterlist a JOIN category b on b.id=a.category_id WHERE a.type_id IN(1,3) AND FIND_IN_SET(:id,a.regions) AND a.status="4" ORDER BY a.updated DESC',[':id'=>$data['id']]);
 		foreach($data['profiles'] as &$row)
 		{
 			$row['regions'] = \R::getAll('SELECT name,map_img,uri FROM country WHERE id IN ('.$row['regions'].')');
@@ -632,6 +630,7 @@ class DB
 		$d = array_merge($d1,$d2);
 		
 		$data = [];
+		//profile birthdays and country independence dates
 		foreach($d as $row)
 		{
 			if(isset($row['name'])){
@@ -656,6 +655,49 @@ class DB
 				'className'=>$t,
 				'allDay'=>'true',
 				'url'=>$url,
+			];
+		}
+		
+		//publish dates
+		$d3 = \R::getAll('SELECT * FROM masterlist WHERE published REGEXP :regex',[':regex'=>'^([0-9]{4}\-{1}('.implode('|',explode(',',$months)).'){1}\-{1}[0-9]{2})$']);
+		foreach($d3 as $row){
+			$date =  $row['published'];
+			$data[]= [
+				'title'=>$row['title'].' profile published',
+				'start'=>$date,
+				'end'=>$date,
+				'backgroundColor'=>'#3B5998 !important',
+				'className'=>'pday',
+				'allDay'=>'true',
+				'url'=>'#',
+			];
+		}
+		
+		//affiliate birthdays
+		$d4 = \R::getAll('SELECT * FROM admin '.$constrain);
+		foreach($d4 as $row){
+			$date =  date('Y',$start).'-'.$row['month'].'-'.$row['day'];
+			$data[]= [
+				'title'=>$row['name'].'\'s Birthday',
+				'start'=>$date,
+				'end'=>$date,
+				'backgroundColor'=>'#C2DFF2 !important',
+				'className'=>'afbday',
+				'allDay'=>'true',
+				'url'=>'#',
+			];
+		}
+		
+		$d5 = \R::getAll('SELECT * FROM customevent WHERE start>=:start AND (end<=:end OR start<=:end)',[':start'=>date('Y-m-d',$start),':end'=>date('Y-m-d',$end)]);
+		foreach($d5 as $row){
+			$data[]= [
+				'title'=>$row['title'],
+				'start'=>$row['start'],
+				'end'=>$row['end'],
+				'backgroundColor'=>'#BBE2AE !important',
+				'className'=>'custday',
+				'allDay'=>'true',
+				'url'=>'#',
 			];
 		}
 		return $data;
@@ -1010,6 +1052,15 @@ class DB
 		return $data;
 	}
 	
+	public function countPublishedByTypeCountry($type_id)
+	{
+		$data = \R::getAll('SELECT id,name FROM country');
+		foreach($data as &$row){
+			$row['count'] = \R::count('masterlist', 'status="4" AND type_id=:tid AND FIND_IN_SET(:id,regions) ',[':tid'=>$type_id,':id'=>$row['id']]);
+		}
+		return $data;
+	}
+	
 	public function countProfilesByStatus()
 	{
 		$data = \R::getAll('select count(id) as num,`status` as `name` FROM masterlist GROUP BY `status`');
@@ -1037,6 +1088,10 @@ class DB
 		return $data;
 	}
 	
+	public function getNfeed($admin_id)
+	{
+		return \R::getAll('SELECT * FROM notification WHERE admin_id IS NULL OR admin_id=:id ORDER BY id DESC',[':id'=>$admin_id]);
+	}
 	public function countProfilesByType()
 	{
 		return \R::getAll('SELECT count(a.id) AS num,b.name FROM masterlist a JOIN type b on a.type_id=b.id GROUP BY b.name');

@@ -1,11 +1,10 @@
 <?php
 
-die;
 // SET YOUR TWITTER API DETAILS HERE
-$consumer_key = ""; 
-$consumer_secret = "";
-$oauth_access_token = ""; 
-$oauth_access_token_secret = "";
+$consumer_key = "2j8wOGe8BGTn2yD0YfCZiD0Df"; 
+$consumer_secret = "1YPTTDFDZ7plWipwaIAZDacnvafBMRlKdDK6zud6jAfiGUGG8n";
+$oauth_access_token = "1793474598-1VQpj7hucxxJqOtYqBJl2gfJ9Yxnchg4XCNffax"; 
+$oauth_access_token_secret = "v9FwXBj9b3DEqOY5gDF9Ot9fQYmaaqoJsnbdNvMZi174i";
 
 $count = isset($_GET['count']) ? $_GET['count'] : '20';
 $include_rts = isset($_GET['include_rts']) ? $_GET['include_rts'] : '';

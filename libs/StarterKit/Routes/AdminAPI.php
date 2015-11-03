@@ -54,7 +54,7 @@ class AdminAPI
 		}
 		$post = $app->post;
 		$required = [
-			'email',
+			'name',
 			'password'
 		];
 		foreach($required as $k){
@@ -62,7 +62,7 @@ class AdminAPI
 				throw new \exception('Missing form value :'.ucFirst($k));
 			}	
 		}
-		$user = new \StarterKit\Admin($post['email'],$post['password'],true);	
+		$user = new \StarterKit\Admin($post['name'],$post['password'],true);	
 		return ['error'=>0,'message'=>0];
 	}
 	
@@ -155,10 +155,10 @@ class AdminAPI
 						throw new \exception('formatting error');
 					}
 					$tmp = array_map('intval',explode(',',$v));
-					if(count($tmp) !== 15){
+					if(count($tmp) !== 16){
 						throw new \exception('number of elements does not match specification.');
 					}
-					$all = range(0,14);
+					$all = range(0,15);
 					if(sort($all) !== sort($tmp)){
 						throw new \exception(json_encode([$all,$tmp]));
 					}
@@ -173,7 +173,11 @@ class AdminAPI
 					if(in_array($v,['blue','green','orange','white'])){
 						$app->session['admin']->theme = $v;
 						$app->session['admin']->update();
+					}else{
+						throw new \exception('failure 1');
 					}
+				}else{
+					throw new \excepiton('failure 2');
 				}
 			
 			break;
@@ -258,6 +262,19 @@ class AdminAPI
 			}
 		}
 		
+		$optional = [
+			'month'=>'min',
+			'day'=>'min',
+			'year'=>'min',
+		];
+		
+		foreach($optional as $k=>$rule)
+		{
+			if(isset($post[$k])){
+				$admin->{$k} = $filter->{$rule}($post[$k]);
+			}
+		}
+		
 		$admin->update();
 		
 		return ['error'=>0,'message'=>1];
@@ -284,6 +301,12 @@ class AdminAPI
 		$val = $get['value'];
 		$ids = $get['ids'];
 		
+		if(!$app->session['admin']->can('masterlist','publish') && $col=='status' && $val==4){
+			throw new \exception('Unable to publish items (Permission Denied)');
+		}
+		
+		
+		
 		$allowed = ['masterlist'];
 		
 		if(!in_array($tbl,$allowed)){
@@ -297,6 +320,25 @@ class AdminAPI
 		}
 		
 		$db->updateColumnMulti($tbl,$col,$val,$ids);
+		
+		
+		if($col=='status' && $val=='publish'){
+			foreach($ids as $id)
+			{
+				$m = $db->model('masterlist',$id);
+				if(!isset($m->published) || (isset($m->published) && empty($m->published)) ){
+					$m->published = date('Y-m-d');
+					$db->store($m);
+				}
+				$t = $db->model('affiliatelog');
+				$t->admin_id = $app->session['admin']->id;
+				$t->kind = 'publish';
+				$t->msg =  $m->title .' profile has been published';
+				$t->timestamp = time();
+				$db->store($t);
+			}	
+		}
+		
 		
 		return ['error'=>0,'message'=>1];
 	}
@@ -338,6 +380,19 @@ class AdminAPI
 			$ids = [$ids];
 		}
 		
+		if($tbl == 'masterlist'){
+			foreach($ids as $id)
+			{
+				$m = $db->model('masterlist',$id);
+				$t = $db->model('affiliatelog');
+				$t->admin_id = $app->session['admin']->id;
+				$t->kind = 'delete';
+				$t->msg =  $m->title .' profile has been deleted';
+				$t->timestamp = time();
+				$db->store($t);
+			}
+		}		
+		
 		$db->exec('DELETE FROM '.$tbl.' WHERE id IN('.implode(',',$ids).')');
 		
 		return ['error'=>0,'message'=>1];
@@ -366,12 +421,18 @@ class AdminAPI
 		
 		switch($cmd){
 			case 'del':
+				if(!$admin->can('suggestions','delete')){
+					throw new \exception('Unable to delete suggestion (Permission Denied)');
+				}
 				foreach($ids as $id)
 				{
 					$db->delete('suggestion','id',$id);
 				}
 			break;
 			case 'add':
+				if(!$admin->can('suggestions','edit')){
+					throw new \exception('Unable to publish suggestions to masterlist (Permission Denied)');
+				}
 				foreach($ids as $id)
 				{
 					$data = $db->getRow('SELECT * FROM suggestion WHERE id=:id',[':id'=>$id]);
@@ -388,6 +449,12 @@ class AdminAPI
 					$t = $db->model('suggestion',$id);
 					$t->status = 1;
 					$db->store($t);
+					$t3 = $db->model('affiliatelog');
+					$t3->admin_id = $app->session['admin']->id;
+					$t3->kind = 'create';
+					$t3->msg =  $t2->title .' profile has been added';
+					$t3->timestamp = time();
+					$db->store($t3);
 				}
 			break;
 		}
@@ -511,6 +578,9 @@ class AdminAPI
 		$id = isset($get['id']) ? $filter->cast_int($get['id']) : false;
 		
 		if($id){
+			if(!$admin->can('masterlist','edit')){
+				throw new \exception('You are not allowed to create masterlist items (Permission Denied)');
+			}
 			$t = $db->model('masterlist',$id);
 			
 			if( (int) $t->id !== $id){
@@ -519,7 +589,11 @@ class AdminAPI
 			if( (int) $t->type_id !== 1){
 				throw new \exception('a 2');
 			}
+			$prev_status = $t->status;
 		}else{
+			if(!$admin->can('masterlist','create')){
+				throw new \exception('You are not allowed to create masterlist items (Permission Denied)');
+			}
 			$t = $db->model('masterlist');
 		}
 		
@@ -538,8 +612,58 @@ class AdminAPI
 			$t->admin_id = $admin->id;
 		}
 		$t->uri = strtolower($this->url_safe($t->title));
+		$t->updated = time();
 		$db->store($t);
 		
+		if($id && $t->status == 4 && $prev_status !== 4){
+			if(!isset($t->published) || (isset($t->published) && empty($t->published)) ){
+				$t = $db->model('masterlist',$id);
+				$t->published = date('Y-m-d');
+				$db->store($t);
+			}
+			$t2 = $db->model('affiliatelog');
+			$t2->admin_id = $app->session['admin']->id;
+			$t2->kind = 'publish';
+			$t2->msg =  $t->title .' profile has been published';
+			$t2->timestamp = time();
+			$db->store($t2);
+			
+		}else{
+			
+			$t2 = $db->model('affiliatelog');
+			$t2->admin_id = $app->session['admin']->id;
+			$t2->kind = 'create';
+			$t2->msg =  $t->title .' profile has been created';
+			$t2->timestamp = time();
+			$db->store($t2);
+			
+		}
+
+		if( $t->status == 3 && (!isset($prev_status) || (isset($prev_status) && $prev_status !== 3) ) )
+		{
+			switch($t->type_id){
+				case 1:
+					$type_name = 'profile';
+				break;
+				case 2:
+					$type_name = 'funfact';
+				break;
+				case 3:
+					$type_name = 'meme';
+				break;
+			}
+			$t2 = $db->model('notification');
+			$t2->message = $t->title . ' is ready to publish';
+			$t2->timestamp = time();
+			$t2->url = 'admin/edit?t='.$type_name.'&id='. $t->id;
+			$t2->masterlist_id = $t->id; //store the referenced item so we can delete this notification on update of the item
+			$t2->icon = 'fa-user';
+			$t2->type = 'info';
+			$db->store($t2);
+		}
+	
+		
+		$app->notify('Your changes were saved','success');
 		return ['error'=>0,'message'=>1];
 	}
 	
@@ -572,7 +696,8 @@ class AdminAPI
 			'month'=>'min',
 			'day'=>'min',
 			'year'=>'min',
-			'description'=>'min'
+			'description'=>'min',
+			'custom_css'=>'min'
 		];
 		
 		$filter->custom_filter('status_fm',function($input) use($filter){
@@ -586,6 +711,9 @@ class AdminAPI
 		$id = isset($get['id']) ? $filter->cast_int($get['id']) : false;
 		
 		if($id){
+			if(!$admin->can('country','edit')){
+				throw new \exception('You are not allowed to create countries (Permission Denied)');
+			}
 			$t = $db->model('country',$id);
 			
 			if( (int) $t->id !== $id){
@@ -593,6 +721,9 @@ class AdminAPI
 			}
 
 		}else{
+			if(!$admin->can('country','create')){
+				throw new \exception('You are not allowed to edit countries (Permission Denied)');
+			}
 			$t = $db->model('country');
 		}
 		
@@ -625,6 +756,7 @@ class AdminAPI
 		$t->uri = strtolower($this->url_safe($t->name));
 		$db->store($t);
 		$app->db->cachedCall('getCountry',[$t->uri],60 * 5,true);//4th parameter means force overwrite cache
+		$app->notify('Your changes were saved','success');
 		return ['error'=>0,'message'=>1];
 	}
 	
@@ -647,6 +779,9 @@ class AdminAPI
 		$id = isset($get['id']) ? $filter->cast_int($get['id']) : false;
 		
 		if($id){
+			if(!$admin->can('masterlist','edit')){
+				throw new \exception('You are not allowed to edit masterlist items (Permission Denied)');
+			}
 			$t = $db->model('masterlist',$id);
 			
 			if( (int) $t->id !== $id){
@@ -656,9 +791,12 @@ class AdminAPI
 			if( (int) $t->type_id !== 2){
 				throw new \exception('a 2');
 			}
-
+			$prev_status = $t->status;
 		}else{
-			$t = $db->model('country');
+			if(!$admin->can('masterlist','create')){
+				throw new \exception('You are not allowed to create masterlist items (Permission Denied)');
+			}
+			$t = $db->model('masterlist');
 		}
 		
 		$filter->generate_model($t,$required,$optional,$post);
@@ -685,7 +823,34 @@ class AdminAPI
 		}
 		$t->type_id = 2;
 		$t->uri = strtolower($this->url_safe($t->title));
+		$t->updated = time();
 		$db->store($t);
+		
+		if($id && $t->status == 4 && $prev_status !== 4){
+			if(!isset($t->published) || (isset($t->published) && empty($t->published)) ){
+				$t = $db->model('masterlist',$id);
+				$t->published = date('Y-m-d');
+				$db->store($t);
+			}
+			$t2 = $db->model('affiliatelog');
+			$t2->admin_id = $app->session['admin']->id;
+			$t2->kind = 'publish';
+			$t2->msg =  $t->title .' profile has been published';
+			$t2->timestamp = time();
+			$db->store($t2);
+			
+		}else{
+			
+			$t = $db->model('affiliatelog');
+			$t2->admin_id = $app->session['admin']->id;
+			$t2->kind = 'create';
+			$t2->msg =  $t->title .' profile has been created';
+			$t2->timestamp = time();
+			$db->store($t2);
+			
+		}
+		
+		$app->notify('Your changes were saved','success');
 		return ['error'=>0,'message'=>1];
 	}
 	
@@ -789,6 +954,10 @@ class AdminAPI
 		$id = isset($get['id']) ? $filter->cast_int($get['id']) : false;
 		
 		if($id){
+			if(!$admin->can('masterlist','edit')){
+				throw new \exception('You are not allowed to edit masterlist items (Permission Denied)');
+			}
+			
 			$t = $db->model('masterlist',$id);
 			
 			if( (int) $t->id !== $id){
@@ -797,7 +966,11 @@ class AdminAPI
 			if( (int) $t->type_id !== 3){
 				throw new \exception('a 2');
 			}
+			$prev_status = $t->status;
 		}else{
+			if(!$admin->can('masterlist','create')){
+				throw new \exception('You are not allowed to create masterlist items (Permission Denied)');
+			}
 			$t = $db->model('masterlist');
 		}
 		
@@ -816,8 +989,34 @@ class AdminAPI
 			$t->admin_id = $admin->id;
 		}
 		$t->uri = strtolower($this->url_safe($t->name));
+		$t->updated = time();
 		$db->store($t);
 		
+		if($id && $t->status == 4 && $prev_status !== 4){
+			if(!isset($t->published) || (isset($t->published) && empty($t->published)) ){
+				$t = $db->model('masterlist',$id);
+				$t->published = date('Y-m-d');
+				$db->store($t);
+			}
+			$t2 = $db->model('affiliatelog');
+			$t2->admin_id = $app->session['admin']->id;
+			$t2->kind = 'publish';
+			$t2->msg =  $t->title .' profile has been published';
+			$t2->timestamp = time();
+			$db->store($t2);
+			
+		}else{
+			
+			$t = $db->model('affiliatelog');
+			$t2->admin_id = $app->session['admin']->id;
+			$t2->kind = 'create';
+			$t2->msg =  $t->title .' profile has been created';
+			$t2->timestamp = time();
+			$db->store($t2);
+			
+		}
+		
+		$app->notify('Your changes were saved','success');
 		return ['error'=>0,'message'=>1];
 	}
 	
@@ -845,6 +1044,9 @@ class AdminAPI
 		$app = $this->app;
 		$db = $app->db;
 		$get = $app->get;
+		if(!$app->session['admin']->can('chat','post')){
+			throw new \exception('You are not allowed to create masterlist items (Permission Denied)');
+		}
 		$msg = isset($get['msg']) ? $get['msg'] : false;
 		if(!empty($msg)){
 			$filter = $app->filter;
@@ -854,6 +1056,29 @@ class AdminAPI
 			$t->message = $filter->min($msg);	
 			$id = $db->store($t);
 		}
+		
+		$matches = [];
+		$has_match = preg_match('/\@(\w+)\:/',$t->message,$matches);
+		
+		if($has_match == 1 || count($matches) > 0){
+			//we have a mention in the chat
+			foreach($matches as $name){
+				if(!is_null($name) && !empty($name) && $name !== $app->session['admin']->name){
+					$admin_id = \R::getCell('SELECT id FROM admin WHERE name=:name',[':name'=>$name]);
+					if(!empty($admin_id)){
+						$t = $db->model('notification');
+						$t->admin_id = $admin_id;
+						$t->message = $app->session['admin']->name . ' mentioned you in chat.';
+						$t->url = 'javascript:openChatClearNote(this)';
+						$t->timestamp = time();
+						$t->icon = 'fa-comment';
+						$t->type = 'warning';
+						$db->store($t);	
+					}
+				}
+			}
+		}
+		
 		return ['error'=>0,'message'=>$id];
 	}
 	
@@ -866,6 +1091,19 @@ class AdminAPI
 		if(!$id){
 			throw new \exception('missing chat id');
 		}
+		$can = true;
+		
+		$can = $app->session['admin']->can('chat','delete');
+		
+		if(!$can){
+			$can = $app->session['admin']->can('chat','delete_own');
+		}
+		
+		if(!$can){
+			throw new \exception('Unable to delete chat messages (Permission denied)');
+		}
+		
+		
 		$db->delete('chat','id',$id);	
 		return ['error'=>0,'message'=>1];
 	}
@@ -882,12 +1120,21 @@ class AdminAPI
 		$id = isset($get['id']) ? $filter->cast_int($get['id']) : false;
 		
 		if($id){
+			
+			if(!$admin->can('about','edit')){
+				throw new \exception('You are not allowed to edit about pages (Permission Denied)');
+			}
+			
 			$t = $db->model('about',$id);
 			
 			if( (int) $t->id !== $id){
+				
 				throw new \exception('a 1 ');
 			}
 		}else{
+			if(!$admin->can('about','create')){
+				throw new \exception('You are not allowed to create about pages (Permission Denied)');
+			}
 			$t = $db->model('about');
 		}
 		
@@ -926,12 +1173,18 @@ class AdminAPI
 		$id = isset($get['id']) ? $filter->cast_int($get['id']) : false;
 		
 		if($id){
+			if(!$admin->can('ads','edit')){
+				throw new \exception('You are not allowed to edit ads (Permission Denied)');
+			}
 			$t = $db->model('ad',$id);
 			
 			if( (int) $t->id !== $id){
 				throw new \exception('a 1 ');
 			}
 		}else{
+			if(!$admin->can('ads','create')){
+				throw new \exception('You are not allowed to create ads (Permission Denied)');
+			}
 			$t = $db->model('ad');
 		}
 		
@@ -1065,6 +1318,9 @@ class AdminAPI
 			throw new \exception('a 1 ');
 		}
 		
+		if(!$admin->can('banners','edit')){
+			throw new \exception('You are not allowed to edit Banners (Permission Denied)');
+		}
 		try{
 			$t->video = $this->video_upload('uploaded_video',$app->files);
 		}
@@ -1087,6 +1343,10 @@ class AdminAPI
 		$post = $app->post; 
 		$db = $app->db;
 		$admin = $app->session['admin'];
+		
+		if(!$admin->can('social','edit')){
+			throw new \exception('You are not allowed to edit Social Slider Settings (Permission Denied)');
+		}
 		
 		$expect = [
 			'twitter','rss','stumbleupon','facebook','google','instagram','delicious','vimeo','youtube','pinterest','flickr','lastfm','dribbble','deviantart','tumblr'
@@ -1139,7 +1399,10 @@ class AdminAPI
 			'suggestion_message'=>'min',
 			'dashboard_notification'=>'c_unsafe',
 			'masterlist_help'=>'c_unsafe',
-			'help_content'=>'c_unsafe'
+			'help_content'=>'c_unsafe',
+			'marquee_message'=>'min',
+			'landing_title'=>['min','rmnl'],
+			'landing_body'=>'min'
 		];
 		
 		$filter->custom_filter('c_unsafe',function($input){ return $input; });
@@ -1166,6 +1429,10 @@ class AdminAPI
 		
 		if(!$id){
 			throw new \exception('Missing Id');
+		}
+		
+		if(!$admin->can('suggestions','edit')){
+			throw new \exception('You are not allowed to edit Suggestions (Permission Denied)');
 		}
 		
 		$t = $db->model('suggestion',$id);
@@ -1265,6 +1532,10 @@ class AdminAPI
 		$app = $this->app;
 		$get = $app->get;
 		$db = $app->db;
+		
+		if(!$admin->can('calendar','view')){
+			throw new \exception('You are not allowed to view calendar (Permission Denied)');
+		}
 		
 		$start = $get['start'];
 		$end = $get['end'];
@@ -1550,6 +1821,8 @@ class AdminAPI
 		//count profiles by country
 		$data['profiles_country'] = $db->countProfilesPerCountry();
 		
+		$data['profiles_published_type_country'] = $db->countPublishedByTypeCountry(1);//default type of people profile
+		
 		
 		//count profiles by affiliate
 		$data['profiles_affiliate'] = $db->countProfilesByAffiliate();
@@ -1584,6 +1857,19 @@ class AdminAPI
 			throw new \exception('');
 		}
 		$data = $db->getCountPerCountryByCategoryId($get['id']);
+		return $data;
+	}
+	
+	public function switchMStatType()
+	{
+		$app = $this->app;
+		$db = $app->db;
+		$get = $app->get;
+		
+		if(!isset($get['type_id'])){
+			throw new \exception('');
+		}
+		$data =  $db->countPublishedByTypeCountry($get['type_id']);
 		return $data;
 	}
 	
@@ -1705,5 +1991,167 @@ class AdminAPI
 		$db->cachedCall('fetchAdmin',[$t->email],0,true);//force update of the users cache so theyre session will be in sync with database
 		
 		return ['error'=>0,'message'=>1];
+	}
+	
+	public function clear_notification()
+	{
+		$get = $this->app->get;
+		$id = isset($get['id']) ? $this->app->filter->cast_int($get['id']) : false;
+		if(!$id){
+			throw new \exception('');
+		}
+		$this->app->db->trash('notification',$id);
+		return [];
+	}
+	
+	public function custom_event()
+	{
+		$app = $this->app;
+		$filter = $app->filter;
+		$get = $app->get;
+		$post = $app->post; 
+		$db = $app->db;
+		$admin = $app->session['admin'];
+		
+		if(!$admin->can('calendar','create')){
+			throw new \exception('You are not allowed to create events');
+		}
+		
+		$t = $db->model('customevent');
+		$required = [
+			'title'=>'min',
+			'start'=>'cdate',
+			'end'=>'cdate'
+		];
+		
+		$filter->custom_filter('cdate',function($input){
+			$input = strtotime($input);
+			$input = date('Y-m-d',$input);
+			return $input;
+		});
+		
+		$filter->generate_model($t,$required,[],$post);
+		$db->store($t);
+		
+		return ['error'=>0,'message'=>1];
+	}
+	
+	public function export_masterlist()
+	{
+
+		$data = $this->app->db->getAll('SELECT 
+		a.id,a.regions,a.title,a.description,a.youtube,a.img,a.tags,a.year,a.month,a.day,b.name AS category,c.name AS type 
+		FROM masterlist a 
+		JOIN category b ON a.category_id=b.id
+		JOIN type c ON a.type_id=c.id ORDER BY a.id ASC
+		');
+		
+		foreach($data as &$row)
+		{
+			//need to replace regions with text name of the region(s)
+			if(!empty($row['regions'])){
+				$tmp = \R::getAll('SELECT name FROM country WHERE FIND_IN_SET(id,:set)',[':set'=>$row['regions']]);
+				$row['regions'] = implode(', ',array_column($tmp,'name'));	
+			}else{
+				$row['regions'] = 'None';
+			}
+			if(!empty($row['year']) && !empty($row['month']) && !empty($row['day'])){
+				if($row['year'] !== '0000' && $row['month'] !== '00' && $row['day'] !== '00'){
+					if($row['year'] !== 'invalid' && $row['month'] !== 'invalid' && $row['day'] !== 'invalid'){
+						$row['birthday'] = $row['year'].'-'.$row['month'].'-'.$row['day'];
+						goto remove;
+					}else{
+						goto remove;
+					}
+				}else{
+					goto remove;
+				}
+			}else{
+				remove:
+				if(!isset($row['birthday'])){
+					$row['birthday'] = 'N/A';
+				}
+				unset($row['year'],$row['month'],$row['day']);
+			}
+		}
+		
+		$file = $this->masterlistPdf($data);
+		
+		$r = $this->app->slim->response;
+		$r->headers->set('Content-Type', 'application/octet-stream');
+		$r->headers->set('Content-Disposition', 'attachment; filename=masterlist.pdf');
+		$r->headers->set('Content-Transfer-Encoding', 'binary');
+		$r->headers->set('Expires','0');
+		$r->headers->set('Cache-Control', 'must-revalidate');
+		if (function_exists('mb_strlen')) {
+			$file_size = mb_strlen($file, '8bit');
+		} else {
+			$file_size = strlen($file);
+		}
+		$r->headers->set('Content-Length',$file_size);
+		$r->setStatus(200);
+		$r->write($file);
+		$r->finalize();
+	}
+	
+	private function masterlistPdf($data)
+	{
+		$pdf = new \fpdf\FPDF_EXTENDED;
+		
+		$img_path = $this->app->public_html . 'uploads/';
+		
+		
+		//the main title
+		
+		$title =  'IslandPeeps.com Masterlist';
+		$pdf->SetFont('Arial','B',15);
+		$w = $pdf->GetStringWidth($title)+6;
+		$pdf->SetX((210-$w)/2);
+		$pdf->SetDrawColor(0,80,180);
+		$pdf->SetFillColor(230,230,0);
+		$pdf->SetTextColor(220,50,50);
+		$pdf->SetLineWidth(.3);
+		$pdf->Cell($w,9,$title,1,1,'C',true);
+		$pdf->Ln();
+
+		
+		// Colors, line width and bold font
+		$pdf->SetFillColor(255,0,0);
+		$pdf->SetTextColor(255);
+		$pdf->SetDrawColor(128,0,0);
+		$pdf->SetLineWidth(.3);
+		$pdf->SetFont('Arial','B');
+		// Header
+		/*
+		id | regions | title | category| description | youtube | img | tags | type | Date Of Birth 
+		*/
+		$header = ['id','regions','title','category','description','youtube','img','tags','type','Date Of Birth'];
+		$w = [10,45,60,25,150,25,100,50,30,40];
+		for($i=0;$i<count($w);$i++){
+			$pdf->Cell($w[$i],7,$header[$i],1,0,'C',true);
+		}
+		$pdf->Ln();
+		// Color and font restoration
+		$pdf->SetFillColor(224,235,255);
+		$pdf->SetTextColor(0);
+		$pdf->SetFont('Arial','');
+		// Data
+		$fill = false;
+		foreach($data as $row)
+		{
+			$trow = array_values($row);
+			// echo count($trow);
+			// echo count($w);
+			// die;
+			for($i=0;$i<count($w);$i++){
+				$pdf->Cell($w[$i],50,$trow[$i],'LR',0,'L',$fill);
+			}
+			$fill = !$fill;
+			$pdf->Ln();
+		}
+		// Closing line
+		$pdf->Cell(array_sum($w),0,'','T');
+		
+		return $pdf->Output('','S');
 	}
 } 

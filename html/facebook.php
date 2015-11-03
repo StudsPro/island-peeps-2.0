@@ -8,10 +8,9 @@ $objRs = $db->model('social',1);
 
 $facebook = json_decode($objRs->facebook);
 
-die;
 // SET YOUR FACEBOOK API DETAILS HERE
-$app_id 	= 'INSERT APP ID HERE';
-$app_secret = 'INSERT APP SECRET HERE';
+$app_id 	= '880826878662135';
+$app_secret = '9fc3ffa4e7c9ead4ccc21e9149eeea9e';
 
 // DO NOT EDIT BELOW THIS LINE
 ini_set('display_errors', '0');
