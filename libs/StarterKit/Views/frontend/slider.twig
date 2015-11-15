@@ -32,7 +32,7 @@
 			<img class="lazyOwl" data-src="{{banners[2].image|default(base_url~'static/front/img/slider/slide1.jpg')}}" data-video="{{banners[2].video}}" />
 			<div class="video-slideup"></div>
 			<div class="content">
-				<div class="columns home-c medium-6 small-12 fh" style="padding-top: 72px !important;">
+				<div class="columns home-c contains-suggest medium-6 small-12 fh">
 					<div class="suggest">
 						<form method="post" class="contains-file" action="{{base_url}}api/v1/suggest" data-callback="suggestDone">
 							<div class="row">
@@ -70,7 +70,7 @@
 								</div>
 								<div class="large-6 columns">
 									<label>Description
-										<textarea class="custom-input" placeholder="Profile Name" name="description"></textarea>
+										<textarea class="custom-input" placeholder="Description" name="description"></textarea>
 									</label>
 								</div>
 								<div class="large-6 columns">
@@ -188,30 +188,6 @@
 				</div>
 				
 				<div class="searchgraph-results">
-					<div class="large-12 columns">
-						<strong class="count">Showing 5 Results</strong>
-						<a class="close"><i class="fa fa-times"></i> <span>Close Results</span></a>
-					</div>
-					<div class="large-2 columns by-country">
-						<strong>View Results By Country</strong>
-						<ul>
-							<li>
-								<a data-country="jamaica">Jamaica</a>
-							</li>
-							<li>
-								<a data-country="jamaica">Jamaica</a>
-							</li>
-						</ul>
-					</div>
-					<div class="large-10 columns chart">
-					
-					</div>
-					<div class="large-10 columns graph-results">
-						<a class="back-to-chart"><i class="fa fa-arrow-left"></i> Back To Chart</a>
-						<ul class="results-inner large-block-grid-6 medium-block-grid-4 small-block-grid-1">
-							
-						</ul>
-					</div>
 				</div>
 				
 				<div class="social-wall fs">

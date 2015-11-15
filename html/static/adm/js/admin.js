@@ -463,6 +463,7 @@ $(function(){
 			}
 		}
 	});
+	
 	if(location.pathname == '/admin/masterlist'){
 		$('a[href="#masterlist-ui"]').parent('li').addClass('active');
 	}else{
@@ -1147,6 +1148,7 @@ $(function(){
 		});
 		
 		$.getJSON(window.location.origin+'/admin/api/getMasterlistStats',function(data){
+			
 			(function(data,categories,selected){
 				
 				var html = '';
@@ -1158,7 +1160,6 @@ $(function(){
 				}
 				barChart("pie-cat",data,'country','count');
 			})(data.category_country,data.category_list,data.selected_cat);
-			
 			barChart('pie-actors',data.actors,'country','count');
 			barChart('pie-singer',data.singers,'country','count');
 			barChart('pie-athletes',data.athletes,'country','count');
@@ -1264,7 +1265,7 @@ function barChart(element,data,cat_field,count_field,color_field)
 		graph.colorField = color_field;
 	}else{
 		graph.colorField = "color";
-		var tmp = "#76ba35,#00AFF0,#C72C95,#F8FF01,#FF6600,#04D215,#2A0CD0,#FF0F00,#B0DE09,#0D52D1,#0D5221,#76b035,#06AFF0,#C70C95,#58FF01,#B05209,#44D215,#2A0C95,#2F0F0F,#B05E09".split(",");
+		var tmp = "#76ba35,#00AFF0,#C72C95,#F8FF01,#FF6600,#04D215,#2A0CD0,#FF0F00,#B0DE09,#0D52D1,#0D5221,#76b035,#06AFF0,#C70C95,#58FF01,#B05209,#44D215,#2A0C95,#2F0F0F,#B05E09,#F77979,#89FFFF,#D089FF,#965A15,#107ABC,#10BC4A,#BC104F,#C405FF,#DCEF9B,#759AB7".split(",");
 		for(var i=0;i<data.length;i++){
 			data[i].color = tmp[i];
 		}

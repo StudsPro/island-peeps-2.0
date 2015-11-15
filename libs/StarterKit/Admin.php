@@ -146,7 +146,7 @@ class Admin
 		$this->buildDashboard();
 		$this->buildStats();
 		$this->buildMasterlistStats();
-		$db->cachedCall('fetchAdmin',[$this->email],0,true);
+		$db->cachedCall('fetchAdmin',[$this->name],0,true);
 	}
 	
 	public function keepalive($token)

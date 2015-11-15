@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head></head>
+	<body>
+		<table border="1" cellpadding="2" cellspacing="2">
+			<thead>
+			 <tr>
+				<th width="5%" align="center"><b>ID</b></th>
+				<th width="10%" align="center"><b>Regions</b></th>
+				<th width="10%" align="center"><b>Title</b></th>
+				<th width="10%" align="center"> <b>Category</b></th>
+				<th width="20%" align="center"><b>Description</b></th>
+				<th width="5%" align="center"><b>Youtube</b></th>
+				<th width="10%" align="center"><b>Image</b></th>
+				<th width="10%" align="center"><b>Tags</b></th>
+				<th width="10%" align="center"><b>Type</b></th>
+				<th width="10%" align="center"><b>Date Of Birth</b></th>
+			 </tr>
+			</thead>
+			{% for item in data %}
+			<tbody>
+				<tr>
+					<td width="5%">{{item.id}}</td>
+					<td width="10%">{{item.regions}}</td>
+					<td width="10%">{{item.title}}</td>
+					<td width="10%">{{item.category}}</td>
+					<td width="20%">{{item.description|nl2br}}</td>
+					<td width="5%">{% if item.youtube %}<a href="{{item.youtube}}" target="_blank">Watch Video</a>{%else%}none{%endif%}</td>
+					<td width="10%">{% if item.img %}<img src="{{item.img}}" style="max-width:100%;width:100%;height: auto;"/>{%else%}none{%endif%}</td>
+					<td width="10%">{{item.tags}}</td>
+					<td width="10%">{{item.type}}</td>
+					<td width="10%">{{item.birthday}}</td>
+				</tr>
+			</tbody>
+			
+			{%endfor%}
+		</table>
+	</body>
+</html>

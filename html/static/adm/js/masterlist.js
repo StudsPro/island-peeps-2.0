@@ -162,4 +162,26 @@ $(function(){
 	});
 	
 	
+	$(document).on('click','#an-cat-n',function(e){
+		e.preventDefault();
+		
+		var category = prompt('Category Name:');
+		if (category) 
+		{
+			$.getJSON(window.location.origin+'/admin/api/create_category?n='+category,function(data){
+				if(data.error=="0"){
+					var x = data.message;
+					var option = '<option value="'+x.id+'">'+x.name+'</option>';
+					$('select[name="cat_id"]').append(option).aSort();
+					sk.alert('The category was created and added to the category dropdown.','success');
+				}else{
+					sk.alert(data.message,'error');
+				}
+			});
+		}else{
+			sk.alert('Action canceled','information');
+		}
+				
+	});
+	
 });

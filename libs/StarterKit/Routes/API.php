@@ -84,7 +84,7 @@ class API extends ViewController
 		$args['banners'] = $db->getAll('SELECT * FROM slide WHERE 1');
 		$args['about'] = $db->getAll('SELECT * FROM about');
 		$args['memes'] = $db->getMemes();
-		$args['regions'] = $db->getAll('SELECT id,name FROM country');
+		$args['regions'] = $db->getAll('SELECT id,name FROM country ORDER BY name ASC');
 		$args['suggestion_message'] = $db->getCell('SELECT suggestion_message from sitesetting WHERE id="1"');
 		$args['landing'] = $db->getRow('SELECT landing_body as body ,landing_title as title FROM sitesetting WHERE id="1"');
 		

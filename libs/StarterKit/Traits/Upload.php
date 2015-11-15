@@ -172,6 +172,75 @@ trait Upload
 		return $this->putFile($image_temp,'.'.$type2);
 	}
 	
+	//private function image upload with index
+	//private methods
+	private function img_upload_index($img_name,$index,$files,$min_width = 120, $min_height = 120,$ignore_trans=false)
+	{
+		if(!isset($files[$img_name]['tmp_name'][$index])){
+			throw new \exception('');
+		}
+		$image_temp = $files[$img_name]['tmp_name'][$index];
+		@$image_info = getimagesize($image_temp);
+		$exif = [IMAGETYPE_GIF,IMAGETYPE_JPEG,IMAGETYPE_PNG];
+		$finfo  = ['image/gif','image/png','image/jpeg','image/pjpeg'];
+		$etype = exif_imagetype($image_temp);
+		if(!function_exists('finfo_file')){
+			throw new \exception('Unable to determine image mime type.');
+		}
+		$type = finfo_file(finfo_open(FILEINFO_MIME_TYPE),$image_temp);
+		
+		if( !in_array($etype,$exif) || !in_array($type,$finfo)){
+			throw new \exception('file type not allowed');
+		}
+		switch($type){
+			case 'image/gif':
+				$type2 = 'gif';
+			break;
+			case 'image/png':
+				$type2 = 'png';
+			break;
+			case 'image/jpeg':
+			case 'image/jpg':
+			case 'image/pjpeg':
+				$type2 = 'jpg';
+			break;
+		}
+		if( !$image_info ){
+			throw new \exception('invalid image size.');
+		}
+		$width  = $image_info[0];
+		$height = $image_info[1];
+		if($width < $min_width || $height < $min_height){
+			throw new \exception('Images must be atleast 120 x 120 in size.');
+		}
+		$fr = imagecreatefromstring(file_get_contents($image_temp));
+		ob_start();
+		switch($type){
+			case 'image/gif':
+				imagegif($fr);
+			break;
+			case 'image/png':
+				if(!$ignore_trans){
+					imagesavealpha($fr, true);
+					$trans_colour = imagecolorallocatealpha($fr, 0, 0, 0, 127);
+					imagefill($fr, 0, 0, $trans_colour);	
+				}
+				imagepng($fr,NULL,2);
+			break;
+			case 'image/jpeg':
+			case 'image/jpg':
+			case 'image/pjpeg':
+				imagejpeg($fr);
+			break;
+		}
+		$fc = ob_get_clean();
+		$fh = fopen($image_temp,'w+');
+		fwrite($fh,$fc);
+		fclose($fh);
+		unset($fr,$fh,$fc);
+		return $this->putFile($image_temp,'.'.$type2);
+	}
+	
 	
 	private function video_upload($vname,$files)
 	{

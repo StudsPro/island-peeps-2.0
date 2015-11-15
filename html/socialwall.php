@@ -32,7 +32,8 @@ if(isset($_GET['wall'])){
 	<link rel="stylesheet" type="text/css" href="static/front/socialwall/css/dcsns_wall.css" media="all" />
 	<style>
 	html {
-		overflow: scroll;
+		overflow: hidden;
+		overflow-y:scroll;
 	}
 	body{
 		padding:0;
@@ -52,6 +53,19 @@ if(isset($_GET['wall'])){
 	.dcsns{
 		margin-top: 92px;
 	}
+	@media only screen and (max-width: 40em) { 
+		#dcsns-filter.dc-center{
+			width: 100%;
+			margin: 0px !important;
+			padding: 0px 0px 0px 2.33%;
+		}
+		#dcsns-filter.dc-center li{
+			width: 14.285%;
+			display: block;
+			box-sizing: border-box;
+			float: left;
+		}
+	}
 	</style>
 	';
 }else{
@@ -60,7 +74,7 @@ if(isset($_GET['wall'])){
 	<link rel="stylesheet" type="text/css" href="static/front/socialwall/css/dcsns_dark.css" media="all" />
 	<style>
 	html {
-		overflow:scroll;
+		overflow:hidden;
 	}
 	body{
 		padding:0;

@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+</head>
+<body>
+<table border="1" cellpadding="2" cellspacing="2">
+	<thead>
+		<tr>
+			<th>Email</th>
+			<th>Count</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for item in data %}
+	<tr>
+		<td>{{item.email}}</td>
+		<td>{{item.num}}</td>
+	</tr>
+	{%endfor%}
+	</tbody>
+</table>
+</body>
+</html>

@@ -91,7 +91,7 @@ class DB
 		if($res === -1 || $force){
 			$res = call_user_func_array([$this,$call],$args);
 			if(!empty($res) && $res !== false && $res !== 0 && !is_null($res)){
-				$cache->set($key,$res,$expiry); //never set empty arrays to cache cache!
+				$cache->set($key,$res,$expiry); //never set empty datas in the cache.
 			}
 		}
 		return $res;
@@ -516,6 +516,14 @@ class DB
 			$data['chart'][$k] = array_values($v);
 		}
 		$data['labels'] = array_values($data['labels']);
+		
+		//final step, sort the regions array so its in alphabetical order.
+		$tmp = $data['regions'];
+		
+		$this->array_column_sort($tmp,'name',$comp = 'ASC');
+		
+		$data['regions'] = $tmp;
+		
 		return $data;
 	}
 	

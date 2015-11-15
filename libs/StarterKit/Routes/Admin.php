@@ -349,6 +349,14 @@ class Admin extends ViewController
 					'js/affiliate.js'
 				];
 			break;
+			case 'bulk':
+				$module = 'masterlist';
+				$template = 'crud_bulk.twig';
+				$args['scripts'] = [
+					'js/bulk.js'
+				];
+				$args['regions'] = $db->getAll('SELECT * FROM country ORDER BY name ASC');
+			break;
 			case false:
 			default:
 				$app->pass();

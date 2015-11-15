@@ -69,13 +69,10 @@
 		<script src="http://islandpeeps.openex.info/static/shared.js"></script>
 		<script src="http://islandpeeps.openex.info/static/front/owl-carousel/owl.carousel.min.js"></script>
 		<script src="http://islandpeeps.openex.info/static/front/lightbox/js/lightbox.min.js"></script>
+		<script src="http://islandpeeps.openex.info/static/front/wait.min.js"></script>
 		<script src="http://islandpeeps.openex.info/static/front/mapbox.js"></script>
 		<script src="http://islandpeeps.openex.info/static/front/script.js"></script>
 		<script src="http://islandpeeps.openex.info/static/front/chart/Chart.min.js"></script>
-		<div id="google_translate_element"></div><script type="text/javascript">
-		function googleTranslateElementInit() {
-		  new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, autoDisplay: false}, 'google_translate_element');
-		}
-		</script><script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+		<div id="google_translate_element"></div>
 	</body>
 </html>

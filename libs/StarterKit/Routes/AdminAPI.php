@@ -1988,9 +1988,29 @@ class AdminAPI
 		}
 		
 		$db->store($t);
-		$db->cachedCall('fetchAdmin',[$t->email],0,true);//force update of the users cache so theyre session will be in sync with database
+		$db->cachedCall('fetchAdmin',[$t->name],0,true);//force update of the users cache so theyre session will be in sync with database
 		
 		return ['error'=>0,'message'=>1];
+	}
+	
+	public function create_category()
+	{
+		
+		$app = $this->app;
+		$filter = $app->filter;
+		$get = $app->get;
+		$db = $app->db;
+		$admin = $app->session['admin'];
+		
+		$cat = isset($get['n']) ? $get['n'] : false;
+		if($cat !== false && !$db->exists('category','name',$cat)){
+			$t = $db->model('category');
+			$t->name = $cat;
+			$id = $db->store($t);
+		}else{
+			throw new \exception('unable to create category: name is invalid or it already exists.');
+		}
+		return ['error'=>0,'message'=>['id'=>$id,'name'=>$cat]];
 	}
 	
 	public function clear_notification()
@@ -2036,6 +2056,101 @@ class AdminAPI
 		return ['error'=>0,'message'=>1];
 	}
 	
+	public function bulk_add()
+	{
+		$app = $this->app;
+		$filter = $app->filter;
+		$post = $app->post; 
+		$db = $app->db;
+		$files = $app->files;
+		
+		$post = $_POST; //due to failure of mb_parse_str() in hhvm, we need to use super global $_POST to get our data arrays.
+		
+		$required = [
+			'title'=>'min',
+			'regions'=>'region_fm',
+			'type_id'=>'type_fm',
+			'status'=>'status_fm'
+		];
+		
+		$optional = [
+			'year'=>'min',
+			'day'=>'min',
+			'month'=>'min',
+			'description'=>'min'
+		];
+		
+		$filter->custom_filter('status_fm',function($input) use($filter){
+			$input = $filter->cast_int($input);
+			if(!in_array($input,[1,2,3,4])){
+				throw new \exception('Invalid status');
+			}
+			return $input;
+		});
+		
+		$filter->custom_filter('type_fm',function($input){
+			if(!in_array($input,[1,2,3])){
+				throw new \exception('Invalid Kind');
+			}
+			return $input;
+		});
+		
+		$filter->custom_filter('region_fm',function($input) use($filter,$db){
+			if(!is_array($input)){
+				throw new \exception('Invalid input format:: Regions');
+			}
+			$input = array_map([$filter,'cast_int'],$input);
+			$x = count($input);
+			$y = (int) $db->getCell('SELECT COUNT(id) FROM country WHERE id IN('.implode(',',$input).')');
+			if($x !== $y){
+				throw new \exception('1 or more regions is invalid X: '.$x.' Y: '.$y);
+			}
+			return implode(',',$input);
+		});
+		
+		$num_rows = isset($post['num_rows']) ? (int) $post['num_rows'] : false;
+		if(!$num_rows){
+			throw new \exception('invalid request');
+		}
+		$db->begin_tx();
+		try{
+			for($i=0;$i<$num_rows;$i++)
+			{
+				$t = $db->model('masterlist');
+				foreach($required as $k=>$r)
+				{
+					if(!isset($post[$k][$i])){
+						throw new \exception('Missing Form Value: '.$k.' in Item #'. ($i+1) );
+					}
+					$t->{$k} = $filter->{$r}($post[$k][$i]);
+				}
+				foreach($optional as $k=>$r)
+				{
+					if(isset($post[$k][$i])){
+						$t->{$k} = $filter->{$r}($post[$k][$i]);
+					}
+				}
+				try{
+					$n = 'file_'.$i;
+					$t->img = $this->img_upload($n,$app->files);
+				}
+				catch(\exception $e){
+					
+				}
+				$t->admin_id = $app->session['admin']->id;
+				$t->updated = time();
+				$t->uri = strtolower($this->url_safe($t->title));
+				$db->store($t);
+			}
+			$db->commit_tx();
+		}
+		catch(\exception $e){
+			$db->rollback_tx();
+			throw $e;
+		}
+		return ['error'=>0,'message'=>1];
+	}
+	
 	public function export_masterlist()
 	{
 
@@ -2045,7 +2160,7 @@ class AdminAPI
 		JOIN category b ON a.category_id=b.id
 		JOIN type c ON a.type_id=c.id ORDER BY a.id ASC
 		');
-		
+		$img_path = $this->app->public_html . 'uploads/';
 		foreach($data as &$row)
 		{
 			//need to replace regions with text name of the region(s)
@@ -2055,6 +2170,7 @@ class AdminAPI
 			}else{
 				$row['regions'] = 'None';
 			}
+			//handle birthday
 			if(!empty($row['year']) && !empty($row['month']) && !empty($row['day'])){
 				if($row['year'] !== '0000' && $row['month'] !== '00' && $row['day'] !== '00'){
 					if($row['year'] !== 'invalid' && $row['month'] !== 'invalid' && $row['day'] !== 'invalid'){
@@ -2073,9 +2189,19 @@ class AdminAPI
 				}
 				unset($row['year'],$row['month'],$row['day']);
 			}
+			//handle images
+			if(!empty($row['img'])){
+				$file = array_pop(explode('/',$row['img']));
+				if(!file_exists($img_path.$file)){
+					goto remove2;
+				}
+			}else{
+				remove2:
+				unset($row['img']);
+			}
 		}
-		
-		$file = $this->masterlistPdf($data);
+		$html = $this->twig->loadTemplate('partials/masterlist_export.twig')->render(['data'=>$data]);
+		$file = $this->toPdf($html);
 		
 		$r = $this->app->slim->response;
 		$r->headers->set('Content-Type', 'application/octet-stream');
@@ -2094,64 +2220,39 @@ class AdminAPI
 		$r->finalize();
 	}
 	
-	private function masterlistPdf($data)
+	public function export_suggestion_emails()
 	{
-		$pdf = new \fpdf\FPDF_EXTENDED;
+		$data = $this->app->db->getAll('SELECT COUNT(email) AS num,email FROM suggestionstats GROUP BY email');
 		
-		$img_path = $this->app->public_html . 'uploads/';
+		$html = $this->twig->loadTemplate('partials/suggestions_export.twig')->render(['data'=>$data]);
 		
+		$file = $this->toPdf($html);
 		
-		//the main title
-		
-		$title =  'IslandPeeps.com Masterlist';
-		$pdf->SetFont('Arial','B',15);
-		$w = $pdf->GetStringWidth($title)+6;
-		$pdf->SetX((210-$w)/2);
-		$pdf->SetDrawColor(0,80,180);
-		$pdf->SetFillColor(230,230,0);
-		$pdf->SetTextColor(220,50,50);
-		$pdf->SetLineWidth(.3);
-		$pdf->Cell($w,9,$title,1,1,'C',true);
-		$pdf->Ln();
-
-		
-		// Colors, line width and bold font
-		$pdf->SetFillColor(255,0,0);
-		$pdf->SetTextColor(255);
-		$pdf->SetDrawColor(128,0,0);
-		$pdf->SetLineWidth(.3);
-		$pdf->SetFont('Arial','B');
-		// Header
-		/*
-		id | regions | title | category| description | youtube | img | tags | type | Date Of Birth 
-		*/
-		$header = ['id','regions','title','category','description','youtube','img','tags','type','Date Of Birth'];
-		$w = [10,45,60,25,150,25,100,50,30,40];
-		for($i=0;$i<count($w);$i++){
-			$pdf->Cell($w[$i],7,$header[$i],1,0,'C',true);
+		$r = $this->app->slim->response;
+		$r->headers->set('Content-Type', 'application/octet-stream');
+		$r->headers->set('Content-Disposition', 'attachment; filename=suggestions-emails.pdf');
+		$r->headers->set('Content-Transfer-Encoding', 'binary');
+		$r->headers->set('Expires','0');
+		$r->headers->set('Cache-Control', 'must-revalidate');
+		if (function_exists('mb_strlen')) {
+			$file_size = mb_strlen($file, '8bit');
+		} else {
+			$file_size = strlen($file);
 		}
-		$pdf->Ln();
-		// Color and font restoration
-		$pdf->SetFillColor(224,235,255);
-		$pdf->SetTextColor(0);
-		$pdf->SetFont('Arial','');
-		// Data
-		$fill = false;
-		foreach($data as $row)
-		{
-			$trow = array_values($row);
-			// echo count($trow);
-			// echo count($w);
-			// die;
-			for($i=0;$i<count($w);$i++){
-				$pdf->Cell($w[$i],50,$trow[$i],'LR',0,'L',$fill);
-			}
-			$fill = !$fill;
-			$pdf->Ln();
+		$r->headers->set('Content-Length',$file_size);
+		$r->setStatus(200);
+		$r->write($file);
+		$r->finalize();
+	}
+	
+	private function toPdf($html)
+	{
+		$pdf = new \mikehaertl\wkhtmlto\Pdf($html);
+		$pdf->binary = '/usr/local/bin/wkhtmltopdf';
+		$pdf->setOptions(['ignoreWarnings'=>true]);
+		if($html = $pdf->toString()){
+			return $html;
 		}
-		// Closing line
-		$pdf->Cell(array_sum($w),0,'','T');
-		
-		return $pdf->Output('','S');
+		throw new \exception('Failed To write PDF with message: '.$pdf->getError());
 	}
 } 

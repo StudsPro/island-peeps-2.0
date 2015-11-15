@@ -2,7 +2,7 @@
 	<strong class="count">Showing {{data.results|length}} Results</strong>
 	<a class="close"><i class="fa fa-times"></i> <span>Close Results</span></a>
 </div>
-<div class="large-2 columns by-country">
+<div class="large-3 columns by-country">
 	<strong>View Results By Country</strong>
 	<ul>
 		{% for item in data.regions %}
@@ -12,12 +12,12 @@
 		{% endfor %}
 	</ul>
 </div>
-<div class="large-10 columns chart active">
+<div class="large-9 columns chart active">
 	<div class="chart-wrap">
 		<canvas id="graph-results" height="400" width="700"></canvas>
 	</div>
 </div>
-<div class="large-10 columns graph-results">
+<div class="large-9 columns graph-results">
 	<a class="back-to-chart">[close]</a>
 	<ul class="results-inner">
 		{%set results = data.results %}
