@@ -5,20 +5,22 @@
 		<img src="{{base_url}}static/front/img/logo_sm.png" />
 	</a>
 </div>
-<ul class="list columns">
-	{% for item in menu %}
-		{% if loop.first %}
-		<ul class="section">
-		{% endif %}
-		{% if (loop.index0 %5== 0) and (loop.first == false) %}
-		</ul>
-		<ul class="section">
-		{% endif %}
-		<li>
-			<a data-href="{{item.uri}}">{{item.title}}</a>
-		</li>
-		{% if loop.last %}
-		</ul>
-		{% endif %}
-	{% endfor %}
-</ul>
+<div class="wrap">
+	<ul class="list columns">
+		{% for item in menu %}
+			{% if loop.first %}
+			<ul class="section">
+			{% endif %}
+			{% if (loop.index0 %5== 0) and (loop.first == false) %}
+			</ul>
+			<ul class="section">
+			{% endif %}
+			<li>
+				<a data-href="{{item.uri}}">{{item.title}}</a>
+			</li>
+			{% if loop.last %}
+			</ul>
+			{% endif %}
+		{% endfor %}
+	</ul>
+</div>

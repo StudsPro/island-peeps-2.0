@@ -300,6 +300,9 @@ trait Upload
 	
 	private function delFile($file)
 	{
+		if(empty($file)){
+			return;
+		}
 		if(strpos($file,'/') !== false){
 			$file = array_pop(explode('/',$file));
 		}

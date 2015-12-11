@@ -1,78 +1,99 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8" />
-		<meta name="csrf" content="" />
-		<meta name="google-translate-customization" content="65767690a1227b85-d85bad67b2241c3e-g47e8572041164f9e-25">
-		<title>Island Peeps</title>
-		<link href="http://islandpeeps.openex.info/static/front/preload.css" rel="stylesheet" type="text/css" />
-		<link href="http://fonts.googleapis.com/css?family=Pacifico|Aeolus|BlackJack|koala|Learning+Curve+Dashed" rel="stylesheet" type="text/css"/>
-		<link href="http://islandpeeps.openex.info/static/front/preload.css" rel="stylesheet" type="text/css" />
-		<link href="http://islandpeeps.openex.info/static/front/grid.css" rel="stylesheet" type="text/css" />
-		<link href="http://islandpeeps.openex.info/static/front/style.css" rel="stylesheet" type="text/css" />
-		<link href="http://islandpeeps.openex.info/static/front/owl-carousel/owl.carousel.css" rel="stylesheet" type="text/css" />
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-		<link href="http://islandpeeps.openex.info/static/front/lightbox/css/lightbox.css" rel="stylesheet" type="text/css" />
-		<link href="https://api.tiles.mapbox.com/mapbox.js/v1.6.4/mapbox.css" rel="stylesheet" />
-		<link href="http://islandpeeps.openex.info/static/shared.css" rel="stylesheet" type="text/css" />
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.4.0/animate.min.css">
-		<link rel="icon" href="http://islandpeeps.openex.info/static/favicon.ico" />
-	</head>
-	<body class="preload">
-		<div class="menu columns">
+<?php
+
+define( 'LIB_PATH' , realpath( __DIR__ . '/../libs' ).'/'  );
+
+$libs = [
+	'vendor/autoload.php',
+	'StarterKit/App.php',
+	'config.php'
+];
+
+try{
+	
+	foreach($libs as $lib){
+		require LIB_PATH . $lib;
+	}
+	
+	\StarterKit\App::registerAutoloader();
+	
+	$app = \StarterKit\App::getInstance($config);
+	
+	$app->hook('slim.before',function() use($app){
+		$app->__before();
+	});
+	
+	$app->hook('slim.before.router',function() use($app){
+		$app->__beforeRouter();
+	});
+	
+	$app->hook('slim.before.dispatch',function() use($app){
+		$app->__beforeDispatch();
+	});
+	
+	$app->hook('slim.after',function() use($app){
+		$app->__after();
+	});
+
+	//v1 of the api
+	$app->group('/api/v1',function() use($app){
 		
-		</div>
-		<div class="loader">
-			<div class="sk-cube-grid">
-			  <div class="sk-cube sk-cube1"></div>
-			  <div class="sk-cube sk-cube2"></div>
-			  <div class="sk-cube sk-cube3"></div>
-			  <div class="sk-cube sk-cube4"></div>
-			  <div class="sk-cube sk-cube5"></div>
-			  <div class="sk-cube sk-cube6"></div>
-			  <div class="sk-cube sk-cube7"></div>
-			  <div class="sk-cube sk-cube8"></div>
-			  <div class="sk-cube sk-cube9"></div>
-			</div>
-		</div>
-		<div class="clearfix">
-			<div class="row" data-slider data-slug="/">
-			</div>
-		</div>
-		<div class="clearfix" data-viewpoint>
-			<div class="row below-fold" data-slug="/profiles/recently-added">
-			
-			</div>
-		</div>
-		<div class="clearfix">
-			<div class="row" data-countries>
-			</div>
-		</div>
-		<div class="clearfix" data-viewpoint>
-			<div class="row below-fold" data-slug="/extras/memes" data-memes>
-			</div>
-		</div>
-		<div class="clearfix">
-			<div class="row footer">
-				<div class="large-4 columns small-12">
-					<img src="http://islandpeeps.openex.info/static/front/img/slider/logo.png"/>
-				</div>
-				<div class="large-8 columns small-12">
-					<small style="float:right">&copy;2015 Island Peeps. All rights reserved</small>
-				</div>
-			</div>
-		</div>
-		<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-		<script src="http://islandpeeps.openex.info/static/front/foundation.min.js"></script>
-		<script src="http://islandpeeps.openex.info/static/front/router.js"></script>
-		<script src="http://islandpeeps.openex.info/static/noty.min.js"></script>
-		<script src="http://islandpeeps.openex.info/static/shared.js"></script>
-		<script src="http://islandpeeps.openex.info/static/front/owl-carousel/owl.carousel.min.js"></script>
-		<script src="http://islandpeeps.openex.info/static/front/lightbox/js/lightbox.min.js"></script>
-		<script src="http://islandpeeps.openex.info/static/front/wait.min.js"></script>
-		<script src="http://islandpeeps.openex.info/static/front/mapbox.js"></script>
-		<script src="http://islandpeeps.openex.info/static/front/script.js"></script>
-		<script src="http://islandpeeps.openex.info/static/front/chart/Chart.min.js"></script>
-		<div id="google_translate_element"></div>
-	</body>
-</html>
+		$app->map('/:method',function($method){
+			(new \StarterKit\Routes\API)->__try($method);
+		})->via('GET','POST');
+		
+		$app->error(function (exception $e){
+			echo json_encode(['error'=>1,'message'=>'500 Internal Server Error']);
+		});
+
+		$app->notFound(function(){ 
+			echo json_encode(['error'=>1,'message'=>'404 Not Found']);
+		});
+		
+	});
+	
+	$app->group('/admin',function() use($app){
+	
+		$app->get('/',function() use($app){
+			$app->redirect('/admin/dashboard');
+		});
+		
+		$app->get('/:fn',function($fn){
+			(new \StarterKit\Routes\Admin)->run($fn);
+		});
+		
+		$app->map('/api/:method',function($method){
+			(new \StarterKit\Routes\AdminAPI)->__try($method);
+		})->via('GET','POST');
+	
+	});
+	
+	$app->group('/debug',function() use($app){
+	
+		$app->map('/:fn',function($fn){
+			(new \StarterKit\Routes\Debug)->{$fn}();
+		})->via('GET','POST');
+		
+	});
+	
+	$app->get('/.*',function(){
+		(new \StarterKit\Routes\Front)->index();
+	});
+	
+	$app->error(function (exception $e){
+		(new \StarterKit\Routes\Error)->run(500);
+	});
+
+	$app->notFound(function(){ 
+		(new \StarterKit\Routes\Error)->run(404);
+	});
+	
+	$app->run();	
+	
+}
+catch(exception $e){
+	
+	if($config['debug']){
+		echo json_encode(['error'=>1,'message'=>'app failed to run with message '.$e->getMessage().' in '.$e->getFile().' at line '.$e->getLine()]);	
+	}
+	
+}

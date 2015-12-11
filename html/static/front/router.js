@@ -139,12 +139,12 @@
     
     bindStateEvents();
     
-    router.go = function(url, title)
+    router.go = function(url, scrollTo)
     {   
         if (hasPushState)
         {
-            history.pushState({}, title, url);
-            checkRoutes();
+            history.pushState({}, null, url);
+            checkRoutes(scrollTo);
         }
         else
         {
@@ -163,7 +163,7 @@
     // do a check without affecting the history
     router.check = router.redo = function()
     {   
-        checkRoutes(true);
+        checkRoutes(false);
     };
     
     // parse and wash the url to process
@@ -308,18 +308,23 @@
         return dataList;
     }
     
-    function checkRoutes()
+    function checkRoutes(scrollTo)
     {
         var currentUrl = parseUrl(location.pathname);
 
         // check if something is catched
         var actionList = getParameters(currentUrl);
         
-        // ietrate trough result (but it will only kick in one)
-        for(var i = 0, ii = actionList.length; i < ii; i++)
-        {
-            actionList[i].route.callback(actionList[i].data);
-        }
+		if(actionList.length === 0){
+			$(document).trigger('notFound');
+			throw 'notFound Exception';
+		}else{
+			// ietrate trough result (but it will only kick in one)
+			for(var i = 0, ii = actionList.length; i < ii; i++)
+			{
+				actionList[i].route.callback(actionList[i].data,scrollTo);
+			}	
+		}
     }
     
 
@@ -327,15 +332,15 @@
     {
         if (e != null && e.originalEvent && e.originalEvent.state !== undefined)
         {
-            checkRoutes();
+            checkRoutes(true);
         }
         else if (hasHashState)
         {
-            checkRoutes();
+            checkRoutes(true);
         }
         else if (!hasHashState && !hasPushState)
         {
-            checkRoutes();
+            checkRoutes(true);
         }
     }
 

@@ -1,9 +1,10 @@
-<div class="large-12 columns">
-	<strong class="count">Showing {{data.results|length}} Results</strong>
-	<a class="close"><i class="fa fa-times"></i> <span>Close Results</span></a>
+<div class="large-12 columns chart active">
+	<a class="close">&times;</a>
+	<div class="chart-wrap">
+		<div id="graph-results" height="200" width="800" style="height:200px;width:800px;"></div>
+	</div>
 </div>
 <div class="large-3 columns by-country">
-	<strong>View Results By Country</strong>
 	<ul>
 		{% for item in data.regions %}
 		<li>
@@ -12,18 +13,12 @@
 		{% endfor %}
 	</ul>
 </div>
-<div class="large-9 columns chart active">
-	<div class="chart-wrap">
-		<canvas id="graph-results" height="400" width="700"></canvas>
-	</div>
-</div>
 <div class="large-9 columns graph-results">
-	<a class="back-to-chart">[close]</a>
 	<ul class="results-inner">
 		{%set results = data.results %}
 		{% include 'frontend/search_result.twig' %}
 	</ul>
-	<ul class="results-window large-block-grid-3 medium-block-grid-2 small-block-grid-1">
+	<ul class="results-window large-block-grid-6 medium-block-grid-4 small-block-grid-2">
 	
 	</ul>
 </div>

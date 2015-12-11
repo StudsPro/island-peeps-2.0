@@ -2,13 +2,13 @@
 
 $config = [
 
-	'base_url'=>'http://islandpeeps.openex.info/',
+	'base_url'=>'http://dev.islandpeeps.com/',
 	
-	'public' => '/usr/share/nginx4/html/',
+	'public' => '/usr/share/nginx/html/islandpeeps.com/dev/html/',
 
     'db_args' => [
         'user'=>'islandpeeps',
-        'pass'=>'HfWsq5Hf4HWnHzcZ',
+        'pass'=>'password',
         'host'=>'127.0.0.1',
         'name'=>'islandpeeps'
     ],

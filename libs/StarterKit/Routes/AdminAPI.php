@@ -816,7 +816,9 @@ class AdminAPI
 					$this->delFile($img);
 				}	
 			}
-			catch(\exception $e){}
+			catch(\exception $e){
+
+			}
 		}
 		if(!isset($t->admin_id)){
 			$t->admin_id = $admin->id;
@@ -827,6 +829,7 @@ class AdminAPI
 		$db->store($t);
 		
 		if($id && $t->status == 4 && $prev_status !== 4){
+			
 			if(!isset($t->published) || (isset($t->published) && empty($t->published)) ){
 				$t = $db->model('masterlist',$id);
 				$t->published = date('Y-m-d');
@@ -841,7 +844,7 @@ class AdminAPI
 			
 		}else{
 			
-			$t = $db->model('affiliatelog');
+			$t2 = $db->model('affiliatelog');
 			$t2->admin_id = $app->session['admin']->id;
 			$t2->kind = 'create';
 			$t2->msg =  $t->title .' profile has been created';
@@ -1007,7 +1010,7 @@ class AdminAPI
 			
 		}else{
 			
-			$t = $db->model('affiliatelog');
+			$t2 = $db->model('affiliatelog');
 			$t2->admin_id = $app->session['admin']->id;
 			$t2->kind = 'create';
 			$t2->msg =  $t->title .' profile has been created';

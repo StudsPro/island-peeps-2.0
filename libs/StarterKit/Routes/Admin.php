@@ -387,6 +387,9 @@ class Admin extends ViewController
 				$args['categories'] = $db->getAll('SELECT * FROM category ORDER BY name ASC');
 				$args['regions'] = $db->getAll('SELECT * FROM country ORDER BY name ASC');
 				$args['item'] = $db->getPeopleProfile($id);
+				if($args['item']['id'] == 3){
+					$app->redirect('/admin/edit?t=funfact&id='.$id);
+				}
 				$module = 'masterlist';
 			break;
 			case 'meme':
@@ -401,6 +404,9 @@ class Admin extends ViewController
 				$args['categories'] = $db->getAll('SELECT * FROM category ORDER BY name ASC');
 				$args['regions'] = $db->getAll('SELECT * FROM country ORDER BY name ASC');
 				$args['item'] = $db->getPeopleProfile($id);
+				if($args['item']['id'] == 1){
+					$app->redirect('/admin/edit?t=profile&id='.$id);
+				}
 				$module = 'masterlist';
 			break;
 			case 'country':

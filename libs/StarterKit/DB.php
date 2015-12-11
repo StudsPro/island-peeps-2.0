@@ -286,7 +286,10 @@ class DB
 	
 	public function getPeopleProfile($id)
 	{
-		$data = \R::getRow('SELECT * FROM masterlist WHERE id=:id',[':id'=>$id]);
+		$data = \R::getRow('SELECT * FROM masterlist WHERE id=:id AND type_id IN(1,3)',[':id'=>$id]);
+		if(empty($data)){
+			throw new \exception('Profile doesnt exist doesnt exist');
+		}
 		$data['regions_list'] = \R::getAll('SELECT * FROM country WHERE id IN ('.$data['regions'].')');
 		return $data;
 	}
@@ -380,23 +383,27 @@ class DB
 					'coordinates'=>[$row['longitude'],$row['latitude']]
 				],
 				'properties'=>[
-					'marker-color'=>$this->randColor(),
+					//'marker-color'=>'rgba(0,0,0,0)',
+					
 					'title'=>$row['name'],
 					'change'=>7,
 					'lat'=>$row['latitude'],
 					'long'=>$row['longitude'],
 					'icon'=>[
-						"iconSize"=>[43, 22],
+						'iconUrl'=>'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+						"iconSize"=>[70, 33],
 						"iconAnchor"=>[50, 50],
 						"popupAnchor"=>[0, -55],
 						"className"=>"dot",
 					],
+					'image'=>$row['img'],
 					'capital'=>$row['capital'],
 					'uri'=>$row['uri'],
 					'national_dish'=>$row['national_dish'],
 					'population'=>$row['population'],
 					'description'=>$row['description'],
-					'ethnic_data'=>$this->parseEthnic($row['ethnic_data'])
+					'ethnic_data'=>$this->parseEthnic($row['ethnic_data']),
+					'category_data'=>\R::getAll('SELECT b.name,count(b.id) as num FROM masterlist a JOIN category b on a.category_id=b.id WHERE FIND_IN_SET(:id2,a.regions) GROUP BY a.category_id ORDER BY num DESC LIMIT 0,8',[':id2'=>$row['id']])
 				]
 			];
 		}
@@ -478,7 +485,6 @@ class DB
 			'regions'=>[],
 			'labels'=>[],
 			'chart'=>[
-				
 				'data'=>[],
 				'backgroundColor'=>[],
 				'borderColor'=>[]
@@ -496,26 +502,20 @@ class DB
 				if(!in_array($r,$tmp_regions)){
 					$tmp = \R::getRow('SELECT name,uri,id FROM country WHERE id=:id',[':id'=>$r]);
 					if(!empty($tmp) && !is_null($tmp)){
-						$data['labels'][$r] = $tmp['name'];
-						$data['chart']['data'][$r] = 1;
-						$data['chart']['backgroundColor'][$r] = $this->randColor();
-						$data['chart']['borderColor'][$r] = $this->adjustColor($data['chart']['backgroundColor'][$r],15);
+						$data['chart'][$r] = [
+							'name'=> $tmp['name'],
+							'num'=> 1
+						];
 						$data['regions'][] = $tmp;
 						$tmp_regions[] = $r;
 					}
 				}else{
-					if(isset($data['chart']['data'][$r])){
-						$data['chart']['data'][$r] += 1;
-					}
+					$data['chart'][$r]['num'] += 1;
 				}
 			}
-			
 		}
-		foreach($data['chart'] as $k => $v)
-		{
-			$data['chart'][$k] = array_values($v);
-		}
-		$data['labels'] = array_values($data['labels']);
+		
+		$data['chart'] = array_values($data['chart']);
 		
 		//final step, sort the regions array so its in alphabetical order.
 		$tmp = $data['regions'];
@@ -1212,12 +1212,16 @@ class DB
 	{
 		$data = str_replace(['Ethnic Groups','%'],'',$data);
 		$data = explode(PHP_EOL,$data);
+		$new_data = [];
 		foreach($data as &$d)
 		{
 			$tmp = explode(' ',$d,2);
 			if(count($tmp) !== 2){
 				$d = '';
 			}else{
+				if(empty($tmp[0]) || empty($tmp[1])){
+					continue;
+				}
 				$tmp2 = [
 					'value'=>$tmp[0],
 					'label'=>$tmp[1],
@@ -1225,10 +1229,10 @@ class DB
 				];
 				
 				$tmp2['highlight']=$this->adjustColor($tmp2['color'],-15);
-				$d = $tmp2;	
+				array_push($new_data,$tmp2);	
 			}
 		}
-		return array_filter($data);
+		return array_filter($new_data);
 	}
 	
 	private function countFormat($num)
