@@ -56,7 +56,7 @@ $(function(){
 		for(var i=0; i < msgs.length; i++){
 			var m = msgs[i];
 			html += '<li class="left clearfix" data-id="'+m.id+'">'
-			html += '<span class="chat-avatar pull-left"><img src="'+m.avatar+'" alt=""></span>'
+			html += '<span class="chat-avatar pull-left"><img src="'+window.location.origin+'/uploads/'+m.avatar+'" alt=""></span>'
 			html += '<div class="chat-body clearfix">'       
 			html += '<div class="header"><strong class="primary-font mention">'+m.username+'</strong></div>'
 			html += '<p class="chat-body-content">'+m.message+'</p></div>'

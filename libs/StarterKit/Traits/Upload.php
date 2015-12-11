@@ -295,7 +295,7 @@ trait Upload
 		$a = fopen($app->public_html . 'uploads/'.$name,'w+');
 		fwrite($a,$body);
 		fclose($a);
-		return $app->args['base_url'].'uploads/'.$name;
+		return $name;
 	}
 	
 	private function delFile($file)

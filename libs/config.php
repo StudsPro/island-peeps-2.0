@@ -8,7 +8,7 @@ $config = [
 
     'db_args' => [
         'user'=>'islandpeeps',
-        'pass'=>'password',
+        'pass'=>'Xs4FbXrFZcSv8Mmu',
         'host'=>'127.0.0.1',
         'name'=>'islandpeeps'
     ],

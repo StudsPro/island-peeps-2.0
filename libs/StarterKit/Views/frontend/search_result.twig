@@ -1,7 +1,7 @@
 {% for item in results %}
 <li data-regions="{{item.regions}}">
 	<a data-href="{{item.uri}}">
-		<img src="{{item.img}}" alt="" /> <span>{{item.title}}</span>
+		<img src="{{base_url}}uploads/{{item.img}}" alt="" /> <span>{{item.title}}</span>
 	</a>
 </li>
 {% endfor %}

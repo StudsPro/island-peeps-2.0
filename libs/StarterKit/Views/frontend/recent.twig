@@ -12,13 +12,13 @@
 			{% if item.type_id == 3 %}
 			<a data-href="/explore/{{item.regions[0].uri}}/fun-fact/{{item.uri}}">
 			{% endif %}
-				<img src="{{item.img}}" onerror="iE(this);" />
+				<img src="{{base_url}}uploads/{{item.img}}" onerror="iE(this);" />
 				<div class="overlay">
 					<div class="center">
 						<div class="regions clearfix">
 							{% for item2 in item.regions %}
 							<div>
-								<img src="{{item2.map_img}}"/>
+								<img src="{{base_url}}uploads/{{item2.map_img}}"/>
 								<span>{{item2.name}}</span>
 							</div>
 							{% endfor %}

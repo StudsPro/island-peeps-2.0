@@ -1,7 +1,7 @@
 {% if ad_top != false %}
 <div class="{{ad_top.size}} columns">
 	<a href="{{ad_top.link}}" title="{{ad_top.title}}">
-		<video src="{{ad_top.video}}">
+		<video src="{{base_url}}uploads/{{ad_top.video}}">
 		
 		</video>
 	</a>
@@ -52,12 +52,12 @@
 		</div>
 		<div class="large-8 columns">
 			<div class="large-7 columns" >
-				<img src="{{country.img}}" class="g-frame"></img>
+				<img src="{{base_url}}uploads/{{country.img}}" class="g-frame"></img>
 			</div>
 			<div class="large-5 columns end" style="padding-left:4%">
 				<div class="large-12 columns">
 					<a class="ptv">
-						<img alt="" src="{{country.flag_img}}" height="210" width="350">
+						<img alt="" src="{{base_url}}uploads/{{country.flag_img}}" height="210" width="350">
 						<span class="ctr_detail">
 							Motto: {{country.motto}} <br/>
 							Anthem: {{country.anthem}}<br/>                                                    
@@ -80,7 +80,7 @@
 										</p> 
 										</div>
 								<div class="coloredcircle st_ap stat-1">
-										<div class="cover-image" style="background-image:url('{{country.cover_img}}');{{country.custom_css|raw}}">
+										<div class="cover-image" style="background-image:url('{{base_url}}uploads/{{country.cover_img}}');{{country.custom_css|raw}}">
 										</div> 
 								</div>
 							</div>
@@ -95,7 +95,7 @@
 			<div class="large-5 columns end" style="padding-right:4%">
 				<div class="large-12 columns">
 					<a class="ptv">
-						<img alt="" src="{{country.flag_img}}" height="210" width="350">
+						<img alt="" src="{{base_url}}uploads/country.flag_img}}" height="210" width="350">
 						<span class="ctr_detail">
 							Motto: {{country.motto}} <br>
 							Anthem: {{country.anthem}}<br>                                                    
@@ -118,7 +118,7 @@
 										</p> 
 										</div>
 								<div class="coloredcircle st_ap stat-1">
-										<div class="cover-image" style="background-image:url('{{country.cover_img}}');{{country.custom_css|raw}}">
+										<div class="cover-image" style="background-image:url('{{base_url}}uploads/{{country.cover_img}}');{{country.custom_css|raw}}">
 										</div> 
 								</div>
 							</div>
@@ -127,7 +127,7 @@
 				</div>
 			</div>
 			<div class="large-7 columns" >
-				<img src="{{country.img}}" class="g-frame"></img>
+				<img src="{{base_url}}uploads/{{country.img}}" class="g-frame"></img>
 			</div>
 		</div>
 		<div class="large-4 columns special-right">
@@ -152,11 +152,11 @@
 					</div>
 					<div class="menu-item">
 						<span id="active" class="icon fa fa-pinterest-square"></span>
-						<a href="http://www.pinterest.com/pin/create/button/?url={{url}}&media={{profile.image}}&description={{profile.description}}" target="_blank" class="text share_pinte" id="hover"><i class="fa fa-pinterest-square"></i></a>
+						<a href="http://www.pinterest.com/pin/create/button/?url={{url}}&media={{base_url}}uploads/{{profile.image}}&description={{profile.description}}" target="_blank" class="text share_pinte" id="hover"><i class="fa fa-pinterest-square"></i></a>
 					</div> 
 					<div class="menu-item">
 						<span id="active" class="icon fa fa-tumblr"></span>
-						<a style="outline: medium none;" hidefocus="true" href="http://www.tumblr.com/share/photo?source={{profile.image}}&caption={{profile.description}}&click_thru={{url}}" id="hover" class="text share_tumblr" target="_blank"><i class="fa fa-tumblr"></i></a>
+						<a style="outline: medium none;" hidefocus="true" href="http://www.tumblr.com/share/photo?source={{base_url}}uploads/{{profile.image}}&caption={{profile.description}}&click_thru={{url}}" id="hover" class="text share_tumblr" target="_blank"><i class="fa fa-tumblr"></i></a>
 					</div> 
 				</div>
 			</div>
@@ -188,13 +188,13 @@
 			{% if item.type_id == 3 %}
 			<a data-href="/explore/{{item.regions[0].uri}}/fun-fact/{{item.uri}}">
 			{% endif %}
-				<img src="{{item.img}}" onerror="iE(this);" />
+				<img src="{{base_url}}uploads/{{item.img}}" onerror="iE(this);" />
 				<div class="overlay">
 					<div class="center">
 						<div class="regions clearfix">
 							{% for item2 in item.regions %}
 							<div>
-								<img src="{{item2.map_img}}"/>
+								<img src="{{base_url}}uploads/{{item2.map_img}}"/>
 								<span>{{item2.name}}</span>
 							</div>
 							{% endfor %}
@@ -213,14 +213,14 @@
 	</ul>
 </div>
 {% if ad_bottom != false %}
-<div class="{{ad_bottom.size}} img-ad columns" style="background-image: url('{{ad_bottom.bg_image}}')">
+<div class="{{ad_bottom.size}} img-ad columns" style="background-image: url('{{base_url}}uploads/{{ad_bottom.bg_image}}')">
 	<div class="large-10 columns large-offset-1 medium-10 medium-offset-1 small-12">
 		<ul class="small-block-grid-2 medium-block-grid-5 large-block-grid-5">
 			{% for item in ad_bottom.images %}
 			{% if item.image is not empty %}
 			<li>
-				<a href="{{item.image}}" class="show-img" data-title="{{item.title}}" data-lightbox="ad_{{country.name}}" data-link="{{item.link}}">
-					<img src="{{item.image}}" />
+				<a href="{{base_url}}uploads/{{item.image}}" class="show-img" data-title="{{item.title}}" data-lightbox="ad_{{country.name}}" data-link="{{item.link}}">
+					<img src="{{base_url}}uploads/{{item.image}}" />
 					<div class="zoom">
 						<div>
 							<i class="fa fa-search"></i>

@@ -31,7 +31,7 @@
 								<input type="file" name="uploaded_image" class="form-control input-md" />
 								{% if item is defined %}
 								<div class="col-md-3 text-center  " id="raggionmapimg">
-									<img src="{{item.img}}" width="80" style="background:#000;">
+									<img src="{{base_url}}uploads/{{item.img}}" width="80" style="background:#000;">
 								</div>
 								{% endif %}
 							</div>

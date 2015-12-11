@@ -65,7 +65,7 @@
 								<input type="file" name="img_file" class="form-control input-md" />
 								{% if item is defined %}
 								<div class="col-md-3 text-center  " id="raggionmapimg">
-									<img src="{{item.img}}" width="80" style="background:#000;">
+									<img src="{{base_url}}uploads/{{item.img}}" width="80" style="background:#000;">
 								</div>
 								{% endif %}
 								<br/>
@@ -78,7 +78,7 @@
 								<input type="file" name="map_file" class="form-control input-md" />
 								{% if item is defined %}
 								<div class="col-md-3 text-center  " id="raggionmapimg">
-									<img src="{{item.map_img}}" width="80" style="background:#000;">
+									<img src="{{base_url}}uploads/{{item.map_img}}" width="80" style="background:#000;">
 								</div>
 								{% endif %}
 							</div>
@@ -97,7 +97,7 @@
 								<input type="file" name="flag_file" class="form-control input-md" />
 								{% if item is defined %}
 								<div class="col-md-3 text-center  " id="raggionmapimg">
-									<img src="{{item.flag_img}}" width="80" style="background:#000;">
+									<img src="{{base_url}}uploads/{{item.flag_img}}" width="80" style="background:#000;">
 								</div>
 								{% endif %}
 								<br>
@@ -136,7 +136,7 @@
 								<input type="file" name="cover_file" class="form-control input-md" />
 								{% if item is defined %}
 								<div class="col-md-3 text-center  " id="raggionmapimg">
-									<img src="{{item.cover_img}}" width="80" style="background:#000;">
+									<img src="{{base_url}}uploads/{{item.cover_img}}" width="80" style="background:#000;">
 								</div>
 								{% endif %}
 								<br>
