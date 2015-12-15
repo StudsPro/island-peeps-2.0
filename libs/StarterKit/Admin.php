@@ -20,7 +20,7 @@ class Admin
 	public $order = '';
 	public $menu = '';
 	public $permissions = [];
-	public $super;
+	public $super = 0;
 	public $theme = '';
 	public $perpage = 100;
 	
@@ -154,9 +154,14 @@ class Admin
 		session_regenerate_id(true);
 	}
 	
+	public function is_super()
+	{
+		return (bool)intval($this->super);
+	}
+	
 	public function can($module,$action)
 	{
-		if($this->super === 1){
+		if(intval($this->super) === 1){
 			return true;
 		}else{
 			return $this->permissions[$module][$action] === 1;

@@ -1141,6 +1141,22 @@ a.explore-btn.purp{
 	overflow-y:auto;
 }
 
+.map-info::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 8px;
+	visibility: visible !important;
+	display: block !important;
+}
+
+.map-info::-webkit-scrollbar-track {
+    background-color: rgba(57,57,57, .6);
+    border-radius: 8px;
+}
+.map-info::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: rgba(156, 156, 156, .6);
+}
+
 img.leaflet-marker-icon.dot{
 	opacity: 0;
 } 

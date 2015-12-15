@@ -15,7 +15,7 @@ function openChatClearNote(it)
 	var id = $(it).data('id');
 	$.getJSON(window.location.origin+'/admin/api/clear_notification?id='+id);
 	$('.chat .panel-heading').trigger('click');
-	$(it).parents('li').hide().remove();
+	$(it).parent().hide().remove();
 	$('.nf-count').html( $('.nav-notification-body').length || 0 );
 	//call ajax to clear notification
 

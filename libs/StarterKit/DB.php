@@ -645,12 +645,12 @@ class DB
 				$t = 'inday';
 				$title = 'Independence day of '.$row['name'];
 				$color = '#F3FDAE';
-				$url= (\StarterKit\App::getInstance())->args['base_url'].'/edit?t=country&id='.$row['id'];
+				$url= (\StarterKit\App::getInstance())->args['base_url'].'edit?t=country&id='.$row['id'];
 			}else{
 				$t = 'pbday';
 				$title = 'Birthday of '.$row['title'];
 				$color = '#EBBBA8';
-				$url = (\StarterKit\App::getInstance())->args['base_url'].'/edit?t=profile&id='.$row['id'];
+				$url = (\StarterKit\App::getInstance())->args['base_url'].'edit?t=profile&id='.$row['id'];
 			}
 			
 			$date =  date('Y',$start).'-'.$row['month'].'-'.$row['day'];

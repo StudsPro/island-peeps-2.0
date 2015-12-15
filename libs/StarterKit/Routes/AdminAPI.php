@@ -628,6 +628,14 @@ class AdminAPI
 			$t2->timestamp = time();
 			$db->store($t2);
 			
+		}
+		elseif($id !== false){
+			$t2 = $db->model('affiliatelog');
+			$t2->admin_id = $app->session['admin']->id;
+			$t2->kind = 'edit';
+			$t2->msg =  $t->title .' profile has been edited';
+			$t2->timestamp = time();
+			$db->store($t2);
 		}else{
 			
 			$t2 = $db->model('affiliatelog');
@@ -662,6 +670,9 @@ class AdminAPI
 			$db->store($t2);
 		}
 	
+		if($t->status != 3 && (isset($prev_status) && $prev_status == 3)){
+			$db->exec('DELETE FROM notification WHERE masterlist_id=:id',[':id'=>$t->id]);
+		}
 		
 		$app->notify('Your changes were saved','success');
 		return ['error'=>0,'message'=>1];
@@ -1335,6 +1346,20 @@ class AdminAPI
 		catch(\exception $e){
 		}
 		$db->store($t);
+		
+		$opts2 = [
+			'suggestion_message'=>'min',
+			'landing_title'=>['min','rmnl'],
+			'landing_body'=>'min'
+		];
+		
+		$filter->custom_filter('c_unsafe',function($input){ return $input; });
+		
+		$t2 = $db->model('sitesetting',1);
+		
+		$filter->generate_model($t2,[],$opts2,$post);
+		
+		$db->store($t2);
 		return ['error'=>0,'message'=>1];
 	}
 	
@@ -1568,8 +1593,7 @@ class AdminAPI
 	{
 		$app = $this->app;
 		$db = $app->db;
-		
-		
+		$args = $app->args;
 		$args['recent_profiles'] = $db->getAll('SELECT a.*,b.name as username FROM masterlist a JOIN admin b ON a.admin_id=b.id WHERE a.type_id="1" ORDER BY a.id DESC LIMIT 0,20');
 		$args['affiliate_log'] = $db->getAll('SELECT a.*, b.name as username FROM affiliatelog a JOIN admin b ON a.admin_id=b.id ORDER BY a.id DESC LIMIT 0,50');
 		$visits = $db->getAnalytics('locations');
@@ -2156,7 +2180,9 @@ class AdminAPI
 	
 	public function export_masterlist()
 	{
-
+		if(!$this->app->session['admin']->is_super()){
+			die('You do not have permission do to this.');
+		}
 		$data = $this->app->db->getAll('SELECT 
 		a.id,a.regions,a.title,a.description,a.youtube,a.img,a.tags,a.year,a.month,a.day,b.name AS category,c.name AS type 
 		FROM masterlist a 

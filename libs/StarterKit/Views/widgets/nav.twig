@@ -4,7 +4,7 @@
 		<div class="social-sidebar-content">
 			<div class="scroll Sidebarheight">
 				<div class="user">
-					<img src="{{admin.avatar|default(base_url ~ 'static/adm/img/def_usr.jpg')}}" style="height:46px !important;width:50px !Important;">
+					<img src="{% if admin.avatar is not empty %}{{base_url ~ 'uploads/' ~ admin.avatar}}{%else%}{{base_url~'static/adm/img/def_usr.jpg'}}{%endif%}" style="height:46px !important;width:50px !Important;">
 					<span>{{admin.name}}</span>
 					<i class="trigger-user-settings fa fa-user" data-toggle="dropdown" aria-expanded="false"></i>
 					<div class="user-settings">

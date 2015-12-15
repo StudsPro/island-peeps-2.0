@@ -57,15 +57,9 @@ class Admin extends ViewController
 			$args['scripts'] = [
 				'js/amcharts/raphael.js',
 				'js/amcharts/amcharts.js',
-				//'plugins/flot/jquery.flot.js',
-				//'plugins/flot/jquery.flot.selection.js',
 				'js/plugins/jqvmap/jquery.vmap.js',
 				'js/plugins/jqvmap/maps/jquery.vmap.world.js',
-				//'plugins/jqvmap/data/jquery.vmap.sampledata.js',
-				//'plugins/easy-pie-chart/jquery.easypiechart.min.js',
-				//'plugins/jquery.sparkline/jquery.sparkline.min.js',
 				'js/plugins/fullcalendar/fullcalendar.min.js',
-				//'plugins/justgage/lib/raphael.2.1.0.min.js',
 				'plugins/justgage/justgage.js',
 				'plugins/gmaps/gmaps.js',
 				'js/dashboard.js',
@@ -102,15 +96,9 @@ class Admin extends ViewController
 		$args['scripts'] = [
 			'js/amcharts/raphael.js',
 			'js/amcharts/amcharts.js',
-			//'plugins/flot/jquery.flot.js',
-			//'plugins/flot/jquery.flot.selection.js',
 			'js/plugins/jqvmap/jquery.vmap.js',
 			'js/plugins/jqvmap/maps/jquery.vmap.world.js',
-			//'plugins/jqvmap/data/jquery.vmap.sampledata.js',
-			//'plugins/easy-pie-chart/jquery.easypiechart.min.js',
-			//'plugins/jquery.sparkline/jquery.sparkline.min.js',
 			'js/plugins/fullcalendar/fullcalendar.min.js',
-			//'plugins/justgage/lib/raphael.2.1.0.min.js',
 			'plugins/justgage/justgage.js',
 		];
 
@@ -131,15 +119,9 @@ class Admin extends ViewController
 		$args['scripts'] = [
 			'js/amcharts/raphael.js',
 			'js/amcharts/amcharts.js',
-			//'plugins/flot/jquery.flot.js',
-			//'plugins/flot/jquery.flot.selection.js',
 			'js/plugins/jqvmap/jquery.vmap.js',
 			'js/plugins/jqvmap/maps/jquery.vmap.world.js',
-			//'plugins/jqvmap/data/jquery.vmap.sampledata.js',
-			//'plugins/easy-pie-chart/jquery.easypiechart.min.js',
-			//'plugins/jquery.sparkline/jquery.sparkline.min.js',
 			'js/plugins/fullcalendar/fullcalendar.min.js',
-			//'plugins/justgage/lib/raphael.2.1.0.min.js',
 			'plugins/justgage/justgage.js',
 		];
 
@@ -428,6 +410,7 @@ class Admin extends ViewController
 			case 'banner':
 				$template = 'crud_banner.twig';
 				$args['action'] = 'Edit Banner';
+				$args['settings'] = $db->getRow('SELECT * FROM sitesetting WHERE id="1"');
 				$args['item'] = $db->getRow('SELECT * FROM slide WHERE id=:id',[':id'=>$id]);
 				$module = 'banners';
 			break;

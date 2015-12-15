@@ -56,7 +56,7 @@
 						<div class="form-group">
 							<label for="title" class="col-md-2 control-label">&nbsp;</label>
 								<div class="col-md-8">
-									<table id="newtable" class="table table-striped table-bordered dataTable no-footer" data-permissions="{{item.permissions|default('[]'|json_encode())}}">
+									<table id="newtable" class="table table-striped table-bordered dataTable no-footer" data-permissions="{{item.permissions|default('[]'|json_encode())}}" data-super="{{item.super}}">
 										<thead>
 											<tr>
 											<th width="15%">
