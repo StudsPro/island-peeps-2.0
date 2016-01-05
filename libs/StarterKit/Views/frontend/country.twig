@@ -58,7 +58,7 @@
 				<div class="large-12 columns">
 					<a class="ptv">
 						<img alt="" src="{{base_url}}uploads/{{country.flag_img}}" height="210" width="350">
-						<span class="ctr_detail">
+						<span class="ctr_detail"  style="{{country.custom_pos|raw}}">
 							Motto: {{country.motto}} <br/>
 							Anthem: {{country.anthem}}<br/>                                                    
 							National Dish: {{country.national_dish}}
@@ -95,8 +95,8 @@
 			<div class="large-5 columns end" style="padding-right:4%">
 				<div class="large-12 columns">
 					<a class="ptv">
-						<img alt="" src="{{base_url}}uploads/country.flag_img}}" height="210" width="350">
-						<span class="ctr_detail">
+						<img alt="" src="{{base_url}}uploads/{{country.flag_img}}" height="210" width="350">
+						<span class="ctr_detail" style="{{country.custom_pos|raw}}">
 							Motto: {{country.motto}} <br>
 							Anthem: {{country.anthem}}<br>                                                    
 							National Dish: {{country.national_dish}}
@@ -218,8 +218,9 @@
 		<ul class="small-block-grid-2 medium-block-grid-5 large-block-grid-5">
 			{% for item in ad_bottom.images %}
 			{% if item.image is not empty %}
+			{% set link = item.link|default('#') %}
 			<li>
-				<a href="{{base_url}}uploads/{{item.image}}" class="show-img" data-title="{{item.title}}" data-lightbox="ad_{{country.name}}" data-link="{{item.link}}">
+				<a href="{{base_url}}uploads/{{item.image}}" class="show-img" data-title="{{'<a href="'~link~'" target="_blank">'~item.title~'</a>'|url_encode}}" data-lightbox="ad_{{country.name}}" data-link="{{item.link}}">
 					<img src="{{base_url}}uploads/{{item.image}}" />
 					<div class="zoom">
 						<div>

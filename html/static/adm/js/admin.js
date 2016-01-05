@@ -1175,9 +1175,20 @@ $(function(){
 			barChart('pie-profilebyadmin',data.profiles_affiliate,'name','num');
 			barChart('pie-profilebob',data.birthdays_month,'month','num');
 			barChart('pie-suggestiontopemail',data.suggestions_email,'email','num');
+			var n = totalCalc(data.profiles_published_type_country);
+			$('#mlistpublished .panel-title').html('&nbsp;Published By Type By Country <span class="pull-right" id="count-ttc">('+n+' total)</span>');
 			barChart('pie-publish',data.profiles_published_type_country,'name','count');
 		});
 		
+		
+		function totalCalc(n)
+		{
+			var accumulator = 0;
+			for(var i=0;i<n.length;i++){
+				accumulator += n[i].count;
+			}
+			return accumulator;
+		}
 		
 		$(document).on('change','#mlist-category-select',function(e){
 			$.getJSON(window.location.origin+'/admin/api/switchMStatCategory?id='+$(this).val(),function(data){
@@ -1190,6 +1201,8 @@ $(function(){
 			$.getJSON(window.location.origin+'/admin/api/switchMStatType?type_id='+$(this).val(),function(data){
 				$('#pie-publish').html('');
 				barChart("pie-publish",data,'name','count');
+				var n = totalCalc(data);
+				$('#mlistpublished .panel-title').html('&nbsp;Published By Type By Country <span class="pull-right" id="count-ttc">('+n+' total)</span>');
 			});
 		});
 	}
@@ -1212,6 +1225,66 @@ $(function(){
 		"seconds":"false"
 	});
 	
+	
+	//file browser
+	$('.file-menu li *').on('click',function(){
+		$('.open .dropdown-toggle').dropdown('toggle');
+	});
+	
+	$(document).on('change','.file-input :input[type="file"]',function(){
+		var src = $(this).get(0).files[0].name || 'No File Selected';
+		parent = $(this).parent().parent().parent();
+		parent.find('.file-selected-view').html(src);
+		parent.find('input[type="hidden"]').val('');
+	});
+	
+	$(document).on('click','.file-browser-open',function(e){
+		e.preventDefault();
+		$('#file-browser')
+		  .data('type',$(this).data('type'))
+		  .data('target',$(this).data('target'))
+		  .modal('show');
+		return false;
+	})
+
+	$('#file-browser')
+	.on('shown.bs.modal', function(){
+		var type0 = $(this).data('type');
+		type = type0.charAt(0).toUpperCase() + type0.slice(1);
+		$(this).find('.modal-title').html('Browse Server '+type+'s');
+		$.getJSON(window.location.origin+'/admin/api/browseFiles?type='+type0,function(data){
+			for(var i=0;i<data.message.length;i++){
+				var r = data.message[i];
+				$('.img-selector').append('<div class="col-xs-3"><a href="#" class="imgselect" data-src="'+window.location.origin+'/uploads/'+r.src+'"><img src="'+window.location.origin+'/uploads/'+r.thumb+'" class="img-responsive"></a></div>');
+			}
+		});
+	})
+	.on('hidden.bs.modal', function(){
+		$(this)
+		.removeAttr('data-type')
+		.removeAttr('data-target')
+		.find('.img-selector').html('');
+		$('#file-finish').prop('disabled',true);
+	});
+	
+
+	$(document).on('click','.imgselect',function(e){
+		e.preventDefault();
+		$('.imgselect').removeClass('active');
+		$(this).addClass('active');
+		$('#file-finish').prop('disabled',false);
+		return false;
+	});
+	
+	$(document).on('click','#file-finish:enabled',function(e){
+		var target = $('#file-browser').data('target');
+		var selected = $('#file-browser').find('.imgselect.active');
+		var src = selected.data('src');
+		parent = $(target).val(src).parent();
+		parent.find('.file-selected-view').html(src);
+		parent.find('[type="file"]').val('');
+		$('#file-browser').modal('hide');
+	});
 	
 });
 

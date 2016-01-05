@@ -926,10 +926,12 @@ body.has-menu .menu{
 
 /*image ad*/
 .ad-lg.img-ad{
-	background-size: cover;
-	background-repeat: no-repeat;
-	background-position: center-center;
 	height: 450px;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: cover;
+	transition: all 0.5s ease 0s;
 }
 .img-ad ul{
 	height: 180px;
@@ -1156,10 +1158,6 @@ a.explore-btn.purp{
     border-radius: 8px;
     background-color: rgba(156, 156, 156, .6);
 }
-
-img.leaflet-marker-icon.dot{
-	opacity: 0;
-} 
 
 .map-info .btn{
 	margin-top: 15px;
@@ -1482,6 +1480,20 @@ select[multiple],textarea{
 	border: 1px solid transparent;
 	margin: 0px;
 	padding: 12px;
+}
+
+.searchgraph-results .by-country ul li a{
+	color:#fff;
+}
+
+.leaflet-marker-icon.dot{
+	opacity: 0.5;
+	background-image: url("img/mmarker.png");
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	width: 15px !important;
+	height: 25px !important;
 }
 
 .searchgraph-results .graph-results li a{

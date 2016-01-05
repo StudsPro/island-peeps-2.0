@@ -23,13 +23,10 @@ class Admin
 	public $super = 0;
 	public $theme = '';
 	public $perpage = 100;
-	
-	public $dashboard = '';
-	public $dashboard_order='';
-	
+	public $dashboard       = '';
+	public $dashboard_order = '';
 	public $stats = '';
 	public $stats_order = '';
-	
 	public $mlist_stats = '';
 	public $mlist_order = '';
 	
@@ -937,9 +934,9 @@ class Admin
 			'
 			<div style="" class="row span2 ui-sortable-handle" id="mlistpublished" data-order="15">
 				<div class="col-md-12">
-					<div class="panel panel-default  ">
-						<div class="panel-heading ">
-							<div class="panel-title">&nbsp;Published By Type By Country</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<div class="panel-title">&nbsp;Published By Type By Country <span class="pull-right" id="count-ttc"></span></div>
 						</div>
 						<div class="panel-body maxheight">
 							<div class="col-md-4">

@@ -249,7 +249,12 @@ trait Upload
 		if(finfo_file(finfo_open(FILEINFO_MIME_TYPE),$ftemp) !== 'video/mp4'){
 			throw new \exception('You may only upload MP4 videos.');
 		}
-		return $this->putFile($ftemp,'.mp4');
+		$app = \StarterKit\App::getInstance();
+		$src = $this->putFile($ftemp,'.mp4');
+		$input = $app->public_html . 'uploads/'.$src;
+		$output = rtrim($input,'.mp4') . '.png';
+		shell_exec('avconv -ss  -i '.escapeshellarg($input).' -r 0.0033 -vf scale=-1:120 -vcodec png '.escapeshellarg($output));
+		return $src;
 	}
 	
 	private function precheck($a,$files)

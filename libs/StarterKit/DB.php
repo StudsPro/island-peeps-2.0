@@ -359,7 +359,7 @@ class DB
 	
 	public function getAd($id,$type)
 	{
-		$d = \R::getRow('SELECT * FROM ad WHERE FIND_IN_SET(:id,regions) AND type=:type LIMIT 1',[':id'=>$id,':type'=>$type]);
+		$d = \R::getRow('SELECT * FROM ad WHERE FIND_IN_SET(:id,regions) AND type=:type ORDER BY RAND() LIMIT 1',[':id'=>$id,':type'=>$type]);
 		if(!empty($d) && $type=='image'){
 			$d['images'] = json_decode($d['images'],true);
 			$tmp = $d['images'];
@@ -391,8 +391,8 @@ class DB
 					'long'=>$row['longitude'],
 					'icon'=>[
 						'iconUrl'=>'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
-						"iconSize"=>[70, 33],
-						"iconAnchor"=>[50, 50],
+						"iconSize"=>[25, 15],
+						"iconAnchor"=>[25, 25],
 						"popupAnchor"=>[0, -55],
 						"className"=>"dot",
 					],
@@ -1124,6 +1124,42 @@ class DB
 		return $data;
 	}
 	
+	public function browseFiles($type)
+	{
+		$res = [];
+		$app = \StarterKit\App::getInstance();
+		$videos = glob($app->public_html.'uploads/*.mp4');
+		$images = glob($app->public_html.'uploads/*.{jpg,png,gif}',GLOB_BRACE);
+		if($type=='video'){
+			foreach($videos as $v)
+			{
+				array_push($res,[
+					'thumb'=>rtrim($v,'.mp4').'.png',
+					'src'=>$v
+				]);
+			}
+		}else{
+			foreach($images as $v)
+			{
+				$n = pathinfo($v, PATHINFO_FILENAME) . '.mp4';
+				if(!in_array($n,$videos)){
+					array_push($res,[
+						'thumb'=>$v,
+						'src'=>$v
+					]);
+				}
+			}
+		}
+		$res = array_map(function($k){
+			foreach($k as &$kk)
+			{
+				$kk = array_pop(explode('/',$kk));
+			}
+			return $k;
+		},$res);
+		return $res;
+	}
+	
 	public function birthdaysByMonth()
 	{
 		return \R::getAll('SELECT count(id) as num, MONTHNAME(STR_TO_DATE(month, "%m")) as month FROM masterlist WHERE type_id="1" and month<>"NULL" and month<>"00" and month<>"invalid" GROUP BY month');
@@ -1282,4 +1318,5 @@ class DB
 		return $formatted;
 	}
 	//end private utilities
+
 }

@@ -242,6 +242,15 @@ class AdminAPI
 		{
 			if(!empty($app->files) && isset($app->files['avatar_img']) && is_uploaded_file($app->files['avatar_img']['tmp_name'])){
 				throw $e;
+			}else{
+				if(isset($post['avatar_img_server']) && !empty($post['avatar_img_server'])){
+					$f = array_pop(explode('/',$post['avatar_img_server']));
+					if(file_exists($app->public_html .'uploads/'.$f)){
+						$img = $admin->avatar;
+						$admin->avatar = $f;
+						$this->delFile($img);
+					}
+				}
 			}
 		}
 		
@@ -600,8 +609,14 @@ class AdminAPI
 		$filter->generate_model($t,$required,$optional,$post);
 		
 		try{
-			
-			$t->img = $this->img_upload('uploaded_image',$app->files);
+			if(isset($post['uploaded_image_server']) && !empty($post['uploaded_image_server'])){
+				$f = array_pop(explode('/',$post['uploaded_image_server']));
+				if(file_exists($app->public_html .'uploads/'.$f)){
+					$t->img = $f;
+				}
+			}else{
+				$t->img = $this->img_upload('uploaded_image',$app->files);
+			}
 		}
 		catch(\exception $e){
 			
@@ -708,7 +723,8 @@ class AdminAPI
 			'day'=>'min',
 			'year'=>'min',
 			'description'=>'min',
-			'custom_css'=>'min'
+			'custom_css'=>'min',
+			'custom_pos'=>'min'
 		];
 		
 		$filter->custom_filter('status_fm',function($input) use($filter){
@@ -751,13 +767,20 @@ class AdminAPI
 		
 		foreach($images as $k=>$v){
 			try{
-				$img = $t->{$v};
-				$ignore_trans = ($k == 'map_file' || $k=='cover_file') ? false : true;
-				$upl = $this->img_upload($k,$app->files,1,1,$ignore_trans);
-				$t->{$v} = $upl;
-				if(!empty($img) && $t->{$v} !== $img && $upl !== null){
-					$this->delFile($img);
-				}	
+				if(isset($post[$k.'_server']) && !empty($post[$k.'_server'])){
+					$f = array_pop(explode('/',$post[$k.'_server']));
+					if(file_exists($app->public_html .'uploads/'.$f)){
+						$t->{$v} = $f;
+					}
+				}else{
+					$img = $t->{$v};
+					$ignore_trans = ($k == 'map_file' || $k=='cover_file') ? false : true;
+					$upl = $this->img_upload($k,$app->files,1,1,$ignore_trans);
+					$t->{$v} = $upl;
+					if(!empty($img) && $t->{$v} !== $img && $upl !== null){
+						$this->delFile($img);
+					}	
+				}
 			}
 			catch(\exception $e){}
 		}
@@ -813,24 +836,18 @@ class AdminAPI
 		$filter->generate_model($t,$required,$optional,$post);
 		
 		
-		$images = [
-			'uploaded_image'=>'img',
-		];
-		
-		
-		foreach($images as $k=>$v){
-			try{
-				$img = $t->{$v};
-				$upl = $this->img_upload($k,$app->files,1,1);
-				$t->{$v} = $upl;
-				if(!empty($img) && $t->{$v} !== $img && $upl !== null){
-					$this->delFile($img);
-				}	
-			}
-			catch(\exception $e){
-
+		try{
+			if(isset($post['uploaded_image_server']) && !empty($post['uploaded_image_server'])){
+				$f = array_pop(explode('/',$post['uploaded_image_server']));
+				if(file_exists($app->public_html .'uploads/'.$f)){
+					$t->img = $f;
+				}
+			}else{
+				$t->img = $this->img_upload('uploaded_image',$app->files);
 			}
 		}
+		catch(\Exception $e){}
+		
 		if(!isset($t->admin_id)){
 			$t->admin_id = $admin->id;
 		}
@@ -991,8 +1008,14 @@ class AdminAPI
 		$filter->generate_model($t,$required,$optional,$post);
 		
 		try{
-			
-			$t->img = $this->img_upload('uploaded_image',$app->files);
+			if(isset($post['uploaded_image_server']) && !empty($post['uploaded_image_server'])){
+				$f = array_pop(explode('/',$post['uploaded_image_server']));
+				if(file_exists($app->public_html .'uploads/'.$f)){
+					$t->img = $f;
+				}
+			}else{
+				$t->img = $this->img_upload('uploaded_image',$app->files);
+			}
 		}
 		catch(\exception $e){
 			
@@ -1253,6 +1276,12 @@ class AdminAPI
 				if(!$id){
 					throw $e;
 				}
+				if(isset($post['background_image_server']) && !empty($post['background_image_server'])){
+					$f = array_pop(explode('/',$post['background_image_server']));
+					if(file_exists($app->public_html .'uploads/'.$f)){
+						$t->bg_image = $f;
+					}
+				}
 			}
 			$images = (!$id) ? [] : json_decode($t->images,true);
 			$set = [
@@ -1278,7 +1307,14 @@ class AdminAPI
 						$tmp['image'] = $this->img_upload('image_'.$i,$app->files);
 					}
 					catch(\exception $e){
-						$tmp['image'] = '';
+						if(isset($post['image_'.$i.'_server']) && !empty($post['image_'.$i.'_server'])){
+							$f = array_pop(explode('/',$post['image_'.$i.'_server']));
+							if(file_exists($app->public_html .'uploads/'.$f)){
+								$tmp['image'] = $f;
+							}
+						}else{
+							$tmp['image'] = '';
+						}
 					}
 				}
 				if($id && isset($images[$i])){
@@ -1303,6 +1339,12 @@ class AdminAPI
 			catch(\exception $e){
 				if(!$id){
 					throw $e;
+				}
+				if(isset($post['uploaded_video_server']) && !empty($post['uploaded_video_server'])){
+					$f = array_pop(explode('/',$post['uploaded_video_server']));
+					if(file_exists($app->public_html .'uploads/'.$f)){
+						$t->bg_image = $f;
+					}
 				}
 			}
 		}
@@ -1336,12 +1378,26 @@ class AdminAPI
 			throw new \exception('You are not allowed to edit Banners (Permission Denied)');
 		}
 		try{
-			$t->video = $this->video_upload('uploaded_video',$app->files);
+			if(isset($post['uploaded_video_server']) && !empty($post['uploaded_video_server'])){
+				$f = array_pop(explode('/',$post['uploaded_video_server']));
+				if(file_exists($app->public_html .'uploads/'.$f)){
+					$t->video = $f;
+				}
+			}else{
+				$t->video = $this->video_upload('uploaded_video',$app->files);
+			}
 		}
 		catch(\exception $e){
 		}
 		try{
-			$t->image = $this->img_upload('uploaded_image',$app->files);
+			if(isset($post['uploaded_image_server']) && !empty($post['uploaded_image_server'])){
+				$f = array_pop(explode('/',$post['uploaded_image_server']));
+				if(file_exists($app->public_html .'uploads/'.$f)){
+					$t->image = $f;
+				}
+			}else{
+				$t->image = $this->img_upload('uploaded_image',$app->files);
+			}
 		}
 		catch(\exception $e){
 		}
@@ -1510,10 +1566,21 @@ class AdminAPI
 		});
 		
 		$filter->generate_model($t,$required,$optional,$post);
-		
-		if(isset($app->files['uploaded_image']['tmp_name']) && is_uploaded_file($app->files['uploaded_image']['tmp_name'])){
-			$t->img = $this->img_upload('uploaded_image',$app->files);
+	
+		try{
+			if(isset($post['uploaded_image_server']) && !empty($post['uploaded_image_server'])){
+				$f = array_pop(explode('/',$post['uploaded_image_server']));
+				if(file_exists($app->public_html .'uploads/'.$f)){
+					$t->img = $f;
+				}
+			}else{
+				$t->img = $this->img_upload('uploaded_image',$app->files);
+			}
 		}
+		catch(\exception $e){
+			
+		}
+		
 		$t->status = 1;
 		
 		$db->store($t);
@@ -2283,5 +2350,14 @@ class AdminAPI
 			return $html;
 		}
 		throw new \exception('Failed To write PDF with message: '.$pdf->getError());
+	}
+	
+	public function browseFiles()
+	{
+		$app = $this->app;
+		$get = $app->get; 
+		$db = $app->db;
+		$type = isset($get['type']) ? $get['type'] : 'images';
+		return ['error'=>0,'message'=>$db->browseFiles($type)];
 	}
 } 

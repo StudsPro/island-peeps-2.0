@@ -818,3 +818,71 @@ line-height: 1.4em;
 	width: 100%;
 	text-align: center;
 }
+
+.file-input{
+  position: relative;
+}
+.file-input input[type="file"]{
+  position: absolute;
+	top: 0;
+  right:0;
+  bottom:0;
+  left:0;
+	opacity: 0;
+	cursor: pointer;
+  z-index: 1;
+  width: 100%;
+}
+.img-selector{
+  padding: 0px 4px;
+}
+.img-wrapper{
+  height: 250px;
+  overflow: auto;
+  padding-top: 8px;
+}
+.img-selector > .col-xs-3{
+  padding: 0px 4px 8px !important;
+}
+.imgselect{
+  position: relative;
+  display: block;
+  text-align: center;
+}
+.imgselect img{
+	height: 130px;
+	width: auto;
+}
+.imgselect:before{
+	content: " ";
+	top: -4px;
+	bottom: -4px;
+	left: -4px;
+	right: -4px;
+	border: 2px solid transparent;
+	position: absolute;
+}
+.imgselect.active:before{
+	transition: all 0.3s ease-in;
+	border-color: #1ab0fd;
+}
+
+.file-selected-view{
+	position: absolute;
+	top: 0px;
+	height: 30px;
+	margin-left: 100px;
+	right: 0px;
+	left: 0px;
+	bottom: 0px;
+	margin-top: 2px;
+	border: 1px solid #CCC;
+	border-left-width: 0;
+	line-height: 30px;
+	padding: 0px 12px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	font-weight: bold;
+	font-size: 1.1rem;
+}

@@ -321,7 +321,7 @@ class API extends ViewController
 		
 		$c = array_column($app->db->getAll('SELECT id FROM country ORDER BY name ASC'),'id');
 		
-		$args['country'] = $app->db->cachedCall('getCountry',[$uri],60 * 5); //cache data for 5 minutes.
+		$args['country'] = $app->db->cachedCall('getCountry',[$uri],60); //cache data for 1 minute.
 		
 		
 		$pos = array_search($args['country']['id'],$c) + 1;
@@ -387,7 +387,7 @@ class API extends ViewController
 	
 	public function getMapData()
 	{
-		return ['error'=>0,'message'=>$this->app->db->mapData()];
+		return ['error'=>0,'message'=>$this->app->db->cachedCall('mapData',[],60)];
 	}
 	
 	public function suggest()

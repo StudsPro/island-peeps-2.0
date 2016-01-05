@@ -62,7 +62,23 @@
 						<div class="form-group">
 							<label for="name" class="col-md-2 control-label"> Image <span class="require">*</span></label>
 							<div class="col-md-5">
-								<input type="file" name="img_file" class="form-control input-md" />
+								<div class="dropdown">
+									<input type="hidden" name="img_file_server" />
+									<div class="file-selected-view">
+										No File Selected
+									</div>
+									<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+										 Select File
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu">
+										<li class="file-input">
+											<input type="file" name="img_file" accept="image/*" />
+											<a href="#" class="file-select">From Computer</a>
+										</li>
+										<li><a href="#" class="file-browser-open" data-type="image" data-target="[name='img_file_server']">From Server</a></li>
+									</ul>
+								</div>
 								{% if item is defined %}
 								<div class="col-md-3 text-center  " id="raggionmapimg">
 									<img src="{{base_url}}uploads/{{item.img}}" width="80" style="background:#000;">
@@ -75,7 +91,23 @@
 						<div class="form-group">
 							<label for="name" class="col-md-2 control-label"> Map Image <span class="require">*</span></label>
 							<div class="col-md-5">
-								<input type="file" name="map_file" class="form-control input-md" />
+								<div class="dropdown">
+									<input type="hidden" name="map_file_server" />
+									<div class="file-selected-view">
+										No File Selected
+									</div>
+									<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+										 Select File
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu">
+										<li class="file-input">
+											<input type="file" name="map_file" accept="image/*" />
+											<a href="#" class="file-select">From Computer</a>
+										</li>
+										<li><a href="#" class="file-browser-open" data-type="image" data-target="[name='map_file_server']">From Server</a></li>
+									</ul>
+								</div>
 								{% if item is defined %}
 								<div class="col-md-3 text-center  " id="raggionmapimg">
 									<img src="{{base_url}}uploads/{{item.map_img}}" width="80" style="background:#000;">
@@ -94,7 +126,23 @@
 						<div class="form-group">
 							<label for="name" class="col-md-2 control-label"> Flag Image <span class="require">*</span></label>
 							<div class="col-md-5">
-								<input type="file" name="flag_file" class="form-control input-md" />
+								<div class="dropdown">
+									<input type="hidden" name="flag_file_server" />
+									<div class="file-selected-view">
+										No File Selected
+									</div>
+									<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+										 Select File
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu">
+										<li class="file-input">
+											<input type="file" name="flag_file" accept="image/*" />
+											<a href="#" class="file-select">From Computer</a>
+										</li>
+										<li><a href="#" class="file-browser-open" data-type="image" data-target="[name='flag_file_server']">From Server</a></li>
+									</ul>
+								</div>
 								{% if item is defined %}
 								<div class="col-md-3 text-center  " id="raggionmapimg">
 									<img src="{{base_url}}uploads/{{item.flag_img}}" width="80" style="background:#000;">
@@ -122,6 +170,12 @@
 								<input type="text" name="national_dish" value="{{item.national_dish|raw}}" class="form-control input-md" />
 							</div>
 						</div>
+						<div class="form-group">
+							<label for="title" class="col-md-2 control-label">Text Position Custom CSS</label>
+							<div class="col-md-5">
+								<textarea name="custom_pos" rows="8" cols="10" class="form-control input-md">{{item.custom_pos|raw}}</textarea>   
+							</div>
+						</div>
 						<div class="container">
 							<div class="control-group">
 								<div class="col-md-7">
@@ -133,7 +187,23 @@
 							
 							<label for="name" class="col-md-2 control-label"> Cover Image <span class="require">*</span></label>
 							<div class="col-md-5">
-								<input type="file" name="cover_file" class="form-control input-md" />
+								<div class="dropdown">
+									<input type="hidden" name="cover_file_server" />
+									<div class="file-selected-view">
+										No File Selected
+									</div>
+									<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+										 Select File
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu">
+										<li class="file-input">
+											<input type="file" name="cover_file" accept="image/*" />
+											<a href="#" class="file-select">From Computer</a>
+										</li>
+										<li><a href="#" class="file-browser-open" data-type="image" data-target="[name='cover_file_server']">From Server</a></li>
+									</ul>
+								</div>
 								{% if item is defined %}
 								<div class="col-md-3 text-center  " id="raggionmapimg">
 									<img src="{{base_url}}uploads/{{item.cover_img}}" width="80" style="background:#000;">

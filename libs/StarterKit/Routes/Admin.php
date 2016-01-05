@@ -405,6 +405,9 @@ class Admin extends ViewController
 				if($args['item']['type'] == 'image'){
 					$args['item']['images'] = json_decode($args['item']['images'],true);
 				}
+				if($args['item']['type'] == 'video' && !empty($args['item']['video'])){
+					$args['item']['video'] = rtrim($args['item']['video'],'.mp4').'.png';
+				}
 				$module = 'ads';
 			break;
 			case 'banner':
@@ -412,6 +415,7 @@ class Admin extends ViewController
 				$args['action'] = 'Edit Banner';
 				$args['settings'] = $db->getRow('SELECT * FROM sitesetting WHERE id="1"');
 				$args['item'] = $db->getRow('SELECT * FROM slide WHERE id=:id',[':id'=>$id]);
+				$args['item']['video'] = empty($args['item']['video']) ? '' : rtrim($args['item']['video'],'.mp4') . '.png';
 				$module = 'banners';
 			break;
 			case 'about-page':

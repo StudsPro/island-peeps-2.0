@@ -40,7 +40,23 @@
 							<div class="form-group">
 								<label for="title" class="col-md-2 control-label">Avatar</label>
 								<div class="col-md-5">
-									<input type="file" name="avatar_img" class="form-control input-md" />
+									<div class="dropdown">
+										<input type="hidden" name="avatar_img_server" />
+										<div class="file-selected-view">
+											No File Selected
+										</div>
+										<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+											 Select File
+											<span class="caret"></span>
+										</button>
+										<ul class="dropdown-menu">
+											<li class="file-input">
+												<input type="file" name="avatar_img" accept="image/*" />
+												<a href="#" class="file-select">From Computer</a>
+											</li>
+											<li><a href="#" class="file-browser-open" data-type="image" data-target="[name='avatar_img_server']">From Server</a></li>
+										</ul>
+									</div>
 								</div>
 							</div>
 							<div class="form-group">

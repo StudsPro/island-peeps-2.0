@@ -656,19 +656,38 @@ var slide = {
 	go: function(a,scrollTo){
 		slideIt(a,scrollTo);
 	},
-	hideVideos: function(){
-		$('.video-slideup').html('');
-	},
-	playCurrentVideo: function(){
-		var target = $('[data-slider]').find('.item:inview').find('img.lazyOwl');
-		if(target.length > 0){
-			var video = target.data('video');
-			if(typeof video !== 'undefined' && video != false && video != ''){
-				target.siblings('.video-slideup').append('<video src="'+video+'" loop style="display:none;" preload="auto"></video>');
-				setTimeout(function(){
-					var el = target.siblings('.video-slideup').find('video').show().get(0).play();
-				},200);
-			}	
+	run: function(){
+		console.log('fired 2');
+		if($('video').length > 0){
+			console.log('pause video');
+			$('video').hide().get(0).pause();
+		}
+		target =  $('[data-slider]').find('.item:inview').find('img.lazyOwl');
+		var video = target.data('video');
+		if(typeof video !== 'undefined' && video != false && video != '' && target.siblings('.video-slideup').find('video').length == 0){
+			console.log('create video');
+			target.siblings('.video-slideup').append('<video src="'+video+'" loop style="display:none;" preload="auto"></video>');
+			setTimeout(function(){
+				if(location.pathname !== '/stats'){
+					target.siblings('.video-slideup').find('video').show().get(0).play();
+				}
+				slide.handleCallbacks()
+			},500);
+		}else{
+			setTimeout(function(){
+				try{
+					console.log('play video');
+					if(location.pathname !== '/stats'){
+						$('.video-slideup:inview').find('video').show().get(0).play()
+					}
+					slide.handleCallbacks()
+				}
+				catch(e){
+					console.log('video failed with message ',e)
+					slide.handleCallbacks();
+					$('video').hide();
+				}
+			},500);
 		}
 	},
 	handleCallbacks: function(){
@@ -728,13 +747,11 @@ function slideIt( b , scrollTo)
 	slide.el.goTo(n);
 	$('[data-slug="/"]').find('[data-viewpoint]').ensureInview(scrollTo);
 	z=0;
-	slide.hideVideos();
+	slide.cleanup();
 	setTimeout(function(){
-		slide.playCurrentVideo();
-		slide.handleCallbacks();
-		slide.cleanup();
-	},500);
-	
+		console.log('fired 1');
+		slide.run();
+	},200);
 }
 
 //setup the google analytics object.
@@ -1115,7 +1132,7 @@ $(function(){
 	$(document).on('keyup','.searchbar input',function(e){
 		if(e.which == 13 && this.value != "")
 		{
-			$(this).siblings('a').trigger('click');
+			$(this).blur().siblings('a').trigger('click');
 		}else{
 			if(search_int !== null) clearInterval(search_int);
 			search_int = setTimeout(function(value){
@@ -1148,6 +1165,25 @@ $(function(){
 					$('.searchgraph-results').html(data.message).addClass('active');
 					setTimeout(function(){
 						var dataset = JSON.parse($('#graph-dataset').html());
+						
+						var i = dataset.length;
+						while(i--){
+							if(dataset[i] instanceof Array ){
+								dataset.splice(i,1);
+							}
+						}
+						function cmp(a,b) {
+							if (a.name < b.name){
+								return -1;
+							}
+							else if (a.name > b.name){
+								return 1;
+							}
+							else{
+								return 0;
+							}
+						}
+						dataset.sort(cmp);
 						createLine('graph-results',dataset,false,true)
 					},0);
 					$('.searchgraph-results .close').one('click',function(){

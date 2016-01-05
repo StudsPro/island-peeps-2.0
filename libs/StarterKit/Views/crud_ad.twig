@@ -48,20 +48,58 @@
 								</div>
 							</div>
 							<div class="clearfix" data-type-select>
-								<div class="form-group" data-type="image">
-									<div class="container clearfix">
+								<div class="form-group {% if item.type=='video'%}hide{%endif%}" data-type="image">
+									<div class="container clearfix" style="padding:0">
 										<label for="title" class="col-md-2 control-label">Background Image</label>
 										<div class="col-md-5">
-											<input type="file" name="background_image" class="form-control input-md" />
+											<div class="dropdown">
+												<input type="hidden" name="background_image_server" />
+												<div class="file-selected-view">
+													No File Selected
+												</div>
+												<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+													 Select File
+													<span class="caret"></span>
+												</button>
+												<ul class="dropdown-menu">
+													<li class="file-input">
+														<input type="file" name="background_image" accept="image/*" />
+														<a href="#" class="file-select">From Computer</a>
+													</li>
+													<li><a href="#" class="file-browser-open" data-type="image" data-target="[name='background_image_server']">From Server</a></li>
+												</ul>
+											</div>
 											<br/>
+										</div>
+										<div class="col-md-2 text-center" id="raggionmapimg">
+											<img src="{{base_url}}uploads/{{item.bg_image}}" width="120" style="background:#000;">
 										</div>
 									</div>
 									<div class="container clearfix">
 											{% for i in range(1,5) %}
-												<div class="form-group" data-type="image">
-													<label for="title" class="col-md-2 control-label"> Image {{i}}</label>
-													<div class="col-md-4">
-														<input type="file" name="image_{{i}}" class="form-control input-md" />
+												<div class="form-group {% if item.type=='video'%}hide{%endif%}" data-type="image">
+													<label for="title" class="col-md-1 control-label"> Image {{i}}</label>
+													<div class="col-md-1 text-center" id="raggionmapimg">
+														<img src="{{base_url}}uploads/{{item.images[i].image}}" width="80" style="background:#000;">
+													</div>
+													<div class="col-md-3">
+														<div class="dropdown">
+															<input type="hidden" name="image_{{i}}_server" />
+															<div class="file-selected-view">
+																No File Selected
+															</div>
+															<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+																 Select File
+																<span class="caret"></span>
+															</button>
+															<ul class="dropdown-menu">
+																<li class="file-input">
+																	<input type="file" name="image_{{i}}" accept="image/*" />
+																	<a href="#" class="file-select">From Computer</a>
+																</li>
+																<li><a href="#" class="file-browser-open" data-type="image" data-target="[name='image_{{i}}_server']">From Server</a></li>
+															</ul>
+														</div>
 													</div>
 													<div class="col-md-3">
 														<input type="text" name="link_{{i}}" value="{{item.images[i].link}}" class="form-control input-md" placeholder="Link" />
@@ -73,11 +111,29 @@
 										{% endfor %}
 									</div>
 								</div>
-								
-								<div class="form-group hide" data-type="video">
-									<label for="title" class="col-md-2 control-label"> Select Video</label>
+								<div class="form-group {% if item.type=='image'%}hide{%endif%}" data-type="video">
+									<label for="title" class="col-md-2 control-label">Select Video</label>
 									<div class="col-md-5">
-										<input type="file" name="uploaded_video" class="form-control input-md" />
+										<div class="dropdown">
+											<input type="hidden" name="uploaded_video_server" />
+											<div class="file-selected-view">
+												No File Selected
+											</div>
+											<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+												 Select File
+												<span class="caret"></span>
+											</button>
+											<ul class="dropdown-menu">
+												<li class="file-input">
+													<input type="file" name="uploaded_video" accept="video/mp4" />
+													<a href="#" class="file-select">From Computer</a>
+												</li>
+												<li><a href="#" class="file-browser-open" data-type="video" data-target="[name='uploaded_video_server']">From Server</a></li>
+											</ul>
+										</div>
+									</div>
+									<div class="col-md-2 text-center" id="raggionmapimg">
+										<img src="{{base_url}}uploads/{{item.video}}" width="120" style="background:#000;">
 									</div>
 								</div>
 							</div>
