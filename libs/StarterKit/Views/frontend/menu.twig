@@ -5,22 +5,56 @@
 		<img src="{{base_url}}static/front/img/logo_sm.png" />
 	</a>
 </div>
-<div class="wrap">
-	<ul class="list columns">
-		{% for item in menu %}
-			{% if loop.first %}
+<div class="wrap clearfix">
+	<ul class="list s-1366 columns hide">
+		{% for row in menu|batch(5) %}
 			<ul class="section">
-			{% endif %}
-			{% if (loop.index0 %5== 0) and (loop.first == false) %}
+				{% for item in row %}
+				<li>
+					<a data-href="{{item.uri}}">{{item.title}}</a>
+				</li>
+				{% endfor %}
 			</ul>
-			<ul class="section">
-			{% endif %}
-			<li>
-				<a data-href="{{item.uri}}">{{item.title}}</a>
-			</li>
-			{% if loop.last %}
-			</ul>
-			{% endif %}
 		{% endfor %}
 	</ul>
+	<ul class="list s-1242 columns hide">
+		{% for row in menu|batch(7) %}
+			<ul class="section">
+				{% for item in row %}
+				<li>
+					<a data-href="{{item.uri}}">{{item.title}}</a>
+				</li>
+				{% endfor %}
+			</ul>
+		{% endfor %}
+	</ul>
+	<ul class="list s-1000 columns hide">
+		{% for row in menu|batch(9) %}
+			<ul class="section">
+				{% for item in row %}
+				<li>
+					<a data-href="{{item.uri}}">{{item.title}}</a>
+				</li>
+				{% endfor %}
+			</ul>
+		{% endfor %}
+	</ul>
+	<ul class="list s-766 columns hide">
+		{% for row in menu|batch(12) %}
+			<ul class="section">
+				{% for item in row %}
+				<li>
+					<a data-href="{{item.uri}}">{{item.title}}</a>
+				</li>
+				{% endfor %}
+			</ul>
+		{% endfor %}
+	</ul>
+	<div class="list s-mobile hide">
+		<select class="hidden-menu" name="xmobile-go">
+			{% for item in menu %}
+			<option value="{{item.uri}}">{{item.title}}</option>
+			{% endfor %}
+		</select>
+	</div>
 </div>

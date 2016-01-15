@@ -1164,8 +1164,9 @@ class DB
 	{
 		return \R::getAll('SELECT count(id) as num, MONTHNAME(STR_TO_DATE(month, "%m")) as month FROM masterlist WHERE type_id="1" and month<>"NULL" and month<>"00" and month<>"invalid" GROUP BY month');
 	}
-	
 	//end app specific funcs
+	
+	
 	
 	//private utilities
 	private function paginatedQuery($sql,$params,$page = 1, $per_page=12)

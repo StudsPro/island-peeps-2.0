@@ -1025,7 +1025,7 @@ class AdminAPI
 		if(!isset($t->admin_id)){
 			$t->admin_id = $admin->id;
 		}
-		$t->uri = strtolower($this->url_safe($t->name));
+		$t->uri = strtolower($this->url_safe($t->title));
 		$t->updated = time();
 		$db->store($t);
 		
@@ -1343,7 +1343,7 @@ class AdminAPI
 				if(isset($post['uploaded_video_server']) && !empty($post['uploaded_video_server'])){
 					$f = array_pop(explode('/',$post['uploaded_video_server']));
 					if(file_exists($app->public_html .'uploads/'.$f)){
-						$t->bg_image = $f;
+						$t->video = $f;
 					}
 				}
 			}
@@ -2359,5 +2359,11 @@ class AdminAPI
 		$db = $app->db;
 		$type = isset($get['type']) ? $get['type'] : 'images';
 		return ['error'=>0,'message'=>$db->browseFiles($type)];
+	}
+	
+	public function generateIndex()
+	{
+		$this->app->db->generateIndex();
+		return ['error'=>0,'message'=>1];
 	}
 } 

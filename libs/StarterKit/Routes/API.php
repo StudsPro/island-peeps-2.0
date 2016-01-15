@@ -87,7 +87,7 @@ class API extends ViewController
 		$args['regions'] = $db->getAll('SELECT id,name FROM country ORDER BY name ASC');
 		$args['suggestion_message'] = $db->getCell('SELECT suggestion_message from sitesetting WHERE id="1"');
 		$args['landing'] = $db->getRow('SELECT landing_body as body ,landing_title as title FROM sitesetting WHERE id="1"');
-		
+		$args['recent'] = $app->db->cachedCall('getRecent',[],60 * 5); //cache data for 5 minutes.
 		return [
 			'error'=>0,
 			'message'=>[
@@ -95,7 +95,8 @@ class API extends ViewController
 				'slugs'=>$db->cachedCall('slugs',[],60),
 				'slider'=> $this->twig->loadTemplate('frontend/slider.twig')->render($args),
 				'menu'=> $this->twig->loadTemplate('frontend/menu.twig')->render($args),
-				'memes'=> $this->twig->loadTemplate('frontend/memes.twig')->render($args)
+				'memes'=> $this->twig->loadTemplate('frontend/memes.twig')->render($args),
+				'recent'=>$this->twig->loadTemplate('frontend/recent.twig')->render($args)
 			]
 		];
 	}
@@ -294,14 +295,6 @@ class API extends ViewController
 		// $app->session['user']->update_password($post['current_password'],$post['new_password']);
 		// return ['error'=>0,'message'=>1];
 	// }
-	
-	public function get_recent(){
-		$app = $this->app;
-		$args = $app->args;
-		$args['recent'] = $app->db->cachedCall('getRecent',[],60 * 5); //cache data for 5 minutes.
-		$html= $this->twig->loadTemplate('frontend/recent.twig')->render($args);
-		return ['error'=>0,'message'=>$html];
-	}
 	
 	public function get_country()
 	{

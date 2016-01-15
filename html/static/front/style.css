@@ -6,6 +6,24 @@
 		 url('font/OpenSans-Bold-webfont.ttf') format('truetype'), 
 		 url('font/OpenSans-Bold-webfont.svg#webfont') format('svg'); 
 }
+img{
+	transition: opacity .3s ease-in;
+}
+img[data-src] {
+  opacity: 0;
+  
+}
+img[src]{
+	opacity:1;
+}
+
+video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none;
+}
+video::-webkit-media-controls {
+    display:none !important;
+}
 
 @font-face{ 
 	font-family:"Open_Sans_R";
@@ -86,6 +104,10 @@ img:-moz-loading {
 }
 
 /*slider*/
+.slider .owl-carousel{
+	opacity:0;
+	transition: opacity .5s ease-in;
+}
 .slider > .columns{
 	padding:0;
 }
@@ -704,9 +726,11 @@ margin-top:0px;
 }
 
 a.ptv{
-	float: left;
+	position: relative;
+	max-width: 306.8px;
+	float: none;
+	margin: 0 auto;
 	display: block;
-	max-width: 100%;
 }
 
 a.ptv:hover .ctr_detail{display:inline-block; top:50%; margin-top: -77.5px; opacity: 1;}
@@ -877,7 +901,8 @@ body.has-menu .menu{
 	list-style: none;
 	margin:0;
 	padding:0;
-	min-height: 110px;
+	max-height: 110px;
+	overflow: auto;
 }
 .menu .list .section{
 	width: auto;
@@ -1718,8 +1743,7 @@ body{
 }
 
 #disqus_thread{
-	margin-top: -120px;
-	padding-top: 125px;
+
 }
 
 .skiptranslate{display:none;}
@@ -1731,12 +1755,22 @@ body{
     display: none !important;
     visibility: hidden !important;
 }
-
 select.hidden-menu{
-	display:none;
-}
-select.hidden-menu{
-	opacity:0;
+	border: medium none;
+	background: transparent none repeat scroll 0% 0%;
+	color: rgb(255, 255, 255);
+	padding: 10px;
+	font-size: 1.15rem;
+	text-transform: uppercase;
+	font-family: remachine_scriptregular;
+	text-align: center;
+	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAjCAYAAADWtVmPAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDoxMjFCODc5ODAxNTExMUU0ODEwMkVFM0U0NDZFRTJGQiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDoxMjFCODc5OTAxNTExMUU0ODEwMkVFM0U0NDZFRTJGQiI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjEyMUI4Nzk2MDE1MTExRTQ4MTAyRUUzRTQ0NkVFMkZCIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjEyMUI4Nzk3MDE1MTExRTQ4MTAyRUUzRTQ0NkVFMkZCIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+SpmyBgAAAT1JREFUeNrsmKFuAkEURZnSkAaNr6mFSgyC4MFRgWsQNEHU8QclpL6ShH/gDxDwCXhaFE2LbFKxPZM8gWgKzLyp2LxJTnbDzpu9B2ZnNrgsywp5aBeFnDQTMRETMRETMRETyZPIZUTtFL6cc0ONILzzvXC4gn7oAKEUYQ5PChJjGasYmidYRAKUYQWjCIkRLP1YMV9slIjcuAJrGARIPEhtJXaGRIvIza/hFXpnSPRg42s1prqKiAS4hR20T5DoSN+a1jOrJiIhmrCH1h8SLenT1Fx8VEUkyB18Qv2Xa3X4gK72KqouImEeZepUDz6rwru/lmI7SCIigZ7hDW6ELUxS7Wsu9F8UdvRjgXyHGTR8d1jAPXXZMZGgPKlEJFSJw9yfQpua71N+kX8VsbdfEzEREzEREzERE0nXfgQYAEqNz/jOA90dAAAAAElFTkSuQmCC");
+	background-repeat: no-repeat;
+	background-position: 98% 50%;
+	background-size: 15%;
+	text-overflow: ellipsis;
+	padding-right: 50px;
+	height: 100% !important;
 }
 select.hidden-menu > option{
 	opacity:1;
@@ -1752,8 +1786,8 @@ select.hidden-menu > option{
 	height: 61px;
 }
 @media only screen and (max-width: 40em) { 
-	.menu .wrap select.hidden-menu{
-		display: block;
+	.ad-lg:not(.img-ad){
+		display:none;
 	}
 	.slider .logo{
 		height: 61px;
@@ -1944,11 +1978,25 @@ select.hidden-menu > option{
 	}
 } /* max-width 640px, mobile-only styles, use when QAing mobile issues */
 
-/* medium */
-@media only screen and (min-width: 40.063em) { } /* min-width 641px, medium screens */
+@media only screen and (min-width: 40.063em) and (max-width: 64em) {
+	.statGrid{
+		margin-top: 0px;
+		position: relative;
+		top: -6px;
+		margin-bottom: 62px;
+	}
+	
+	.country > div,.country > div.special-right,.country > div.special-left{
+		padding: 80px 4% 0 !important;
+	}
+	.country .special-md{
+		padding-top:80px !important;
+	}
+	.country.is-left > div.special-right:last-child,.country.is-right > div.special-left:first-child{
+		padding-top:0 !important;
+	}
 
-/* medium qa */
-@media only screen and (min-width: 40.063em) and (max-width: 64em) { } /* min-width 641px and max-width 1024px, use when QAing tablet-only issues */
+} /* min-width 641px and max-width 1024px, use when QAing tablet-only issues */
 
 /* Large screens */
 @media only screen and (min-width: 64.063em) { } /* min-width 1025px, large screens */
@@ -1956,9 +2004,53 @@ select.hidden-menu > option{
 @media only screen and (min-width: 64.063em) and (max-width: 90em) { } /* min-width 1025px and max-width 1440px, use when QAing large screen-only issues */
 
 /* XLarge screens */
-@media only screen and (min-width: 90.063em) { } /* min-width 1441px, xlarge screens */
+@media only screen and (min-width: 90.063em) {
+
+	
+} /* min-width 1441px, xlarge screens */
 
 @media only screen and (min-width: 90.063em) and (max-width: 120em) { } /* min-width 1441px and max-width 1920px, use when QAing xlarge screen-only issues */
 
 /* XXLarge screens */
-@media only screen and (min-width: 120.063em) { } /* min-width 1921px, xxlarge screens */
+@media only screen and (min-width: 120.063em) {
+
+	.ad-lg{
+		height: auto;
+	}
+	
+	/* .img-ad ul li a,.img-ad ul li img{
+		height: 250px;
+	} */
+	.ad-lg.img-ad{
+		height: 542.5px;
+	}
+	.img-ad ul {
+		height: 220px;
+		margin-top: 160px;
+	}
+	.ad-lg.img-ad > .columns{
+		width: 66.66666666666667% !important;
+		margin-left: 16.66666666666667% !important;
+	}
+	.img-ad ul li a{
+		height: 220px;
+	}
+	.img-ad ul li img{
+		height: 220px;
+	}
+	.img-ad ul li .zoom div{
+		margin: 87.5px 0;
+	}
+	.menu .list:not(.hide){
+		display: flex;
+		justify-content: center;
+		margin-top: 13.33px;
+	}
+	.menu .list .section{
+		margin: 0 .9375rem;
+	}
+	.menu .logo img{
+		max-height: 133px;
+		margin-top:0;
+	}
+} /* min-width 1921px, xxlarge screens */
