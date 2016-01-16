@@ -6,21 +6,23 @@
 	{% for item in recent %}
 	<li>
 		<div class="contain">
-			{% if item.type_id == 1 %}
-			<a data-href="/explore/{{item.regions[0].uri}}/people/{{item.uri}}">
-			{% endif %}
-			{% if item.type_id == 3 %}
-			<a data-href="/explore/{{item.regions[0].uri}}/fun-fact/{{item.uri}}">
-			{% endif %}
+			<a>
 				<img src="{{base_url}}uploads/{{item.img}}" onerror="iE(this);" />
 				<div class="overlay">
 					<div class="center">
 						<div class="regions clearfix">
 							{% for item2 in item.regions %}
+							{% if item.type_id == 1 %}
+							<a data-href="/explore/{{item2.uri}}/people/{{item.uri}}">
+							{% endif %}
+							{% if item.type_id == 3 %}
+							<a data-href="/explore/{{item2.uri}}/fun-fact/{{item.uri}}">
+							{% endif %}
 							<div>
 								<img src="{{base_url}}uploads/{{item2.map_img}}"/>
 								<span>{{item2.name}}</span>
 							</div>
+							</a>
 							{% endfor %}
 						</div>
 						{% if item.type_id == 3 %}

@@ -1719,7 +1719,7 @@ body{
 	bottom: 83px;
 	overflow: hidden;
 	width: 23%;
-	left: initial;
+	left: auto;
 }
 
 .social-wall iframe{
@@ -1995,7 +1995,9 @@ select.hidden-menu > option{
 	.country.is-left > div.special-right:last-child,.country.is-right > div.special-left:first-child{
 		padding-top:0 !important;
 	}
-
+	.ad-lg:not(.img-ad){
+		display:none;
+	}
 } /* min-width 641px and max-width 1024px, use when QAing tablet-only issues */
 
 /* Large screens */

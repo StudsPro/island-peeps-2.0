@@ -183,10 +183,10 @@
 	<li>
 		<div class="contain">
 			{% if item.type_id == 1 %}
-			<a data-href="/explore/{{item.regions[0].uri}}/people/{{item.uri}}">
+			<a data-href="/explore/{{country.uri}}/people/{{item.uri}}">
 			{% endif %}
 			{% if item.type_id == 3 %}
-			<a data-href="/explore/{{item.regions[0].uri}}/fun-fact/{{item.uri}}">
+			<a data-href="/explore/{{country.uri}}/fun-fact/{{item.uri}}">
 			{% endif %}
 				<img src="{{base_url}}uploads/{{item.img}}" onerror="iE(this);" />
 				<div class="overlay">

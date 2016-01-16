@@ -79,7 +79,7 @@ function resizeMenu()
 
 function menuSetCurrent()
 {
-	var el2 = $('.menu').find('li').not('.active').find('[data-href="'+location.pathname+'"]');
+	var el2 = $('.menu').find('li').not('.active').find('[data-href*="'+location.pathname+'"]');
 	if(el2.length > 0){
 		if($('[name="xmobile-go"] option[value="'+location.pathname+'"]').length > 0){
 			$('[name="xmobile-go"]').val(location.pathname);
@@ -399,12 +399,13 @@ function createLine(target,data,title,onGrid)
 	categoryAxis.axisAlpha = 0;
 	categoryAxis.autoGridCount  = false;
 	categoryAxis.gridCount = data.length;
+	
 	if(onGrid){
 		categoryAxis.fontSize = "12";
 		categoryAxis.titleBold = true;
 		categoryAxis.inside = true;
 		categoryAxis.labelFunction = function(txt){
-			return txt.entities();
+			return txt;
 		};
 	}
 	
@@ -432,6 +433,7 @@ function createLine(target,data,title,onGrid)
 var scroll_lock = false;
 var scroll_int = null;
 var scroll_last = 0;
+var scroll_last2 = 0;
 var skel_created = false;
 var firstLoadInterval = null;
 
@@ -439,6 +441,18 @@ function scrollHandler(e)
 {
 	e.preventDefault();
 	
+	var scroll = (window.pageYOffset || e.target.scrollTop);
+	
+	if(scroll > scroll_last2){
+		if( scroll >= window.innerHeight && !$('body').hasClass('has-menu') ){
+			$('body').addClass('has-menu');
+		}
+	}else{
+		if(scroll-1 <= window.innerHeight && $('body').hasClass('has-menu') ){
+			$('body').removeClass('has-menu');
+		}
+	}
+	scroll_last2 = scroll;
 	
 	if(scroll_int !== null) {
 		
@@ -612,7 +626,6 @@ function recursibleScroll(__t)
 	scroll_last = __t.offset().top;
 	if(scroll_last == 0 && location.pathname.match(/(^\/{1}[a-z-0-9]+$)/) == null){
 		setTimeout(function(){
-			
 			recursibleScroll(__t);
 		},100);
 	}
@@ -622,9 +635,6 @@ function recursibleScroll(__t)
 	},500,'swing',function(){
 		deferred_exec = null;
 		$.app.done();
-		if( $(window).scrollTop() >= $(window).height() && !$('body').hasClass('has-menu')){
-			$('body').addClass('has-menu');
-		}
 		if($('[data-slider]').inView() && $('body').hasClass('has-menu')){
 			$('body').removeClass('has-menu');
 		}

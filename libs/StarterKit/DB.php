@@ -383,8 +383,6 @@ class DB
 					'coordinates'=>[$row['longitude'],$row['latitude']]
 				],
 				'properties'=>[
-					//'marker-color'=>'rgba(0,0,0,0)',
-					
 					'title'=>$row['name'],
 					'change'=>7,
 					'lat'=>$row['latitude'],
@@ -403,7 +401,7 @@ class DB
 					'population'=>$row['population'],
 					'description'=>$row['description'],
 					'ethnic_data'=>$this->parseEthnic($row['ethnic_data']),
-					'category_data'=>\R::getAll('SELECT b.name,count(b.id) as num FROM masterlist a JOIN category b on a.category_id=b.id WHERE FIND_IN_SET(:id2,a.regions) GROUP BY a.category_id ORDER BY num DESC LIMIT 0,8',[':id2'=>$row['id']])
+					'category_data'=>\R::getAll('SELECT b.name,count(b.id) as num FROM masterlist a JOIN category b on a.category_id=b.id WHERE FIND_IN_SET(:id2,a.regions) AND a.status="4" GROUP BY a.category_id ORDER BY num DESC LIMIT 0,8',[':id2'=>$row['id']])
 				]
 			];
 		}
