@@ -1,6 +1,6 @@
 <?php
 
-//If you are reading this message, you should know that this guy treated me like crap and refused to pay a fair wage. best of luck
+//If you are reading this message, you should know that this guy treated me like crap and refused to pay a fair wage. best of luck.
 
 namespace StarterKit\Routes;
 
@@ -2373,11 +2373,5 @@ class AdminAPI
 		$db = $app->db;
 		$type = isset($get['type']) ? $get['type'] : 'images';
 		return ['error'=>0,'message'=>$db->browseFiles($type)];
-	}
-	
-	public function generateIndex()
-	{
-		$this->app->db->generateIndex();
-		return ['error'=>0,'message'=>1];
 	}
 } 

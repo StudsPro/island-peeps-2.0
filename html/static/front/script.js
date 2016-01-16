@@ -1,9 +1,11 @@
+//so we can know when a video is playing or not.
 Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
     get: function(){
         return !!(this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2);
     }
 });
 
+//client reported that hitting tab key causes strange issues in Safari. this keeps tab key from causing the page to be scrolled.
 window.onkeydown = function(e){
     if(e.keyCode == 32 && e.target == document.body) {
         e.preventDefault();
@@ -14,12 +16,12 @@ window.onkeydown = function(e){
 function responsiveApp()
 {
 	resizeMenu();
-	var s = '';
-	s += resizeAdVideos();
-	s += resizeSlideVideos();
-	$('#otf-style').html(s).detach().appendTo('body');
+	var css = '';
+	css += resizeAdVideos();
+	css += resizeSlideVideos();
+	$('#otf-style').html(css).detach().appendTo('body');//since alot of stuff we load is via ajax, instead of setting with .css() we just create a stylesheet. 
 }
-
+//resize add videos in large screens so they are full width.
 function resizeAdVideos()
 {
 	var tclass = '.ad-lg video';
@@ -39,6 +41,7 @@ function resizeAdVideos()
 	return tclass+' {\r\nheight:'+height+'px;\r\ntransform:scaleX('+scale+');\r\n}\r\n';
 }
 
+//resizes the slide videos on very large screen to meet the scale that it looked good on my computer.
 function resizeSlideVideos()
 {
 	var tclass = '.slider .owl-carousel .item .video-slideup video';
@@ -101,11 +104,13 @@ function menuSetCurrent()
 	}
 }
 
-$.fn.getComputed = function(){
+$.fn.getComputed = function()
+{
 	return parseInt(this.css('width').replace(/px/,''));
 };
 
-function googleTranslateElementInit() {
+function googleTranslateElementInit()
+{
 	$('[data-language]').one('DOMSubtreeModified', function() {
 	  flipLanguage(1);  
 	});
@@ -128,6 +133,17 @@ function flipLanguage(x)
 		var text = 'Español';
 	}
 	$('[data-language]').attr('data-selected',language).html(text);
+}
+
+function suggestDone(data)
+{
+	//this  === $(form) in this context. see form submit code in shared.js
+	if(data.error == 0){
+		this.trigger('reset'); //reset the form
+		sk.alert('Your Suggestion has been submitted! You will receive a confirmation email as soon as we have reviewed your submission. Thanks!','success');
+	}else{
+		sk.alert(data.message,'error');
+	}
 }
 
 /*map*/
@@ -327,13 +343,15 @@ $.mapbox = {
 };
 
 
-function randColor(){
-	return '#'+Math.floor(Math.random()*16777215).toString(16);
+function randColor()
+{
+	return '#'+Math.floor(Math.random()*16777215).toString(16);//this is used to pad the chart with some random colors
 }
 /*endmap*/
 
-
-String.prototype.entities = function(){
+//this was from the sites original codebase. not sure if used, dont care. i quit.
+String.prototype.entities = function()
+{
 	var el = document.createElement('span');
 	this.replace(/&(#(?:x[0-9a-f]+|\d+)|[a-z]+);/gi,function(str) {
 			el.innerHTML= str;
@@ -465,6 +483,8 @@ function scrollHandler(e)
 		clearTimeout(scroll_int);
 		scroll_int = null;
 	}
+	
+	//we use an interval to "debounce" the scrolling function, preventing it to run many times and cause a bunch of lag and glitches
 	scroll_int = setTimeout(function(){
 		
 		var scroll = (window.pageYOffset || e.target.scrollTop);
@@ -585,6 +605,8 @@ var scroll_handles = 0;
 var deferred_exec = null;
 var scrollTimer2 = 0;
 var last_t = null;
+
+//good luck understanding this code, but it works (mostly)
 $.fn.ensureInview = function(scrollTo){
 	clearTimeout(scrollTimer2);
 	scrollTimer2 = setTimeout(function(){
@@ -625,36 +647,42 @@ $.fn.ensureInview = function(scrollTo){
 	}
 };
 
+
+//this code recurses dangerously. race conditions in the memory of javascript. the amount of redraws this app causes makes the calculations sometimes fail.
+var recursions = 0;
 function recursibleScroll(__t)
 {
-	
+	if(recursions > 30){
+		return;//something weird happened. just return
+	}
 	last_t = __t;
 	scroll_last = __t.offset().top;
 	if(scroll_last == 0 && location.pathname.match(/(^\/{1}[a-z-0-9]+$)/) == null){
 		setTimeout(function(){
+			recursions++;
 			recursibleScroll(__t);
 		},100);
-	}
-	
-	$('html, body').animate({
-		scrollTop: scroll_last,
-	},500,'swing',function(){
-		deferred_exec = null;
-		$.app.done();
-		if($('[data-slider]').inView() && $('body').hasClass('has-menu')){
-			$('body').removeClass('has-menu');
-		}
-		if($('.menu').is(':visible')){
-			slide.cleanup();
-			if($('[data-slider]').find('video').length > 0){
-				slide.hideVideos();
+	}else{
+		$('html, body').animate({
+			scrollTop: scroll_last,
+		},500,'swing',function(){
+			deferred_exec = null;
+			$.app.done();
+			if($('[data-slider]').inView() && $('body').hasClass('has-menu')){
+				$('body').removeClass('has-menu');
 			}
-			menuSetCurrent();
-		}
-	});		
+			if($('.menu').is(':visible')){
+				slide.cleanup();
+				if($('[data-slider]').find('video').length > 0){
+					slide.hideVideos();
+				}
+				menuSetCurrent();
+			}
+		});	
+	}	
 }
 
-
+//attempts to calculate the nearest slug from current scroll position. 
 $.fn.reduceToClosest = function(){
 	var it = null;
 	this.each(function(i,v){
@@ -705,7 +733,7 @@ $.extend(	$.expr[':'], {
 
 
 
-
+//image error
 function iE(el)
 {
 	  el.src = window.location.origin+'/static/front/img/broken.png';
@@ -713,7 +741,6 @@ function iE(el)
 
 function adRun_video()
 {
-	
 	var v = $('[data-slug="'+location.pathname+'"]').find('video');
 	if(v.length){
 		v.get(0).play();
@@ -835,6 +862,12 @@ function slideIt( b , scrollTo)
 	},200);
 }
 
+//this cookie holds the last viewed slide. so if user scroll back to top the same slide is still shown.we have to remove it so when they return 
+//they are not redirected to that slide.
+window.onbeforeunload = function(e){
+	$.removeCookie('ip.slide');
+};
+
 //setup the google analytics object.
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -843,20 +876,11 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 ga('create', 'UA-68535823-1', 'auto');
 
 /* * * DON'T EDIT BELOW THIS LINE * * */
-function moveDisqusDiv(personeId){
-$( "#disqus_thread" ).remove();
-document.getElementById(personeId).innerHTML = "<div id='disqus_thread'></div>";
-return true;
-}
-
-
 
 /* * * Disqus Reset Function * * */
 function disqus(e) {
 	
-	window.onbeforeunload = function(e){
-		$.removeCookie('ip.slide');
-	};
+	
 	
 	
 	e.preventDefault();
@@ -1008,6 +1032,8 @@ $(function(){
 		});
 	}
 	
+	
+	//these are the routes for the app. the router has been modified to receive a value called scrollTo. which tells the app whether it should scroll the slug element into view or not
 	$.app
 	.get('/',function(data,scrollTo){
 		//index page redirects to slide.
@@ -1066,15 +1092,19 @@ $(function(){
 	});
 	
 	$(document).on('notFound',function(){
-		
+		//this is kind of buggy because it replaces entire app with 404. 
+		//you should probably create a new div and overlay it, then edit 404.html to use a data-href to come back or something.
+		//up to you.
 		$('body').load(window.location.origin+'/static/404.html',function(){
 			$.app.done();
 		});
+		
 	});
 	
 	var t_load = null;
 	
-	//this function is executed automatically
+	//this function is executed automatically. it basically bootstraps the app by getting the basic layout from the server and such.
+	//its complicated to understand how it works, but it does and provides decentish performance.
 	!function(){
 		t_load = setInterval(function(){
 			
@@ -1148,7 +1178,9 @@ $(function(){
 	$(document).on('click','.menu a[data-href]',function(){
 		$('.menu li.active').removeClass('active');
 		$(this).addClass('active');
+		//dont return here. let it propagate to the normal href handler.
 	});
+	
 	$(document).on('click','[data-href]',function(e){
 		var href = $(this).data('href');
 		if(href !== location.pathname){
@@ -1183,7 +1215,7 @@ $(function(){
 	$(document).on('keyup','.searchbar input',function(e){
 		if(e.which == 13 && this.value != "")
 		{
-			$(this).blur().siblings('a').trigger('click');
+			$(this).blur().siblings('a').trigger('click');//unfocuses the button so that dropdown doesnt get stuck awkwardly if user moves cursor while still in form field.
 		}else{
 			if(search_int !== null) clearInterval(search_int);
 			search_int = setTimeout(function(value){
@@ -1220,7 +1252,7 @@ $(function(){
 						var i = dataset.length;
 						while(i--){
 							if(dataset[i] instanceof Array ){
-								dataset.splice(i,1);
+								dataset.splice(i,1);//If i remember correctly, how i was modifying the array in PHP has the index all mixed up so had to reindex array.
 							}
 						}
 						function cmp(a,b) {
@@ -1263,6 +1295,8 @@ $(function(){
 	});
 	
 	$(document).on('click','[data-language]',function(){
+		//this shit is buggy as hell. basically we are searching in the google translate iframe for the menu item.
+		//sometimes it works, sometimes it doesnt. i have no idea why. good luck.
 		console.log('clicked');
 		var selected = $(this).attr('data-selected');
 		if(selected == 'English'){
@@ -1293,15 +1327,3 @@ $(function(){
 	$(document).on('click','.disqus-btn button',disqus);
 	responsiveApp();
 });
-
-//misc functions
-
-function suggestDone(data)
-{
-	if(data.error == 0){
-		this.trigger('reset'); //reset the form
-		sk.alert('Your Suggestion has been submitted! You will receive a confirmation email as soon as we have reviewed your submission. Thanks!','success');
-	}else{
-		sk.alert(data.message,'error');
-	}
-}
