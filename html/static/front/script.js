@@ -47,26 +47,30 @@ function resizeSlideVideos()
 	var tclass = '.slider .owl-carousel .item .video-slideup video';
 	var h = window.innerHeight;
 	var base = {
-		h:635,//base width
+		h:635,//base height
 		s:1.01,//base scale
 		t:-61,//base top offset
 	};
 	if(h <= base.h){
 		return;
 	}
-	//determine diff in % of w vs window w
+	//determine diff in % of base height vs window height
 	var d = h / base.h; 
 	var scale = (base.s * d).toFixed(2);
 	var offset = Math.ceil(Math.abs(base.t) * d);
 	offset -= (offset * 2).toString();
-	var height = Math.ceil(122 * d);
+	var height = Math.ceil(122 * d);//base height of element was 100vh + 122px. this gives a nice stretched effect in the browser.
 	return tclass+' {\r\ntop:'+offset+'px;\r\ntransform:scaleX('+scale+');\r\nheight:calc(100vh + '+height+'px);\r\n}\r\n';
 }
 
 function resizeMenu()
 {
+	//because of how the menu was designed, it was difficult to do this without either javascript or multiple static copies of menu for each size.
+	//thinking of the client impact, i decided to opt for the latter. its not perfect but it does work ok. 
 	var w = window.innerWidth;
 	$('.menu .list').addClass('hide');
+	//if the menu is translated to spanish, it will certainly not fit anymore, so we need to fudge our number a bit. 200px has no significant meaning,
+	//so you can probably change this value around some to get it exact if thats your aim.
 	if($('.menu').hasClass('translated')){
 		w -= 200;
 	}
@@ -92,7 +96,7 @@ function menuSetCurrent()
 	var el2 = $('.menu').find('li').not('.active').find('[data-href*="'+location.pathname+'"]');
 	if(el2.length > 0){
 		if($('[name="xmobile-go"] option[value="'+location.pathname+'"]').length > 0){
-			$('[name="xmobile-go"]').val(location.pathname);
+			$('[name="xmobile-go"]').val(location.pathname);//one limitation of the mobile menu is that no value is selected for a substr match of the url. maybe you can tackle that.
 		}
 		$('.menu li').removeClass('active');
 		el2.parent('li').addClass('active');
@@ -106,11 +110,14 @@ function menuSetCurrent()
 
 $.fn.getComputed = function()
 {
-	return parseInt(this.css('width').replace(/px/,''));
+	return parseInt(this.css('width').replace(/px/,''));//returns computed width of element as integer number in pixels using css('width')
 };
 
 function googleTranslateElementInit()
 {
+	//basically we need a way to know if google translate has translated the page.
+	//this was the only thing i could think of off the top of my head, and its really buggy but works.
+	//consider replacing with mutation events with a fallback to this. it works because google replaces text by wrapping it in <font> tags, causing the event to fire.
 	$('[data-language]').one('DOMSubtreeModified', function() {
 	  flipLanguage(1);  
 	});
@@ -118,7 +125,7 @@ function googleTranslateElementInit()
 		resizeMenu();
 	});
 	new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, autoDisplay: false}, 'google_translate_element');
-	resizeMenu();
+	resizeMenu();//always resize the menu. if google fires later, then the dom subtree modified for the menu will fire and resize it again accounting for spanish.
 }
 
 function flipLanguage(x)
