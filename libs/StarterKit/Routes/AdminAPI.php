@@ -1,5 +1,7 @@
 <?php
 
+//If you are reading this message, you should know that this guy treated me like crap and refused to pay a fair wage. best of luck
+
 namespace StarterKit\Routes;
 
 class AdminAPI
@@ -505,6 +507,7 @@ class AdminAPI
 			'tw_profile'=>'min',
 			'tw_fanpage'=>'min',
 			'tw_description'=>'c_twitter',
+			'short_desc'=>'min'
 		];
 		
 		$filter->custom_filter('cat_id',function($input) use($db,$filter){
@@ -805,10 +808,18 @@ class AdminAPI
 		
 		$required = [
 			'title'=>'min',
+			'status'=>'status_fm'
 		];
 		
-		$optional = [
-		];
+		$optional = [];
+		
+		$filter->custom_filter('status_fm',function($input) use($filter){
+			$input = $filter->cast_int($input);
+			if(!in_array($input,[1,2,3,4])){
+				throw new \exception('Invalid status');
+			}
+			return $input;
+		});
 		
 		$id = isset($get['id']) ? $filter->cast_int($get['id']) : false;
 		
@@ -835,7 +846,6 @@ class AdminAPI
 		
 		$filter->generate_model($t,$required,$optional,$post);
 		
-		
 		try{
 			if(isset($post['uploaded_image_server']) && !empty($post['uploaded_image_server'])){
 				$f = array_pop(explode('/',$post['uploaded_image_server']));
@@ -843,7 +853,7 @@ class AdminAPI
 					$t->img = $f;
 				}
 			}else{
-				$t->img = $this->img_upload('uploaded_image',$app->files);
+				$t->img = $this->ig2_upload('uploaded_image',$app->files);
 			}
 		}
 		catch(\Exception $e){}
@@ -856,7 +866,7 @@ class AdminAPI
 		$t->updated = time();
 		$db->store($t);
 		
-		if($id && $t->status == 4 && $prev_status !== 4){
+		if($id && $t->status == 4 && $prev_status !== 4 || !$id && $t->status == 4){
 			
 			if(!isset($t->published) || (isset($t->published) && empty($t->published)) ){
 				$t = $db->model('masterlist',$id);
@@ -1273,13 +1283,14 @@ class AdminAPI
 				$t->bg_image = $this->img_upload('background_image',$app->files);
 			}
 			catch(\exception $e){
-				if(!$id){
-					throw $e;
-				}
 				if(isset($post['background_image_server']) && !empty($post['background_image_server'])){
 					$f = array_pop(explode('/',$post['background_image_server']));
 					if(file_exists($app->public_html .'uploads/'.$f)){
 						$t->bg_image = $f;
+					}
+				}else{
+					if(!$id){
+						throw $e;
 					}
 				}
 			}
@@ -1333,17 +1344,20 @@ class AdminAPI
 			}
 			$t->images = json_encode($images);
 		}else{
+			$t->link = isset($post['link']) ? $post['link'] : null;
 			try{
 				$t->video = $this->video_upload('uploaded_video',$app->files);
 			}
 			catch(\exception $e){
-				if(!$id){
-					throw $e;
-				}
+				
 				if(isset($post['uploaded_video_server']) && !empty($post['uploaded_video_server'])){
 					$f = array_pop(explode('/',$post['uploaded_video_server']));
 					if(file_exists($app->public_html .'uploads/'.$f)){
 						$t->video = $f;
+					}
+				}else{
+					if(!$id){
+						throw $e;
 					}
 				}
 			}

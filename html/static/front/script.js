@@ -4,6 +4,13 @@ Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
     }
 });
 
+window.onkeydown = function(e){
+    if(e.keyCode == 32 && e.target == document.body) {
+        e.preventDefault();
+        return false;
+    }
+};
+
 function responsiveApp()
 {
 	resizeMenu();
@@ -455,7 +462,6 @@ function scrollHandler(e)
 	scroll_last2 = scroll;
 	
 	if(scroll_int !== null) {
-		
 		clearTimeout(scroll_int);
 		scroll_int = null;
 	}

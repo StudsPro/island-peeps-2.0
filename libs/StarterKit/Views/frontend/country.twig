@@ -1,6 +1,6 @@
 {% if ad_top != false %}
 <div class="{{ad_top.size}} columns">
-	<a href="{{ad_top.link}}" title="{{ad_top.title}}">
+	<a href="{{ad_top.link|raw}}" title="{{ad_top.title}}" target="_blank">
 		<video src="{{base_url}}uploads/{{ad_top.video}}">
 		
 		</video>
@@ -203,7 +203,7 @@
 						<span class="fun-facts">-Fun Facts-</span>
 						{% endif %}
 						<h3>{{item.title}}</h3>
-						<h4>{{item.category}}</h4>
+						<h4>{% if item.short_desc is not empty %}{{item.short_desc}}{%else%}{{item.category}}{%endif%}</h4>
 					</div>
 				</div>
 			</a>

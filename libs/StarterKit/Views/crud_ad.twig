@@ -41,14 +41,14 @@
 							<div class="form-group">
 								<label for="title" class="col-md-2 control-label"> Ad Type <span class="require">*</span></label>
 								<div class="col-md-5">
-									<select class="form-control input-md select-onload" name="type" data-selected="{{item.type}}" onchange="typeshow()">
+									<select class="form-control input-md select-onload" name="type" data-selected="{{item.type|default('image')}}" onchange="typeshow()">
 										<option value="image">Image</option>
 										<option value="video">Video</option>
 									</select>    
 								</div>
 							</div>
 							<div class="clearfix" data-type-select>
-								<div class="form-group {% if item.type=='video'%}hide{%endif%}" data-type="image">
+								<div class="form-group" data-type-selector="image">
 									<div class="container clearfix" style="padding:0">
 										<label for="title" class="col-md-2 control-label">Background Image</label>
 										<div class="col-md-5">
@@ -77,7 +77,7 @@
 									</div>
 									<div class="container clearfix">
 											{% for i in range(1,5) %}
-												<div class="form-group {% if item.type=='video'%}hide{%endif%}" data-type="image">
+												<div class="form-group" data-type="image">
 													<label for="title" class="col-md-1 control-label"> Image {{i}}</label>
 													<div class="col-md-1 text-center" id="raggionmapimg">
 														<img src="{{base_url}}uploads/{{item.images[i].image}}" width="80" style="background:#000;">
@@ -111,7 +111,7 @@
 										{% endfor %}
 									</div>
 								</div>
-								<div class="form-group {% if item.type=='image'%}hide{%endif%}" data-type="video">
+								<div class="form-group" data-type-selector="video">
 									<label for="title" class="col-md-2 control-label">Select Video</label>
 									<div class="col-md-5">
 										<div class="dropdown">
@@ -172,7 +172,8 @@
 function typeshow()
 {
 	var x = $('select[name="type"]').val();
-	$('[data-type-select] > div').toggleClass('hide');
+	$('[data-type-select] div[data-type-selector]').addClass('hide');
+	$('[data-type-selector="'+x+'"]').removeClass('hide');
 }
 
 function adAE(data)

@@ -308,7 +308,7 @@ class DB
 
 	public function getRecent()
 	{
-		$data = \R::getAll('SELECT * FROM masterlist WHERE type_id IN (1,3) AND status="4" ORDER BY updated DESC LIMIT 0,12');
+		$data = \R::getAll('SELECT a.*,b.name as category FROM masterlist a JOIN category b on b.id=a.category_id WHERE a.type_id IN (1,3) AND a.status="4" ORDER BY a.updated DESC LIMIT 0,12');
 		foreach($data as &$row){
 			$row['regions'] = \R::getAll('SELECT name,map_img,uri FROM country WHERE id IN ('.$row['regions'].')');
 		}
@@ -319,7 +319,7 @@ class DB
 	{
 		$per_page = 20;
 		$data = \R::getRow('SELECT * FROM country WHERE uri=:uri',[':uri'=>$uri]);
-		$data['profiles'] = \R::getAll('SELECT a.*,b.name as category FROM masterlist a JOIN category b on b.id=a.category_id WHERE a.type_id IN(1,3) AND FIND_IN_SET(:id,a.regions) AND a.status="4" ORDER BY a.updated DESC',[':id'=>$data['id']]);
+		$data['profiles'] = \R::getAll('SELECT a.*,b.name as category FROM masterlist a LEFT OUTER JOIN category b on b.id=a.category_id WHERE (a.type_id="1" OR a.type_id="3") AND FIND_IN_SET(:id,a.regions) AND a.status="4" ORDER BY a.updated DESC ',[':id'=>$data['id']]);
 		foreach($data['profiles'] as &$row)
 		{
 			$row['regions'] = \R::getAll('SELECT name,map_img,uri FROM country WHERE id IN ('.$row['regions'].')');
@@ -330,10 +330,6 @@ class DB
 	public function getMemes()
 	{
 		$d = \R::getAll('SELECT * FROM masterlist WHERE type_id="2" AND status="4"');
-		foreach($d['profiles'] as &$row)
-		{
-			$row['regions'] = \R::getAll('SELECT name,map_img,uri FROM country WHERE id IN ('.$row['regions'].')');
-		}
 		return $d;
 	}
 	
@@ -596,20 +592,41 @@ class DB
 	{
 		$x = (int)date('m',$start);
 		$z = (int)date('m',$end);
-		
-		if($x==11 && $z==1){
-			$y = 12;
-			$months = [$x,$y,$z];
-		}elseif($x==12 && $z==2){
-			$y = 1;
-			$months = [$x,$y,$z];
+
+		if($x > 9){
+			$months = [$x];
+			while($x++ < 12){
+				$months[] = $x;
+			}
+			$i = 1;
+			while(count($months) < 3){
+				$months[] = '0'.$i;
+				$i++;
+			}
 		}else{
 			$months = range($x,$z);
 		}
+		
 		$months = implode(',',$months);
 		
+		$constrain1 = '
+		WHERE
+		day<>"00"
+		AND
+		day IS NOT NULL
+		AND
+		day<>"invalid"
+		AND
+		month<>"00"
+		AND
+		month IS NOT NULL
+		AND
+		month<>"invalid"
+		AND 
+		month IN('.$months.')
+		';
 		
-		$constrain = '
+		$constrain2 = '
 		WHERE
 		year<>"0000"
 		AND
@@ -631,8 +648,8 @@ class DB
 		AND 
 		month IN('.$months.')
 		';
-		$d1 = \R::getAll('SELECT * FROM masterlist '.$constrain.' AND type_id="1"');
-		$d2 = \R::getAll('SELECT * FROM country '.$constrain);
+		$d1 = \R::getAll('SELECT * FROM masterlist '.$constrain1.' AND type_id="1"');
+		$d2 = \R::getAll('SELECT * FROM country '.$constrain2);
 		$d = array_merge($d1,$d2);
 		
 		$data = [];
@@ -643,17 +660,25 @@ class DB
 				$t = 'inday';
 				$title = 'Independence day of '.$row['name'];
 				$color = '#F3FDAE';
-				$url= (\StarterKit\App::getInstance())->args['base_url'].'edit?t=country&id='.$row['id'];
+				$url= (\StarterKit\App::getInstance())->args['base_url'].'admin/edit?t=country&id='.$row['id'];
 			}else{
 				$t = 'pbday';
 				$title = 'Birthday of '.$row['title'];
 				$color = '#EBBBA8';
-				$url = (\StarterKit\App::getInstance())->args['base_url'].'edit?t=profile&id='.$row['id'];
+				$url = (\StarterKit\App::getInstance())->args['base_url'].'admin/edit?t=profile&id='.$row['id'];
 			}
 			
-			$date =  date('Y',$start).'-'.$row['month'].'-'.$row['day'];
+			$m = (int)$row['month'];
 			
-			$data[]= [
+			if($x > 9 && $m > 2 && $m <= 12){
+				$year = date('Y',$start);
+			}else{
+				$year = date('Y',$end);
+			}
+			
+			$date =  $year.'-'.$row['month'].'-'.$row['day'];
+			
+			$data[] = [
 				'title'=>$title,
 				'start'=>$date,
 				'end'=>$date,
@@ -680,7 +705,7 @@ class DB
 		}
 		
 		//affiliate birthdays
-		$d4 = \R::getAll('SELECT * FROM admin '.$constrain);
+		$d4 = \R::getAll('SELECT * FROM admin '.$constrain1);
 		foreach($d4 as $row){
 			$date =  date('Y',$start).'-'.$row['month'].'-'.$row['day'];
 			$data[]= [

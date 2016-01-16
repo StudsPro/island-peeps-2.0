@@ -105,6 +105,43 @@ trait Upload
 		return [$square,$t];
 	}
 	
+	private function ig_upload($img_name,$files)
+	{
+		$this->precheck($img_name,$files); //performs basic file upload prechecks
+		$image_temp = $files[$img_name]['tmp_name'];
+		@$image_info = getimagesize($image_temp);
+		
+		if( !$image_info ){
+			throw new \exception('invalid image size.');
+		}
+		$w = $image_info[0];
+		$h = $image_info[1];
+		
+		$a = ($w === 1200 && $h === 900);
+		$b = ($w === 900 && $h === 1200);
+		if(!$a && !$b){
+			throw new \exception('Image size must be 1200x900 or 900x1200');
+		}
+		return $this->img_upload($img_name,$files);
+	}
+	
+	private function ig2_upload($img_name,$files)
+	{
+		$this->precheck($img_name,$files); //performs basic file upload prechecks
+		$image_temp = $files[$img_name]['tmp_name'];
+		@$image_info = getimagesize($image_temp);
+		
+		if( !$image_info ){
+			throw new \exception('invalid image size.');
+		}
+		$w = $image_info[0];
+		$h = $image_info[1];
+		
+		if($w !== 1575 || $h !== 1575){
+			throw new \exception('Image size must be 1200x900 or 900x1200');
+		}
+		return $this->img_upload($img_name,$files);
+	}
 	//private methods
 	private function img_upload($img_name,$files,$min_width = 120, $min_height = 120,$ignore_trans=false)
 	{

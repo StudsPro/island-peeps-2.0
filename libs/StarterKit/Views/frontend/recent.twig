@@ -29,7 +29,7 @@
 						<span class="fun-facts">-Fun Facts-</span>
 						{% endif %}
 						<h3>{{item.title}}</h3>
-						<h4>{{item.category}}</h4>
+						<h4>{% if item.short_desc is not empty %}{{item.short_desc}}{%else%}{{item.category}}{%endif%}</h4>
 					</div>
 				</div>
 			</a>

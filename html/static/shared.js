@@ -194,6 +194,15 @@ $(function(){
 		if(typeof $(this).attr('data-selected') !== 'undefined'){
 			if($(this).attr('data-selected') !== ''){
 				$(this).val( $(this).attr('data-selected') );
+				var c = $(this).attr('onchange');
+				if(typeof c !== undefined){
+					try{
+						eval(c);
+					}
+					catch(e){
+						console.log(e);
+					}
+				}
 			}
 		}
 		if($(this).data('asort') !== 'undefined' && $(this).data('asort') !== false){
